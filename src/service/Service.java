@@ -7,13 +7,13 @@ import storage.Storage;
 
 public class Service {
 	private final static Service instance = new Service();
-	private User user;
+	private User activeUser;
 	private Storage storage = Storage.getInstance();
 	
 	private Service() {}
 	
 	/*
-	 * returns a user if the username and password is corrent
+	 * returns a activeUser if the username and password is corrent
 	 * if username or password is not correct it returns null
 	 */
 	public User login(String username, String password) throws Exception {
@@ -22,16 +22,21 @@ public class Service {
     	for (User u : users) {
     		if (u.getUsername().equals(username)) {
     			if (u.checkPassword(password)) {
-    				user = u;
+    				activeUser = u;
     			}
     		}
     	}
     	
     	throw new Exception("wrong username or password");
     }
+
+    public void logout(){
+		assert activeUser != null;
+		activeUser = null;
+	}
 	
-	public User getUser() {
-		return user;
+	public User getActiveUser() {
+		return activeUser;
 	}
 	
 	public User createUser(String username, String password) {

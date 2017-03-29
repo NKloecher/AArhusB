@@ -45,6 +45,7 @@ public class Login extends GridPane {
 	class Controller {
 		public void login() {
 			String username = tfUsername.getText();
+			System.out.println(username);
 			String password = tfPassword.getText();
 			
 			try {
