@@ -1,5 +1,5 @@
 package model;
 
-public interface Listener {
+public interface Handler {
 	public void exec();
 }
