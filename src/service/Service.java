@@ -2,6 +2,8 @@ package service;
 
 import java.util.List;
 
+import javax.security.sasl.AuthenticationException;
+
 import model.*;
 import storage.Storage;
 
@@ -13,21 +15,22 @@ public class Service {
 	private Service() {}
 	
 	/*
-	 * returns a user if the username and password is corrent
-	 * if username or password is not correct it returns null
+	 * sets serivce.user if username and passowr dis correct
+	 * if username or password is not correct it throws an error
 	 */
-	public User login(String username, String password) throws Exception {
+	public void login(String username, String password) throws AuthenticationException {
     	List<User> users = storage.getUsers();
     	
     	for (User u : users) {
     		if (u.getUsername().equals(username)) {
     			if (u.checkPassword(password)) {
     				user = u;
+    				return;
     			}
     		}
     	}
     	
-    	throw new Exception("wrong username or password");
+    	throw new AuthenticationException("wrong username or password");
     }
 	
 	public User getUser() {
