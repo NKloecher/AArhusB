@@ -21,9 +21,9 @@ public class Service {
     	
     	for (User u : users) {
     		if (u.getUsername().equals(username)) {
-//    			if (u.checkPassword(password)) {
+    			if (u.checkPassword(password)) {
     				user = u;
-//    			}
+    			}
     		}
     	}
     	
