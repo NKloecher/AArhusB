@@ -10,4 +10,8 @@ public class User extends Person {
         this.username = username;
         // TODO: set password
     }
+    
+    public String getUsername() {
+    	return username;
+    }
 }
