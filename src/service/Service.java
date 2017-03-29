@@ -15,13 +15,8 @@ public class Service {
 	private Service() {}
 	
 	/*
-<<<<<<< HEAD
 	 * returns a activeUser if the username and password is corrent
 	 * if username or password is not correct it returns null
-=======
-	 * sets serivce.user if username and passowr dis correct
-	 * if username or password is not correct it throws an error
->>>>>>> 4a2419a336fa20b656e8b0e69f0528769576db5f
 	 */
 	public void login(String username, String password) throws AuthenticationException {
     	List<User> users = storage.getUsers();
@@ -29,12 +24,7 @@ public class Service {
     	for (User u : users) {
     		if (u.getUsername().equals(username)) {
     			if (u.checkPassword(password)) {
-<<<<<<< HEAD
     				activeUser = u;
-=======
-    				user = u;
-    				return;
->>>>>>> 4a2419a336fa20b656e8b0e69f0528769576db5f
     			}
     		}
     	}
