@@ -28,8 +28,9 @@ public class MainApp extends Application {
 
     private void initContent() {
     	Login l = new Login();
+		MainMenu m = new MainMenu();
     	
-    	l.setOnLogin(() -> System.out.println("User logged in"));
+    	l.setOnLogin(() -> controller.setScreen(m));
     	
 		controller.setScreen((GridPane)l);
     }
