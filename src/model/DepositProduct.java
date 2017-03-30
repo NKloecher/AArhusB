@@ -7,4 +7,8 @@ public class DepositProduct extends Product {
         super(name, clips, category, image);
         this.deposit = deposit;
     }
+
+    public double getDeposit() {
+        return deposit;
+    }
 }
