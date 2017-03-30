@@ -6,6 +6,7 @@ import java.util.List;
 public class Order {
     private List<ProductOrder> products = new ArrayList<>();
     private List<RentalProductOrder> productsRental = new ArrayList<>();
+    private List<Payment> payments = new ArrayList<>();
     private User user;
     private Pricelist pricelist;
     private Discount discount;
@@ -25,6 +26,10 @@ public class Order {
         RentalProductOrder rentalProductOrder = new RentalProductOrder(product, this.pricelist);
         products.add(rentalProductOrder);
         return rentalProductOrder;
+    }
+
+    public void addPayment(Payment payment){
+        payments.add(payment);
     }
 
     public void setDiscount(Discount discount) {

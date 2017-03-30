@@ -1,8 +1,11 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tour {
+    private List<Payment> payments = new ArrayList<>();
     private int persons;
     private LocalDateTime date;
     private double price;
@@ -15,5 +18,9 @@ public class Tour {
         this.price = price;
         this.duration = duration;
         this.user = user;
+    }
+
+    public void addPayment(Payment payment){
+        payments.add(payment);
     }
 }
