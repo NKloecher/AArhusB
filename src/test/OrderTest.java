@@ -82,4 +82,62 @@ public class OrderTest {
 		assertEquals(50, order.totalPrice(), 0.1);
 	}
 
+	@Test
+	public void orderTotalPriceOneProductDiscount10kr() throws Exception{
+		Order order = new Order(user, pl);
+		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
+		productOrder.setDiscount("10");
+		assertEquals(10, order.totalPrice(), 0.1);
+	}
+
+	@Test
+	public void orderTotalPriceOneProductDiscountMinus10kr() throws Exception{
+		Order order = new Order(user, pl);
+		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
+		productOrder.setDiscount("-10");
+		assertEquals(90, order.totalPrice(), 0.1);
+	}
+
+	@Test
+	public void orderTotalPriceOneProductOrderDiscount() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.setDiscount("50%");
+		assertEquals(50, order.totalPrice(), 0.1);
+	}
+
+	@Test
+	public void orderTotalPriceTwoProductOrderDiscount() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.createProductOrder(product100kr3clip);
+		order.setDiscount("50%");
+		assertEquals(100, order.totalPrice(), 0.1);
+	}
+
+	@Test
+	public void orderTotalPriceOneProductTwoItemsOrderDiscount() throws Exception{
+		Order order = new Order(user, pl);
+		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
+		productOrder.setAmount(2);
+		order.setDiscount("50%");
+		assertEquals(100, order.totalPrice(), 0.1);
+	}
+
+	@Test
+	public void orderTotalPriceOneDepositProductOrderDiscount() throws Exception{
+		Order order = new Order(user, pl);
+		order.createRentalProductOrder(depositProduct500kr100rent);
+		order.setDiscount("50%");
+		assertEquals(250, order.totalPrice(), 0.1);
+	}
+
+	@Test
+	public void orderTotalPriceOneDepositProductOrderDiscountDontEffectDeposit() throws Exception{
+		Order order = new Order(user, pl);
+		order.createRentalProductOrder(depositProduct500kr100rent);
+		order.setDiscount("50%");
+		assertEquals(100, order.totalDeposit(), 0.1);
+	}
+
 }

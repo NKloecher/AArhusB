@@ -28,8 +28,11 @@ public class Order implements Payable{
         return rentalProductOrder;
     }
 
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
+    public void setDiscount(String str) throws Exception {
+        if (discount == null) {
+            discount = new Discount();
+        }
+        discount.setDiscount(str);
     }
 
     /**
@@ -43,6 +46,10 @@ public class Order implements Payable{
         double sum = 0;
         for (ProductOrder productOrder : allProducts){
             sum += productOrder.price();
+        }
+
+        if (discount != null) {
+            sum = discount.getPrice(sum);
         }
         return sum;
     }
