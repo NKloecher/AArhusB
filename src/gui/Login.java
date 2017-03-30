@@ -20,23 +20,27 @@ public class Login extends GridPane {
 	private Handler loginHandler;
 	
 	public Login() {
-		this.setPadding(new Insets(20));
-		this.setHgap(10);
-		this.setVgap(10);
+		// automatisk login mens vi udvikler
+		tfUsername.setText("test");
+		tfPassword.setText("test");
 		
-		this.add(new Label("Brugernavn"), 0, 0);
-		this.add(tfUsername, 1, 0);
+		setPadding(new Insets(20));
+		setHgap(10);
+		setVgap(10);
 		
-		this.add(new Label("Kodeord"), 0, 1);
-		this.add(tfPassword, 1, 1);
+		add(new Label("Brugernavn"), 0, 0);
+		add(tfUsername, 1, 0);
+		
+		add(new Label("Kodeord"), 0, 1);
+		add(tfPassword, 1, 1);
 		
 		Button bLogin = new Button("Login");
 		bLogin.setOnAction(e -> controller.login());
 		GridPane.setHalignment(bLogin, HPos.RIGHT);
-		this.add(bLogin, 1, 2);
+		add(bLogin, 1, 2);
 		
 		lError.setStyle("-fx-text-fill: red");
-		this.add(lError, 0, 2, 2, 1);
+		add(lError, 0, 2, 2, 1);
 	}
 	
 	public void setOnLogin(Handler handler) {
