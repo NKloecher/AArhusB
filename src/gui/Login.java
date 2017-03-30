@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import model.Handler;
 import service.Service;
 
 public class Login extends GridPane {
@@ -23,10 +22,6 @@ public class Login extends GridPane {
 		// automatisk login mens vi udvikler
 		tfUsername.setText("test");
 		tfPassword.setText("test");
-		
-		setPadding(new Insets(20));
-		setHgap(10);
-		setVgap(10);
 		
 		add(new Label("Brugernavn"), 0, 0);
 		add(tfUsername, 1, 0);
