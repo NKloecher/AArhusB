@@ -22,16 +22,45 @@ public class Order implements Payable{
         return productOrder;
     }
 
-    public RentalProductOrder createRentalProductOrder(Product product) {
+    public RentalProductOrder createRentalProductOrder(DepositProduct product) {
         RentalProductOrder rentalProductOrder = new RentalProductOrder(product, this.pricelist);
-        products.add(rentalProductOrder);
+        productsRental.add(rentalProductOrder);
         return rentalProductOrder;
     }
 
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
+    public void setDiscount(String str) throws Exception {
+        if (discount == null) {
+            discount = new Discount();
+        }
+        discount.setDiscount(str);
     }
 
+    /**
+     * Doesn't include deposit
+     * @return
+     */
+    public double totalPrice() throws Exception{
+        List<ProductOrder> allProducts = new ArrayList<>(products);
+        allProducts.addAll(productsRental);
+
+        double sum = 0;
+        for (ProductOrder productOrder : allProducts){
+            sum += productOrder.price();
+        }
+
+        if (discount != null) {
+            sum = discount.getPrice(sum);
+        }
+        return sum;
+    }
+
+    public double totalDeposit(){
+        double sum = 0;
+        for (RentalProductOrder productOrder : productsRental){
+            sum += ((DepositProduct) productOrder.getProduct()).getDeposit() * productOrder.getAmount();
+        }
+        return sum;
+    }
 
     @Override
     public void pay(Payment payment) {
