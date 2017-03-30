@@ -20,10 +20,6 @@ public class Tour implements Payable{
         this.user = user;
     }
 
-    public void addPayment(Payment payment){
-        payments.add(payment);
-    }
-
     @Override
     public void pay(Payment payment) {
 		payments.add(payment);

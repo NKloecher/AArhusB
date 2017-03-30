@@ -68,11 +68,18 @@ public class Service {
 	public Payment createPayment(Payable payable, double amount, PaymentType paymentType){
 		Payment payment = new Payment(paymentType, amount);
 		payable.pay(payment);
+		storage.addPayment(payment);
 		return payment;
 	}
 
 	public void addProductToPricelist(Product product, Pricelist pricelist, double price){
 		pricelist.addProduct(product, price);
+	}
+
+	public Order createOrder(User user, Pricelist pricelist){
+		Order order = new Order(user, pricelist);
+		storage.addOrder(order);
+		return order;
 	}
 
 	public void initStorage() {

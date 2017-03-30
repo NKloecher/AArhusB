@@ -12,6 +12,7 @@ public class Storage {
 	private final List<Product> products = new ArrayList<>();
 	private final List<Pricelist> pricelists = new ArrayList<>();
 	private final List<Payment> payments = new ArrayList<>();
+	private final List<Order> orders = new ArrayList<>();
 
 	private Storage() {}
 	
@@ -38,5 +39,19 @@ public class Storage {
 	}
 	public void addPricelist(Pricelist pricelist) {
 		pricelists.add(pricelist);
+	}
+
+	public List<Payment> getPayments() {
+		return new ArrayList<>(payments);
+	}
+	public void addPayment(Payment payment) {
+		payments.add(payment);
+	}
+
+	public List<Order> getOrders() {
+		return new ArrayList<>(orders);
+	}
+	public void addOrder(Order order) {
+		orders.add(order);
 	}
 }

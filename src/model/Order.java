@@ -28,10 +28,6 @@ public class Order implements Payable{
         return rentalProductOrder;
     }
 
-    public void addPayment(Payment payment){
-        payments.add(payment);
-    }
-
     public void setDiscount(Discount discount) {
         this.discount = discount;
     }
