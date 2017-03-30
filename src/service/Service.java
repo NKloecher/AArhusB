@@ -82,6 +82,14 @@ public class Service {
 		return order;
 	}
 
+	public ProductOrder createProductOrder(Order order, Product product){
+		return order.createProductOrder(product);
+	}
+
+	public RentalProductOrder createRentalProductOrder(Order order, DepositProduct product){
+		return order.createRentalProductOrder(product);
+	}
+
 	public void initStorage() {
 		createUser("test", "test");
 
