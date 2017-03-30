@@ -26,12 +26,12 @@ public class ProductOrder {
         discount.setDiscount(str);
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
     public Product getProduct() {
         return product;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
     public void setAmount(int amount) {

@@ -28,14 +28,14 @@ public class OrderTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneProduct(){
+	public void orderTotalPriceOneProduct() throws Exception{
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		assertEquals(100, order.totalPrice(), 0.1);
 	}
 
 	@Test
-	public void orderTotalPriceTwoProduct(){
+	public void orderTotalPriceTwoProduct() throws Exception{
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.createProductOrder(product100kr3clip);
@@ -44,7 +44,7 @@ public class OrderTest {
 
 
 	@Test
-	public void orderTotalPriceOneProductTwoItems(){
+	public void orderTotalPriceOneProductTwoItems() throws Exception{
 		Order order = new Order(user, pl);
 		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
 		productOrder.setAmount(2);
@@ -52,7 +52,7 @@ public class OrderTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneDepositProduct(){
+	public void orderTotalPriceOneDepositProduct() throws Exception{
 		Order order = new Order(user, pl);
 		order.createProductOrder(depositProduct500kr100rent);
 		assertEquals(500, order.totalPrice(), 0.1);
@@ -73,4 +73,13 @@ public class OrderTest {
 		rentalProductOrder.setAmount(2);
 		assertEquals(200, order.totalDeposit(), 0.1);
 	}
+
+	@Test
+	public void orderTotalPriceOneProductDiscount50pct() throws Exception{
+		Order order = new Order(user, pl);
+		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
+		productOrder.setDiscount("50%");
+		assertEquals(50, order.totalPrice(), 0.1);
+	}
+
 }

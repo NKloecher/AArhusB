@@ -17,21 +17,21 @@ public class Discount {
         double newTotal = 0;
         double discountAmount = 0;
         if (discount.startsWith("-")) {
-            discountAmount = Integer.parseInt(discount.substring(1, discount.length()));
+            discountAmount = Double.parseDouble(discount.substring(1, discount.length()));
             if (discountAmount > total) {
                 throw new Exception(discountAmount + " rabat er h\u00F8jere end " + total);
             }
             newTotal = total - discountAmount;
         }
         else if (discount.endsWith("%")) {
-            discountAmount = Integer.parseInt(discount.substring(0, discount.length() - 1)) / 100;
+            discountAmount = Double.parseDouble(discount.substring(0, discount.length() - 1)) / 100;
             if (discountAmount > 1) {
                 throw new Exception(discountAmount * 100 + "% er mere end 100% rabat");
             }
             newTotal = total * (1 - discountAmount);
         }
         else {
-            newTotal = Integer.parseInt(discount);
+            newTotal = Double.parseDouble(discount);
         }
         return newTotal;
     }

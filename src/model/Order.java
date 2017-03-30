@@ -32,13 +32,17 @@ public class Order implements Payable{
         this.discount = discount;
     }
 
-    public double totalPrice(){
+    /**
+     * Doesn't include deposit
+     * @return
+     */
+    public double totalPrice() throws Exception{
         List<ProductOrder> allProducts = new ArrayList<>(products);
         allProducts.addAll(productsRental);
 
         double sum = 0;
         for (ProductOrder productOrder : allProducts){
-            sum += pricelist.getPrice(productOrder.getProduct()) * productOrder.getAmount();
+            sum += productOrder.price();
         }
         return sum;
     }
