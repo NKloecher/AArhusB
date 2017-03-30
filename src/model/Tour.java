@@ -25,7 +25,7 @@ public class Tour implements Payable{
     }
 
     @Override
-    public void pay(double amount, PaymentType paymentType) {
-
+    public void pay(Payment payment) {
+		payments.add(payment);
     }
 }
