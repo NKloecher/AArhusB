@@ -1,7 +1,5 @@
 package service;
 
-import java.util.List;
-
 import javax.security.sasl.AuthenticationException;
 
 import model.*;
@@ -23,6 +21,7 @@ public class Service {
     		if (u.getUsername().equals(username)) {
     			if (u.checkPassword(password)) {
     				activeUser = u;
+    				return;
     			}
     		}
     	}
