@@ -15,13 +15,11 @@ public class Service {
 	private Service() {}
 	
 	/*
-	 * returns a activeUser if the username and password is corrent
-	 * if username or password is not correct it returns null
+	 * sets serivce.user if username and password is correct
+	 * if username or password is not correct it throws an error
 	 */
 	public void login(String username, String password) throws AuthenticationException {
-    	List<User> users = storage.getUsers();
-    	
-    	for (User u : users) {
+    	for (User u : storage.getUsers()) {
     		if (u.getUsername().equals(username)) {
     			if (u.checkPassword(password)) {
     				activeUser = u;
