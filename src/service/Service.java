@@ -41,8 +41,8 @@ public class Service {
 		return activeUser;
 	}
 	
-	public User createUser(String name, String username, String password) {
-		User u = new User(name, username, password);
+	public User createUser(String name, String username, String password, Permission permission) {
+		User u = new User(name, username, password, permission);
 		
 		storage.addUser(u);
 		
@@ -57,6 +57,9 @@ public class Service {
 	}
 	public void updateUserUsername(User user, String username) {
 		user.setUsername(username);
+	}
+	public void updateUserPermission(User user, Permission permission) {
+		user.setPermission(permission);
 	}
 	
 	public boolean usernameIsUnique(String username) {
@@ -113,7 +116,7 @@ public class Service {
 	}
 
 	public void initStorage() {
-		createUser("John", "test", "test");
+		createUser("John", "test", "test", Permission.ADMIN);
 
 		Pricelist pl1 = createPricelist("Fredagsbar");
 		Pricelist pl2 = createPricelist("Butik");

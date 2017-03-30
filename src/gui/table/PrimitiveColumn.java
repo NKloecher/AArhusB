@@ -3,11 +3,11 @@ package gui.table;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 
-public class ValueColumn<A,B> extends Column<A> {
-	private final Getter<A,B> getter;
-	private final Setter<A,B> setter;
+public class PrimitiveColumn<A,B> extends Column<A> {
+	protected final Getter<A,B> getter;
+	protected final Setter<A> setter;
 	
-	public ValueColumn(String name, Getter<A, B> getter, Setter<A, B> setter) {
+	public PrimitiveColumn(String name, Getter<A, B> getter, Setter<A> setter) {
 		super(name);
 		
 		this.getter = getter;
@@ -22,6 +22,7 @@ public class ValueColumn<A,B> extends Column<A> {
 			TextField tf = new TextField();
 			
 			tf.setText(getter.get(owner).toString());
+			tf.setOnInputMethodTextChanged(e -> setter.set(owner, tf.getText()));
 			
 			return tf;
 		}

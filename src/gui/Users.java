@@ -2,9 +2,11 @@ package gui;
 
 import gui.table.ButtonColumn;
 import gui.table.Column;
+import gui.table.ListColumn;
 import gui.table.Table;
-import gui.table.ValueColumn;
+import gui.table.PrimitiveColumn;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -13,6 +15,7 @@ import storage.Storage;
 import service.Service;
 
 import model.User;
+import model.Permission;
 
 public class Users extends GridPane {
 	private final Storage storage = Storage.getInstance();
@@ -23,10 +26,13 @@ public class Users extends GridPane {
 	private final TextField tfName = new TextField();
 	private final TextField tfUsername = new TextField();
 	private final TextField tfPassword = new TextField();
+	private final ComboBox<Permission> cbPermission = new ComboBox<>();
 	
 	public Users() {
-		table.addColumn(new ValueColumn<User, String>("Navn", u -> u.getName(), controller::updateName));
-		table.addColumn(new ValueColumn<User, String>("Brugernavn", u -> u.getUsername(), controller::updateUsername));
+		table.addColumn(new PrimitiveColumn<User, String>("Navn", u -> u.getName(), controller::updateName));
+		table.addColumn(new PrimitiveColumn<User, String>("Brugernavn", u -> u.getUsername(), controller::updateUsername));
+		table.addColumn(new ListColumn<User, Permission>("Permission", u -> u.getPermission(), (u,v) -> controller.updatePermission(u, v), Permission.values()));
+//		table.addColumn(new ButtonColumn<User>("Sæt kode", controller::setPassword));
 		table.addColumn(new ButtonColumn<User>("Delete", controller::deleteUser));
 		table.setItems(storage.getUsers());
 		add(table, 0, 0);
@@ -42,6 +48,9 @@ public class Users extends GridPane {
 		tfPassword.setPromptText("Kodeord");
 		hbAdd.getChildren().add(tfPassword);
 		
+		cbPermission.getItems().setAll(Permission.values());
+		hbAdd.getChildren().add(cbPermission);
+		
 		Button bAdd = new Button("Tilføj");
 		bAdd.setOnAction(e -> controller.addUser());
 		hbAdd.getChildren().add(bAdd);
@@ -55,7 +64,7 @@ public class Users extends GridPane {
 	private class Controller {
 		public boolean validateName(String name) {
 			if (name.isEmpty()) {
-				lError.setText("navn er påkrævet");
+				lError.setText("Navn er påkrævet");
 				return false;
 			}
 			
@@ -64,24 +73,28 @@ public class Users extends GridPane {
 		
 		public boolean validateUsername(String username) {
 			if (username.isEmpty()) {
-				lError.setText("brugernavn er påkrævet");
+				lError.setText("Brugernavn er påkrævet");
 				return false;
 			}
 			if (!service.usernameIsUnique(username)) {
-				lError.setText("brugernavn er allerede brugt");
+				lError.setText("Brugernavnet er allerede brugt");
 				return false;
 			}
 			
 			return true;
 		}
 		
+		public void updatePermission(User user, Permission permission) {
+			// TODO hvis du er brugeren kan du ikke fjerne admin
+			
+			service.updateUserPermission(user, permission);
+		}
 		public void updateName(User user, String name) {
 			if (!validateName(name))
 				return;
 			
 			service.updateUserName(user, name);
 		}
-		
 		public void updateUsername(User user, String username) {
 			if (!validateUsername(username))
 				return;
@@ -91,7 +104,7 @@ public class Users extends GridPane {
 		
 		public void deleteUser(User user) {
 			if (service.getActiveUser().equals(user)) {
-				lError.setText("du kan ikke slette den bruger du er logget ind som");
+				lError.setText("Du kan ikke slette den bruger du er logget ind som");
 				return;
 			}
 			
@@ -99,25 +112,35 @@ public class Users extends GridPane {
 			service.deleteUser(user);
 		}
 		
+//		public void setPassword(User user) {
+//			
+//		}
+		
 		public void addUser() {
 			String name = tfName.getText();
 			String username = tfUsername.getText();
 			String password = tfPassword.getText();
+			Permission permission = cbPermission.getSelectionModel().getSelectedItem();
+			
+			if (permission == null) {
+				lError.setText("Du skal vælge en permission");
+				return;
+			}
 			
 			if (!validateName(name) || !validateUsername(username))
 				return;
 			
 			if (password.isEmpty()) {
-				lError.setText("kodeord er påkrævet");
+				lError.setText("Kodeord er påkrævet");
 				return;
 			}
 			
 			if (password.length() < 8) {
-				lError.setText("koden skal være mindst 8 karakterer langt");
+				lError.setText("Koden skal være mindst 8 karakterer langt");
 				return;
 			}
 			
-			User user = service.createUser(name, username, password);
+			User user = service.createUser(name, username, password, permission);
 			table.addItem(user);
 		}
 	}

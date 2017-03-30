@@ -15,7 +15,7 @@ public class OrderTest {
 	User user;
 
 	public OrderTest() {
-		user = new User("test", "test", "test");
+		user = new User("test", "test", "test", Permission.NORMAL);
 		pl = new Pricelist("Pricelist");
 		product100kr4clip = new Product("100kr, 4clip", 4, "test", null);
 		pl.addProduct(product100kr4clip, 100);
