@@ -15,13 +15,15 @@ public class User extends Person {
     private byte[] salt = new byte[16];
     private Permission permission;
 
-    public User(String username, String password) {
+    public User(String name, String username, String password) {
+    	super(name);
+    	
         this.username = username;
 
-        // Set salt
-        new Random().nextBytes(salt);
-        passwordHash = this.getHash(password);
+        setPassword(password);
     }
+    
+    
 
     public byte[] getHash(String password){
         try{
@@ -43,5 +45,18 @@ public class User extends Person {
     
     public String getUsername() {
     	return username;
+    }
+    public void setUsername(String username) {
+    	this.username = username;
+    }
+    
+    public void setPassword(String password) {
+        new Random().nextBytes(salt);
+        passwordHash = this.getHash(password);
+    }
+    
+    @Override
+    public String toString() {
+    	return name + " - " + username;
     }
 }
