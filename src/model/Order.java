@@ -3,9 +3,10 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+public class Order implements Payable{
     private List<ProductOrder> products = new ArrayList<>();
     private List<RentalProductOrder> productsRental = new ArrayList<>();
+    private List<Payment> payments = new ArrayList<>();
     private User user;
     private Pricelist pricelist;
     private Discount discount;
@@ -32,4 +33,8 @@ public class Order {
     }
 
 
+    @Override
+    public void pay(Payment payment) {
+        payments.add(payment);
+    }
 }

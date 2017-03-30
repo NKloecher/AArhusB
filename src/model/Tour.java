@@ -1,8 +1,11 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Tour {
+public class Tour implements Payable{
+    private List<Payment> payments = new ArrayList<>();
     private int persons;
     private LocalDateTime date;
     private double price;
@@ -15,5 +18,10 @@ public class Tour {
         this.price = price;
         this.duration = duration;
         this.user = user;
+    }
+
+    @Override
+    public void pay(Payment payment) {
+		payments.add(payment);
     }
 }
