@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+public class Order implements Payable{
     private List<ProductOrder> products = new ArrayList<>();
     private List<RentalProductOrder> productsRental = new ArrayList<>();
     private List<Payment> payments = new ArrayList<>();
@@ -37,4 +37,8 @@ public class Order {
     }
 
 
+    @Override
+    public void pay(Payment payment) {
+        payments.add(payment);
+    }
 }

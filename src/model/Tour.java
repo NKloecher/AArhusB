@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tour {
+public class Tour implements Payable{
     private List<Payment> payments = new ArrayList<>();
     private int persons;
     private LocalDateTime date;
@@ -22,5 +22,10 @@ public class Tour {
 
     public void addPayment(Payment payment){
         payments.add(payment);
+    }
+
+    @Override
+    public void pay(double amount, PaymentType paymentType) {
+
     }
 }

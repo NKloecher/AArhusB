@@ -11,6 +11,7 @@ public class Storage {
 	private final List<User> users = new ArrayList<>();
 	private final List<Product> products = new ArrayList<>();
 	private final List<Pricelist> pricelists = new ArrayList<>();
+	private final List<Payment> payments = new ArrayList<>();
 
 	private Storage() {}
 	

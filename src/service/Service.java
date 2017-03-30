@@ -65,6 +65,12 @@ public class Service {
     	return pricelist;
 	}
 
+	public Payment createPayment(Payable payable, double amount, PaymentType paymentType){
+		Payment payment = new Payment(paymentType, amount);
+		payable.pay(payment);
+		return payment;
+	}
+
 	public void addProductToPricelist(Product product, Pricelist pricelist, double price){
 		pricelist.addProduct(product, price);
 	}
