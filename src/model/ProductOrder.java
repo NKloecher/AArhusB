@@ -3,7 +3,6 @@ package model;
 public class ProductOrder {
     private Discount discount = null;
     private int amount = 1;
-    private PaymentType paymentType;
     private Product product;
     private Pricelist pricelist;
 
