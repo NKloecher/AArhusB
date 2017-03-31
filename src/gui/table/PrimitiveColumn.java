@@ -22,7 +22,10 @@ public class PrimitiveColumn<A,B> extends Column<A> {
 			TextField tf = new TextField();
 			
 			tf.setText(getter.get(owner).toString());
-			tf.setOnInputMethodTextChanged(e -> setter.set(owner, tf.getText()));
+			tf.setOnKeyTyped(e -> {
+				System.out.println(tf.getText());
+				setter.set(owner, tf.getText());
+			});
 			
 			return tf;
 		}
