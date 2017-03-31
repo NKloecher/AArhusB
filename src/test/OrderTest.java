@@ -139,4 +139,19 @@ public class OrderTest {
 		order.setDiscount("50%");
 		assertEquals(100, order.totalDeposit(), 0.1);
 	}
+
+	@Test
+	public void orderPaymentStatusNoItems() throws Exception{
+		Order order = new Order(user, pl);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.UNPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneItemUnpaid() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.UNPAID);
+	}
 }

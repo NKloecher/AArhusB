@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.DiscountParseException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,23 +30,26 @@ public class Order implements Payable{
         return rentalProductOrder;
     }
 
-    public void setDiscount(String str) throws Exception {
+    public void setDiscount(String str) throws DiscountParseException {
         if (discount == null) {
             discount = new Discount();
         }
         discount.setDiscount(str);
     }
 
+    private List<ProductOrder> getAllProducts(){
+        List<ProductOrder> allProducts = new ArrayList<>(products);
+        allProducts.addAll(productsRental);
+        return allProducts;
+    }
+
     /**
      * Doesn't include deposit
      * @return
      */
-    public double totalPrice() throws Exception{
-        List<ProductOrder> allProducts = new ArrayList<>(products);
-        allProducts.addAll(productsRental);
-
+    public double totalPrice() throws DiscountParseException {
         double sum = 0;
-        for (ProductOrder productOrder : allProducts){
+        for (ProductOrder productOrder : getAllProducts()){
             sum += productOrder.price();
         }
 
@@ -62,8 +67,28 @@ public class Order implements Payable{
         return sum;
     }
 
+    public double totalPayment(){
+        double sum = 0;
+        for (Payment payment : payments){
+            sum += payment.getAmount();
+        }
+        return sum;
+    }
+
     @Override
     public void pay(Payment payment) {
         payments.add(payment);
+    }
+
+    @Override
+    public PaymentStatus paymentStatus() throws DiscountParseException {
+        if (getAllProducts().size() == 0){
+            return PaymentStatus.UNPAID;
+        }
+
+        if (totalPrice() > totalPayment()) {
+            return PaymentStatus.UNPAID;
+        }
+        return null;
     }
 }
