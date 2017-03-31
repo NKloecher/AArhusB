@@ -6,15 +6,15 @@ public class ProductOrder {
     private Discount discount = null;
     private int amount = 1;
     private Product product;
-    private Pricelist pricelist;
+    private double price;
 
     public ProductOrder(Product product, Pricelist pricelist) {
         this.product = product;
-        this.pricelist = pricelist;
+        this.price = pricelist.getPrice(product);
     }
 
     public double individualPrice() throws DiscountParseException {
-        double total = pricelist.getPrice(product);
+        double total = price;
         if (discount != null) {
             total = discount.getPrice(total);
         }

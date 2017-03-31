@@ -17,11 +17,16 @@ public class MainMenu extends GridPane {
 		Button rentals = getBigButton("Udlejninger");
 		add(rentals, 0, 2);
 		
-		Button products = getBigButton("Produkter");
-		add(products, 0, 3);
-		
+		Button tours = getBigButton("Rundvisninger");
+        add(tours, 0, 3);
+
+        Button products = getBigButton("Produkter");
+        products.setOnAction(e -> controller.select(new Products()));
+        add(products, 0, 4);
+        
 		Button pricelists = getBigButton("Prislister");
 		add(pricelists, 0, 4);
+		pricelists.setOnAction(e -> controller.select(new Pricelists()));
 		
 		Button users = getBigButton("Brugere");
 		users.setOnAction(e -> controller.select(new Users()));

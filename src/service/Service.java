@@ -6,151 +6,189 @@ import model.*;
 import storage.Storage;
 
 public class Service {
-	private final static Service instance = new Service();
-	private User activeUser;
-	private Storage storage = Storage.getInstance();
-	
-	private Service() {}
-	
-	/*
-	 * sets serivce.user if username and password is correct
-	 * if username or password is not correct it throws an error
-	 */
-	public void login(String username, String password) throws AuthenticationException {
-		for (User u : storage.getUsers()) {
-    		if (u.getUsername().equals(username)) {
-    			if (u.checkPassword(password)) {
-    				activeUser = u;
-    				return;
-    			}
-    		}
-    	}
-    	
-    	throw new AuthenticationException("wrong username or password");
+
+    private final static Service instance = new Service();
+    private User activeUser;
+    private Storage storage = Storage.getInstance();
+    private Pricelist selectedPricelist;
+
+    private Service() {
     }
 
-    public void logout(){
-		assert activeUser != null;
-		activeUser = null;
-	}
-	
+    public void updateProductName(Product product, String name) {
+        product.setName(name);
+    }
+
+    public void updateProductClips(Product product, Integer clips) {
+        product.setClips(clips);
+    }
+
+    public void updateProductCategory(Product product, String category) {
+        product.setCategory(category);
+    }
+
+    /*
+     * sets serivce.user if username and password is correct
+     * if username or password is not correct it throws an error
+     */
+    public void login(String username, String password) throws AuthenticationException {
+        for (User u : storage.getUsers()) {
+            if (u.getUsername().equals(username)) {
+                if (u.checkPassword(password)) {
+                    activeUser = u;
+                    return;
+                }
+            }
+        }
+
+        throw new AuthenticationException("wrong username or password");
+    }
+
+    public void logout() {
+        assert activeUser != null;
+        activeUser = null;
+    }
+
+    public void setSelectedPricelist(Pricelist pricelist) {
+        selectedPricelist = pricelist;
+    }
+
+    public Pricelist getSelectedPricelist() {
+        return selectedPricelist;
+    }
+
+//    public void setPricelistPrice(Pricelist pricelist, Product product, double price) {
+//        pricelist.setPrice(product, price);
+//    }
+
     /*
      * is null if no user is logged in
      */
-	public User getActiveUser() {
-		return activeUser;
-	}
-	
-	public User createUser(String name, String username, String password, Permission permission) {
-		User u = new User(name, username, password, permission);
-		
-		storage.addUser(u);
-		
-		return u;
-	}
-	
-	public void deleteUser(User user) {
-		storage.deleteUser(user);
-	}
-	public void updateUserName(User user, String name) {
-		user.setName(name);
-	}
-	public void updateUserUsername(User user, String username) {
-		user.setUsername(username);
-	}
-	public void updateUserPermission(User user, Permission permission) {
-		user.setPermission(permission);
-	}
-	
-	public boolean usernameIsUnique(String username) {
-		for (User u : storage.getUsers()) {
-			if (u.getUsername().equals(username)) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	public Product createProduct(String name, Integer clips, String category, String image) {
-		Product product = new Product(name, clips, category, image);
-		storage.addProduct(product);
-		return product;
-	}
+    public User getActiveUser() {
+        return activeUser;
+    }
 
-	public DepositProduct createDepositProduct(String name, Integer clips, String category, String image, double deposit){
-    	DepositProduct depositProduct = new DepositProduct(name, clips, category, image, deposit);
-    	storage.addProduct(depositProduct);
-    	return depositProduct;
-	}
+    public User createUser(String name, String username, String password, Permission permission) {
+        User u = new User(name, username, password, permission);
 
-	public Pricelist createPricelist(String name){
-    	Pricelist pricelist = new Pricelist(name);
-    	storage.addPricelist(pricelist);
-    	return pricelist;
-	}
+        storage.addUser(u);
 
-	public Payment createPayment(Payable payable, double amount, PaymentType paymentType){
-		Payment payment = new Payment(paymentType, amount);
-		payable.pay(payment);
-		storage.addPayment(payment);
-		return payment;
-	}
+        return u;
+    }
 
-	public void addProductToPricelist(Product product, Pricelist pricelist, double price){
-		pricelist.addProduct(product, price);
-	}
+    public void deleteUser(User user) {
+        storage.deleteUser(user);
+    }
 
-	public Order createOrder(User user, Pricelist pricelist){
-		Order order = new Order(user, pricelist);
-		storage.addOrder(order);
-		return order;
-	}
+    public void updateUserName(User user, String name) {
+        user.setName(name);
+    }
 
-	public ProductOrder createProductOrder(Order order, Product product){
-		return order.createProductOrder(product);
-	}
+    public void updateUserUsername(User user, String username) {
+        user.setUsername(username);
+    }
 
-	public RentalProductOrder createRentalProductOrder(Order order, DepositProduct product){
-		return order.createRentalProductOrder(product);
-	}
+    public void updateUserPermission(User user, Permission permission) {
+        user.setPermission(permission);
+    }
 
-	public void initStorage() {
-		createUser("John", "test", "test", Permission.ADMIN);
+    public boolean usernameIsUnique(String username, User user) {
+        for (User u : storage.getUsers()) {
+            if (!u.equals(user) && u.getUsername().equals(username)) {
+                return false;
+            }
+        }
 
-		Pricelist pl1 = createPricelist("Fredagsbar");
-		Pricelist pl2 = createPricelist("Butik");
+        return true;
+    }
 
-		Product productKlippekort = createProduct("Klippekort, 4 klip", 4, "andet", null);
-		addProductToPricelist(productKlippekort, pl1, 100);
-		addProductToPricelist(productKlippekort, pl2, 100);
+    public Product createProduct(String name, Integer clips, String category, String image) {
+        Product product = new Product(name, clips, category, image);
+        storage.addProduct(product);
+        return product;
+    }
 
-		Product productFlaskeKlosterbryg = createProduct("Klosterbryg", 2, "flaske", null);
-		addProductToPricelist(productFlaskeKlosterbryg, pl1, 50);
-		addProductToPricelist(productFlaskeKlosterbryg, pl2, 36);
-		Product productFlaskeSweetGeorgiaBrown = createProduct("Sweet Georgia Brown", 2, "flaske", null);
-		addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl1, 50);
-		addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl2, 36);
-		Product productFlaskeExtraPilsner = createProduct("Extra Pilsner", 2, "flaske", null);
-		addProductToPricelist(productFlaskeExtraPilsner, pl1, 50);
-		addProductToPricelist(productFlaskeExtraPilsner, pl2, 36);
+    public DepositProduct createDepositProduct(String name, Integer clips, String category,
+        String image, double deposit) {
+        DepositProduct depositProduct = new DepositProduct(name, clips, category, image, deposit);
+        storage.addProduct(depositProduct);
+        return depositProduct;
+    }
 
-		Product productFadolKlosterbryg = createProduct("Klosterbryg", 2, "fadøl", null);
-		addProductToPricelist(productFadolKlosterbryg, pl1, 30);
-		Product productFadolSweetGeorgiaBrown = createProduct("Sweet Georgia Brown", 2, "fadøl", null);
-		addProductToPricelist(productFadolSweetGeorgiaBrown, pl1, 30);
-		Product productFadolExtraPilsner = createProduct("Extra Pilsner", 2, "fadøl", null);
-		addProductToPricelist(productFadolExtraPilsner, pl1, 30);
+    public Pricelist createPricelist(String name) {
+        Pricelist pricelist = new Pricelist(name);
+        storage.addPricelist(pricelist);
+        return pricelist;
+    }
 
-		DepositProduct depositProductKlosterbryg = createDepositProduct("Klosterbryg, 20 liter", null, "fustage", null, 200);
-		addProductToPricelist(depositProductKlosterbryg, pl2, 775);
-		DepositProduct depositProductJazzClassic = createDepositProduct("Jazz Classic, 25 liter", null, "fustage", null, 200);
-		addProductToPricelist(depositProductJazzClassic, pl2, 625);
-		DepositProduct depositProductExtraPilsner = createDepositProduct("Extra Pilsner, 25 liter", null, "fustage", null, 200);
-		addProductToPricelist(depositProductExtraPilsner, pl2, 575);
-	}
-	
-	public static Service getInstance() {
-		return instance;
-	}
+    public Payment createPayment(Payable payable, double amount, PaymentType paymentType) {
+        Payment payment = new Payment(paymentType, amount);
+        payable.pay(payment);
+        storage.addPayment(payment);
+        return payment;
+    }
+
+    public void addProductToPricelist(Product product, Pricelist pricelist, double price) {
+        pricelist.addProduct(product, price);
+    }
+
+    public Order createOrder(User user, Pricelist pricelist) {
+        Order order = new Order(user, pricelist);
+        storage.addOrder(order);
+        return order;
+    }
+
+    public ProductOrder createProductOrder(Order order, Product product) {
+        return order.createProductOrder(product);
+    }
+
+    public RentalProductOrder createRentalProductOrder(Order order, DepositProduct product) {
+        return order.createRentalProductOrder(product);
+    }
+
+    public void initStorage() {
+        createUser("John", "test", "test", Permission.ADMIN);
+
+        Pricelist pl1 = createPricelist("Fredagsbar");
+        setSelectedPricelist(pl1);
+        Pricelist pl2 = createPricelist("Butik");
+
+        Product productKlippekort = createProduct("Klippekort, 4 klip", 4, "andet", null);
+        addProductToPricelist(productKlippekort, pl1, 100);
+        addProductToPricelist(productKlippekort, pl2, 100);
+
+        Product productFlaskeKlosterbryg = createProduct("Klosterbryg", 2, "flaske", null);
+        addProductToPricelist(productFlaskeKlosterbryg, pl1, 50);
+        addProductToPricelist(productFlaskeKlosterbryg, pl2, 36);
+        Product productFlaskeSweetGeorgiaBrown =
+            createProduct("Sweet Georgia Brown", 2, "flaske", null);
+        addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl1, 50);
+        addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl2, 36);
+        Product productFlaskeExtraPilsner = createProduct("Extra Pilsner", 2, "flaske", null);
+        addProductToPricelist(productFlaskeExtraPilsner, pl1, 50);
+        addProductToPricelist(productFlaskeExtraPilsner, pl2, 36);
+
+        Product productFadolKlosterbryg = createProduct("Klosterbryg", 2, "fadøl", null);
+        addProductToPricelist(productFadolKlosterbryg, pl1, 30);
+        Product productFadolSweetGeorgiaBrown =
+            createProduct("Sweet Georgia Brown", 2, "fadøl", null);
+        addProductToPricelist(productFadolSweetGeorgiaBrown, pl1, 30);
+        Product productFadolExtraPilsner = createProduct("Extra Pilsner", 2, "fadøl", null);
+        addProductToPricelist(productFadolExtraPilsner, pl1, 30);
+
+        DepositProduct depositProductKlosterbryg =
+            createDepositProduct("Klosterbryg, 20 liter", null, "fustage", null, 200);
+        addProductToPricelist(depositProductKlosterbryg, pl2, 775);
+        DepositProduct depositProductJazzClassic =
+            createDepositProduct("Jazz Classic, 25 liter", null, "fustage", null, 200);
+        addProductToPricelist(depositProductJazzClassic, pl2, 625);
+        DepositProduct depositProductExtraPilsner =
+            createDepositProduct("Extra Pilsner, 25 liter", null, "fustage", null, 200);
+        addProductToPricelist(depositProductExtraPilsner, pl2, 575);
+    }
+
+    public static Service getInstance() {
+        return instance;
+    }
+
 }

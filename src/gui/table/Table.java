@@ -31,11 +31,21 @@ public class Table<A> extends GridPane {
 	}
 	
 	private void showHeader() {
+		ObservableList<Node> children = getChildren();
+		
+		if (children.size() != 0) {
+			for (int i = columns.size() - 2; i >= 0; i--) {
+				children.remove(i);
+			}
+		}
+		
 		for (int i = 0; i < columns.size(); i++) {
 			Column<A> column = columns.get(i);
-			Label l = new Label(column.getName());
+			Label l = new Label();				
 			
-			l.setStyle("-fx-font-weight: bold");
+			if (!(column instanceof ButtonColumn<?>)) {
+				l.setText(column.getName());
+			}
 			
 			add(l, i, 0);
 		}
@@ -53,7 +63,9 @@ public class Table<A> extends GridPane {
 			
 			for (int j = 0; j < items.size(); j++) {
 				A item = items.get(j);
-				add(column.getNode(item), i, j+1);
+				Node n = column.getNode(item);
+				
+				add(n, i, j+1);
 			}
 		}
 	}
