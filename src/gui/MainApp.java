@@ -1,5 +1,8 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.management.relation.RelationServiceNotRegisteredException;
 
 import javafx.application.Application;
@@ -16,13 +19,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import model.Pricelist;
 import service.Service;
+import storage.Storage;
 
 public class MainApp extends Application {
 	private final Service service = Service.getInstance();
+	private final Storage storage = Storage.getInstance();
     private final Controller controller = new Controller();
     private final BorderPane pane = new BorderPane();
-
+    private final ComboBox<String> cbPricelist = new ComboBox<>();
+    
     public static void main(String[] args) {
         Application.launch(args);
     }
@@ -34,7 +41,6 @@ public class MainApp extends Application {
     	Scene scene = new Scene(pane);
         
     	stage.setFullScreen(true);
-    	
         stage.setScene(scene);
         stage.show();
     	
@@ -60,10 +66,21 @@ public class MainApp extends Application {
     	lUser.setStyle("-fx-text-fill: white;");
     	hbMenu.getChildren().add(lUser);
     	
+    	List<String> pricelists = new ArrayList<>();
+    	
+    	for (Pricelist pl : storage.getPricelists()) {
+    		pricelists.add(pl.getName());
+    	}
+    	
+    	cbPricelist.getItems().setAll(pricelists);
+    	cbPricelist.setOnAction(e -> controller.selectPricelist());
+    	cbPricelist.getSelectionModel().select(0);
+    	
+    	hbMenu.getChildren().add(cbPricelist);
+    	
     	Region r = new Region();
     	HBox.setHgrow(r, Priority.ALWAYS);
     	hbMenu.getChildren().add(r);
-    			
     	
     	Button logout = new Button("Log ud");
     	logout.setTranslateX(hbMenu.getWidth());
@@ -86,6 +103,16 @@ public class MainApp extends Application {
     }
     
     private class Controller {
+		public void selectPricelist() {
+			String pricelistName = cbPricelist.getSelectionModel().getSelectedItem();
+			
+			for (Pricelist pl : storage.getPricelists()) {
+				if (pl.getName().equals(pricelistName)) {
+					service.setSelectedPricelist(pl);
+				}
+			}
+		}
+    	
     	public void setScreen(GridPane pane) {
     		pane.setPadding(new Insets(20));
     		pane.setHgap(10);
