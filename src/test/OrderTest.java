@@ -139,5 +139,4 @@ public class OrderTest {
 		order.setDiscount("50%");
 		assertEquals(100, order.totalDeposit(), 0.1);
 	}
-
 }
