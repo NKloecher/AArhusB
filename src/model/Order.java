@@ -35,16 +35,19 @@ public class Order implements Payable{
         discount.setDiscount(str);
     }
 
+    private List<ProductOrder> getAllProducts(){
+        List<ProductOrder> allProducts = new ArrayList<>(products);
+        allProducts.addAll(productsRental);
+        return allProducts;
+    }
+
     /**
      * Doesn't include deposit
      * @return
      */
     public double totalPrice() throws Exception{
-        List<ProductOrder> allProducts = new ArrayList<>(products);
-        allProducts.addAll(productsRental);
-
         double sum = 0;
-        for (ProductOrder productOrder : allProducts){
+        for (ProductOrder productOrder : getAllProducts()){
             sum += productOrder.price();
         }
 
@@ -62,8 +65,28 @@ public class Order implements Payable{
         return sum;
     }
 
+    public double totalPayment(){
+        double sum = 0;
+        for (Payment payment : payments){
+            sum += payment.getAmount();
+        }
+        return sum;
+    }
+
     @Override
     public void pay(Payment payment) {
         payments.add(payment);
+    }
+
+    @Override
+    public PaymentStatus paymentStatus() throws Exception{
+        if (getAllProducts().size() == 0){
+            return PaymentStatus.UNPAID;
+        }
+
+        if (totalPrice() > totalPayment()) {
+            return PaymentStatus.UNPAID;
+        }
+        return null;
     }
 }

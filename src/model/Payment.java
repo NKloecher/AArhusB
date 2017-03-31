@@ -12,4 +12,8 @@ public class Payment {
         this.amount = amount;
         this.date = LocalDateTime.now();
     }
+
+    public double getAmount() {
+        return amount;
+    }
 }

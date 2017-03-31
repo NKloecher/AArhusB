@@ -1,5 +1,7 @@
 package model;
 
 public interface Payable {
-	public void pay(Payment payment);
+	void pay(Payment payment);
+
+	PaymentStatus paymentStatus() throws Exception;
 }

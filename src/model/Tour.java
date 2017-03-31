@@ -24,4 +24,9 @@ public class Tour implements Payable{
     public void pay(Payment payment) {
 		payments.add(payment);
     }
+
+	@Override
+	public PaymentStatus paymentStatus() throws Exception{
+		return null;
+	}
 }
