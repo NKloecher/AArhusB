@@ -3,6 +3,7 @@ package gui;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.GridPane;
 import model.Product;
 import service.Service;
@@ -18,17 +19,19 @@ public class Products extends GridPane {
     public Products() {
 
         ScrollPane sp = new ScrollPane();
+        sp.setHbarPolicy(ScrollBarPolicy.NEVER);
+        sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
         sp.setContent(table);
 
-        table.addColumn(new PrimitiveColumn<Product, String>("Navn", x -> x.getName(),
+        table.addColumn(new PrimitiveColumn<Product>("Navn", x -> x.getName(),
             (x, y) -> controller.updateName(x, y)));
         table.addColumn(
-            new PrimitiveColumn<Product, String>("Kategori", x -> x.getCategory(),
+            new PrimitiveColumn<Product>("Kategori", x -> x.getCategory(),
                 (x, y) -> controller.updateCategori(x, y)));
-        table.setItems(storage.getProduct());
-        table.addColumn(new PrimitiveColumn<Product, Integer>("Klips", x -> x.getClips(),
+        table.addColumn(new PrimitiveColumn<Product>("Klips", x -> x.getClips(),
             (x, y) -> controller.updateClips(x, y)));
 
+        table.setItems(storage.getProduct());
         add(sp, 0, 0);
 
     }
@@ -38,14 +41,18 @@ public class Products extends GridPane {
             service.updateProductName(product, name);
         }
 
-        public Object updateClips(Product x, String y) {
-            // TODO Auto-generated method stub
-            return null;
+        public void updateClips(Product product, String clips) {
+            if (clips.isEmpty()) {
+                service.updateProductClips(product, null);
+            }
+            else {
+                service.updateProductClips(product, Integer.parseInt(clips));
+            }
+
         }
 
-        public Object updateCategori(Product x, String y) {
-            // TODO Auto-generated method stub
-            return null;
+        public void updateCategori(Product x, String category) {
+            service.updateProductCategory(x, category);
         }
 
     }
