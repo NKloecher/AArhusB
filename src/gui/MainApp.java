@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -113,11 +114,8 @@ public class MainApp extends Application {
 			}
 		}
     	
-    	public void setScreen(GridPane pane) {
+    	public void setScreen(Pane pane) {
     		pane.setPadding(new Insets(20));
-    		pane.setHgap(10);
-    		pane.setVgap(10);
-    		pane.setAlignment(Pos.TOP_CENTER);
     		
     		ObservableList<Node> children = MainApp.this.pane.getChildren();
     		

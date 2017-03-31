@@ -5,6 +5,7 @@ import gui.table.Column;
 import gui.table.ListColumn;
 import gui.table.Table;
 import gui.table.PrimitiveColumn;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -31,8 +32,12 @@ public class Users extends GridPane {
 	private final ComboBox<Permission> cbPermission = new ComboBox<>();
 	
 	public Users() {
-		table.addColumn(new PrimitiveColumn<User, String>("Navn", u -> u.getName(), controller::updateName));
-		table.addColumn(new PrimitiveColumn<User, String>("Brugernavn", u -> u.getUsername(), controller::updateUsername));
+		setHgap(10);
+		setVgap(10);
+		setAlignment(Pos.TOP_CENTER);
+		
+		table.addColumn(new PrimitiveColumn<User>("Navn", u -> u.getName(), controller::updateName));
+		table.addColumn(new PrimitiveColumn<User>("Brugernavn", u -> u.getUsername(), controller::updateUsername));
 		table.addColumn(new ListColumn<User, Permission>("Permission", u -> u.getPermission(), (u,v) -> controller.updatePermission(u, v), Permission.values()));
 		table.addColumn(new ButtonColumn<User>("Sæt kode", controller::setPassword));
 		table.addColumn(new ButtonColumn<User>("Delete", controller::deleteUser));

@@ -2,6 +2,7 @@ package gui;
 
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import model.Product;
@@ -16,6 +17,9 @@ public class Products extends GridPane {
     private final Table<Product> table = new Table<>();
 
     public Products() {
+    	setHgap(10);
+		setVgap(10);
+		setAlignment(Pos.TOP_CENTER);
 
         ScrollPane sp = new ScrollPane();
         sp.setContent(table);
