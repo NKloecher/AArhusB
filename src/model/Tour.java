@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.DiscountParseException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class Tour implements Payable{
     }
 
 	@Override
-	public PaymentStatus paymentStatus() throws Exception{
+	public PaymentStatus paymentStatus() throws DiscountParseException {
 		return null;
 	}
 }

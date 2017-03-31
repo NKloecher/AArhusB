@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.DiscountParseException;
+
 public class ProductOrder {
     private Discount discount = null;
     private int amount = 1;
@@ -11,7 +13,7 @@ public class ProductOrder {
         this.pricelist = pricelist;
     }
 
-    public double price() throws Exception {
+    public double price() throws DiscountParseException {
         double total = amount * pricelist.getPrice(product);
         if (discount != null) {
             total = discount.getPrice(total);
@@ -19,7 +21,7 @@ public class ProductOrder {
         return total;
     }
 
-    public void setDiscount(String str) throws Exception {
+    public void setDiscount(String str) throws DiscountParseException {
         if (discount == null) {
             discount = new Discount();
         }

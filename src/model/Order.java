@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.DiscountParseException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class Order implements Payable{
         return rentalProductOrder;
     }
 
-    public void setDiscount(String str) throws Exception {
+    public void setDiscount(String str) throws DiscountParseException {
         if (discount == null) {
             discount = new Discount();
         }
@@ -45,7 +47,7 @@ public class Order implements Payable{
      * Doesn't include deposit
      * @return
      */
-    public double totalPrice() throws Exception{
+    public double totalPrice() throws DiscountParseException {
         double sum = 0;
         for (ProductOrder productOrder : getAllProducts()){
             sum += productOrder.price();
@@ -79,7 +81,7 @@ public class Order implements Payable{
     }
 
     @Override
-    public PaymentStatus paymentStatus() throws Exception{
+    public PaymentStatus paymentStatus() throws DiscountParseException {
         if (getAllProducts().size() == 0){
             return PaymentStatus.UNPAID;
         }
