@@ -1,5 +1,8 @@
 package service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.security.sasl.AuthenticationException;
 
 import model.*;
@@ -26,8 +29,23 @@ public class Service {
     public void updateProductCategory(Product product, String category) {
         product.setCategory(category);
     }
+    
+    /**
+     * if category is "All" every category will be selected
+     */
+    public List<Product> getMatchingProducts(String query, String category, List<Product> products) {
+    	List<Product> selected = new ArrayList<>();
+    	
+    	for (Product p : products) {
+    		if (p.getName().toLowerCase().contains(query.toLowerCase()) && (category == "All" || p.getCategory().equals(category))) {
+    			selected.add(p);
+    		}
+    	}
+    	
+    	return selected;
+    }
 
-    /*
+    /**
      * sets serivce.user if username and password is correct
      * if username or password is not correct it throws an error
      */
@@ -57,17 +75,21 @@ public class Service {
         return selectedPricelist;
     }
 
-//    public void setPricelistPrice(Pricelist pricelist, Product product, double price) {
-//        pricelist.setPrice(product, price);
-//    }
+    public void setPricelistPrice(Pricelist pricelist, Product product, double price) {
+        pricelist.setPrice(product, price);
+    }
 
-    /*
+    /**
      * is null if no user is logged in
      */
     public User getActiveUser() {
         return activeUser;
     }
 
+    public void addCategory(String category) {
+    	storage.addCategory(category);
+    }
+    
     public User createUser(String name, String username, String password, Permission permission) {
         User u = new User(name, username, password, permission);
 
@@ -152,6 +174,11 @@ public class Service {
         Pricelist pl1 = createPricelist("Fredagsbar");
         setSelectedPricelist(pl1);
         Pricelist pl2 = createPricelist("Butik");
+        
+        addCategory("flaske");
+        addCategory("fadøl");
+        addCategory("fustage");
+        addCategory("andet");
 
         Product productKlippekort = createProduct("Klippekort, 4 klip", 4, "andet", null);
         addProductToPricelist(productKlippekort, pl1, 100);

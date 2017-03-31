@@ -12,12 +12,19 @@ public class Pricelist {
         this.name = name;
     }
 
+    public String getName() {
+    	return name;
+    }
+    
     public void addProduct(Product product, double price) {
         products.put(product, price);
     }
 
     public double getPrice(Product key) {
         return products.get(key);
+    }
+    public void setPrice(Product product, double price) {
+    	products.put(product, price);
     }
 
     public ArrayList<Product> getProducts() {
