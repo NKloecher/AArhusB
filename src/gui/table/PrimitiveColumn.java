@@ -18,7 +18,10 @@ public class PrimitiveColumn<A> extends Column<A> {
 	public Node getNode(A owner) {
 		TextField tf = new TextField();
 		
-		tf.setText(getter.get(owner).toString());
+		Object o = getter.get(owner);
+		
+		if (o != null) tf.setText(o.toString());
+		
 		tf.setOnKeyTyped(e -> {
 			setter.set(owner, tf.getText());
 		});
