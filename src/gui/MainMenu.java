@@ -22,6 +22,7 @@ public class MainMenu extends GridPane {
 		
 		Button pricelists = getBigButton("Prislister");
 		add(pricelists, 0, 4);
+		pricelists.setOnAction(e -> controller.select(new Pricelists()));
 		
 		Button users = getBigButton("Brugere");
 		users.setOnAction(e -> controller.select(new Users()));
