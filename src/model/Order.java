@@ -1,6 +1,7 @@
 package model;
 
 import exceptions.DiscountParseException;
+import exceptions.InvaildPaymentAmount;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,10 @@ public class Order implements Payable{
         return allProducts;
     }
 
+    public boolean hasRentalOrder(){
+        return productsRental.size() > 0;
+    }
+
     /**
      * Doesn't include deposit
      * @return
@@ -57,6 +62,26 @@ public class Order implements Payable{
             sum = discount.getPrice(sum);
         }
         return sum;
+    }
+
+    public boolean allRentalsReturned(){
+        for (RentalProductOrder order : productsRental){
+            if (order.getAmount() != order.getReturned() + order.getUnused() + order.getNotReturned()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public double totalDepositAfterReturn() throws DiscountParseException{
+        double sum = 0;
+        for (RentalProductOrder productOrder : productsRental){
+            double deposit = ((DepositProduct) productOrder.getProduct()).getDeposit();
+            sum += productOrder.getNotReturned() * deposit;
+            sum -= productOrder.getUnused() * productOrder.individualPrice();
+        }
+        return sum;
+
     }
 
     public double totalDeposit(){
@@ -81,14 +106,37 @@ public class Order implements Payable{
     }
 
     @Override
-    public PaymentStatus paymentStatus() throws DiscountParseException {
+    public PaymentStatus paymentStatus() throws DiscountParseException, InvaildPaymentAmount {
         if (getAllProducts().size() == 0){
             return PaymentStatus.UNPAID;
         }
-
-        if (totalPrice() > totalPayment()) {
-            return PaymentStatus.UNPAID;
+        if (hasRentalOrder()){
+            if (allRentalsReturned()){
+                double returnPrice = totalDepositAfterReturn();
+                if (totalPayment() == totalPrice() + returnPrice){
+                    return PaymentStatus.ORDERPAID;
+                } else if (totalPayment() < totalPrice() + returnPrice){
+                    return PaymentStatus.UNPAID;
+                } else if (totalPayment() > totalPrice() + returnPrice){
+                    return PaymentStatus.DEPOSITNOTPAIDBACK;
+                }
+            } else if (totalPayment() < totalDeposit()) {
+                return PaymentStatus.UNPAID;
+            } else if (totalPayment() >= totalDeposit() && totalPayment() <= totalPrice() + totalDeposit()) {
+                return PaymentStatus.DEPOSITPAID;
+            } else {
+                throw new InvaildPaymentAmount("The order was overpaid");
+            }
+        } else {
+            if (totalPayment() < totalPrice()) {
+                return PaymentStatus.UNPAID;
+            } else if (totalPayment() == totalPrice()) {
+                return PaymentStatus.ORDERPAID;
+            } else {
+                throw new InvaildPaymentAmount("The order was overpaid");
+            }
         }
+
         return null;
     }
 }

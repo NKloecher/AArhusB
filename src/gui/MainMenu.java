@@ -26,10 +26,10 @@ public class MainMenu extends GridPane {
         add(tours, 0, 3);
 
         Button products = getBigButton("Produkter");
-//        products.setOnAction(e -> controller.select(new Products()));
+        products.setOnAction(e -> controller.select(new Products()));
         add(products, 0, 4);
-        
-		Button pricelists = getBigButton("Prislister");
+
+        Button pricelists = getBigButton("Prislister");
 		add(pricelists, 0, 5);
 		pricelists.setOnAction(e -> controller.select(new Pricelists()));
 		

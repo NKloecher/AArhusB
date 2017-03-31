@@ -22,9 +22,9 @@ public class PrimitiveColumn<A> extends Column<A> {
 		
 		if (o != null) tf.setText(o.toString());
 		
-		tf.setOnKeyTyped(e -> {
-			setter.set(owner, tf.getText());
-		});
+		tf.setOnKeyReleased(e -> {
+            setter.set(owner, tf.getText());
+        });
 		
 		return tf;
 	}
