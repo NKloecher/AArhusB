@@ -22,6 +22,9 @@ public class Storage {
 	public void addUser(User u) {
 		users.add(u);
 	}
+	public void deleteUser(User u) {
+		users.remove(u);
+	}
 	
 	public static Storage getInstance() {
 		return instance;

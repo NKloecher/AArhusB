@@ -1,7 +1,5 @@
 package service;
 
-import java.util.List;
-
 import javax.security.sasl.AuthenticationException;
 
 import model.*;
@@ -19,10 +17,11 @@ public class Service {
 	 * if username or password is not correct it throws an error
 	 */
 	public void login(String username, String password) throws AuthenticationException {
-    	for (User u : storage.getUsers()) {
+		for (User u : storage.getUsers()) {
     		if (u.getUsername().equals(username)) {
     			if (u.checkPassword(password)) {
     				activeUser = u;
+    				return;
     			}
     		}
     	}
@@ -35,18 +34,44 @@ public class Service {
 		activeUser = null;
 	}
 	
+    /*
+     * is null if no user is logged in
+     */
 	public User getActiveUser() {
 		return activeUser;
 	}
 	
-	public User createUser(String username, String password) {
-		User u = new User(username, password);
+	public User createUser(String name, String username, String password, Permission permission) {
+		User u = new User(name, username, password, permission);
 		
 		storage.addUser(u);
 		
 		return u;
 	}
-
+	
+	public void deleteUser(User user) {
+		storage.deleteUser(user);
+	}
+	public void updateUserName(User user, String name) {
+		user.setName(name);
+	}
+	public void updateUserUsername(User user, String username) {
+		user.setUsername(username);
+	}
+	public void updateUserPermission(User user, Permission permission) {
+		user.setPermission(permission);
+	}
+	
+	public boolean usernameIsUnique(String username) {
+		for (User u : storage.getUsers()) {
+			if (u.getUsername().equals(username)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public Product createProduct(String name, Integer clips, String category, String image) {
 		Product product = new Product(name, clips, category, image);
 		storage.addProduct(product);
@@ -91,7 +116,7 @@ public class Service {
 	}
 
 	public void initStorage() {
-		createUser("test", "test");
+		createUser("John", "test", "test", Permission.ADMIN);
 
 		Pricelist pl1 = createPricelist("Fredagsbar");
 		Pricelist pl2 = createPricelist("Butik");
@@ -123,7 +148,6 @@ public class Service {
 		addProductToPricelist(depositProductJazzClassic, pl2, 625);
 		DepositProduct depositProductExtraPilsner = createDepositProduct("Extra Pilsner, 25 liter", null, "fustage", null, 200);
 		addProductToPricelist(depositProductExtraPilsner, pl2, 575);
-
 	}
 	
 	public static Service getInstance() {

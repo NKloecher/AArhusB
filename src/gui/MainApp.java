@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -28,14 +29,20 @@ public class MainApp extends Application {
 
     private void initContent() {
     	Login l = new Login();
+		MainMenu m = new MainMenu();
     	
-    	l.setOnLogin(() -> System.out.println("User logged in"));
+		m.setOnSelect(controller::setScreen);
+    	l.setOnLogin(() -> controller.setScreen(m));
     	
 		controller.setScreen((GridPane)l);
     }
     
     private class Controller {
     	public void setScreen(GridPane pane) {
+    		pane.setPadding(new Insets(20));
+    		pane.setHgap(10);
+    		pane.setVgap(10);
+    		
     		Scene scene = new Scene(pane);
             
             stage.setScene(scene);

@@ -15,14 +15,15 @@ public class User extends Person {
     private byte[] salt = new byte[16];
     private Permission permission;
 
-    public User(String username, String password) {
+    public User(String name, String username, String password, Permission permission) {
+    	super(name);
+    	
         this.username = username;
-
-        // Set salt
-        new Random().nextBytes(salt);
-        passwordHash = this.getHash(password);
+        this.permission = permission;
+        
+        setPassword(password);
     }
-
+    
     public byte[] getHash(String password){
         try{
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
@@ -41,7 +42,27 @@ public class User extends Person {
         return Arrays.equals(passwordHash, this.getHash(password));
     }
     
+    public Permission getPermission() {
+    	return permission;
+    }
+    public void setPermission(Permission permission) {
+    	this.permission = permission;
+    }
+    
     public String getUsername() {
     	return username;
+    }
+    public void setUsername(String username) {
+    	this.username = username;
+    }
+    
+    public void setPassword(String password) {
+        new Random().nextBytes(salt);
+        passwordHash = this.getHash(password);
+    }
+    
+    @Override
+    public String toString() {
+    	return name + " - " + username;
     }
 }
