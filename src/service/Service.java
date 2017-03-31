@@ -8,6 +8,7 @@ import storage.Storage;
 public class Service {
 	private final static Service instance = new Service();
 	private User activeUser;
+	private Pricelist selectedPricelist;
 	private Storage storage = Storage.getInstance();
 	
 	private Service() {}
@@ -34,6 +35,16 @@ public class Service {
 		activeUser = null;
 	}
 	
+    public void setSelectedPricelist(Pricelist pricelist) {
+    	selectedPricelist = pricelist;
+    }
+    public Pricelist getSelectedPricelist() {
+    	return selectedPricelist;
+    }
+    public void setPricelistPrice(Pricelist pricelist, Product product, double price) {
+    	pricelist.setPrice(product, price);
+    }
+    
     /*
      * is null if no user is logged in
      */
@@ -62,9 +73,9 @@ public class Service {
 		user.setPermission(permission);
 	}
 	
-	public boolean usernameIsUnique(String username) {
+	public boolean usernameIsUnique(String username, User user) {
 		for (User u : storage.getUsers()) {
-			if (u.getUsername().equals(username)) {
+			if (!u.equals(user) && u.getUsername().equals(username)) {
 				return false;
 			}
 		}
@@ -117,8 +128,9 @@ public class Service {
 
 	public void initStorage() {
 		createUser("John", "test", "test", Permission.ADMIN);
-
+		
 		Pricelist pl1 = createPricelist("Fredagsbar");
+		setSelectedPricelist(pl1);
 		Pricelist pl2 = createPricelist("Butik");
 
 		Product productKlippekort = createProduct("Klippekort, 4 klip", 4, "andet", null);
