@@ -1,13 +1,16 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.table.ListColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
-import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import model.Product;
 import service.Service;
@@ -22,19 +25,23 @@ public class Products extends GridPane {
     private final TextField txfCategory = new TextField();
 
     public Products() {
+        setHgap(10);
+        setVgap(10);
+        setAlignment(Pos.TOP_CENTER);
 
         ScrollPane sp = new ScrollPane();
         sp.setHbarPolicy(ScrollBarPolicy.NEVER);
         sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
         sp.setContent(table);
 
+        List<String> categories = new ArrayList<>();
+        categories.addAll(storage.getCategories());
+
         table.addColumn(new PrimitiveColumn<Product>("Navn", x -> x.getName(),
             (x, y) -> controller.updateName(x, y)));
-//        table.addColumn(
-//            new PrimitiveColumn<Product>("Kategori", x -> x.getCategory(),
-//                (x, y) -> controller.updateCategori(x, y)));
         table.addColumn(new ListColumn<Product, String>("Kategori", x -> x.getCategory(),
-            (x, y) -> controller.updateCategory(x, y), storage.getCategories()));
+            (x, y) -> controller.updateCategory(x, y),
+            categories.toArray(new String[categories.size()])));
         table.addColumn(new PrimitiveColumn<Product>("Klips", x -> x.getClips(),
             (x, y) -> controller.updateClips(x, y)));
 

@@ -15,6 +15,7 @@ public class Storage {
     private final List<Order> orders = new ArrayList<>();
     private final List<Tour> tours = new ArrayList<>();
     private final List<Customer> customers = new ArrayList<>();
+    private final List<String> categories = new ArrayList<>();
 
     private Storage() {
     }
@@ -23,6 +24,13 @@ public class Storage {
         return instance;
     }
 
+    public void addCategory(String category) {
+    	categories.add(category);
+    }
+    public List<String> getCategories() {
+    	return new ArrayList<>(categories);
+    }
+    
     public List<Tour> getTours() {
         return new ArrayList<>(tours);
     }

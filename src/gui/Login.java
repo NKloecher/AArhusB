@@ -4,6 +4,7 @@ import javax.security.sasl.AuthenticationException;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -19,6 +20,10 @@ public class Login extends GridPane {
 	private Handler loginHandler;
 	
 	public Login() {
+		setHgap(10);
+		setVgap(10);
+		setAlignment(Pos.CENTER);
+		
 		// automatisk login mens vi udvikler
 		tfUsername.setText("test");
 		tfPassword.setText("test");

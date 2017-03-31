@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -69,7 +70,7 @@ public class MainApp extends Application {
         List<String> pricelists = new ArrayList<>();
 
         for (Pricelist pl : storage.getPricelists()) {
-//    		pricelists.add(pl.getName());
+    		pricelists.add(pl.getName());
         }
 
         cbPricelist.getItems().setAll(pricelists);
@@ -103,32 +104,29 @@ public class MainApp extends Application {
     }
 
     private class Controller {
-        public void selectPricelist() {
-            String pricelistName = cbPricelist.getSelectionModel().getSelectedItem();
-
-            for (Pricelist pl : storage.getPricelists()) {
-//                if (pl.getName().equals(pricelistName)) {
-//                    service.setSelectedPricelist(pl);
-//                }
-            }
-        }
-
-        public void setScreen(GridPane pane) {
-            pane.setPadding(new Insets(20));
-            pane.setHgap(10);
-            pane.setVgap(10);
-            pane.setAlignment(Pos.TOP_CENTER);
-
-            ObservableList<Node> children = MainApp.this.pane.getChildren();
-
-            for (int i = 0; i < children.size(); i++) {
-                if (children.get(i) instanceof GridPane) {
-                    children.remove(i);
-                }
-            }
-
-            MainApp.this.pane.setCenter(pane);
-        }
+		public void selectPricelist() {
+			String pricelistName = cbPricelist.getSelectionModel().getSelectedItem();
+			
+			for (Pricelist pl : storage.getPricelists()) {
+				if (pl.getName().equals(pricelistName)) {
+					service.setSelectedPricelist(pl);
+				}
+			}
+		}
+    	
+    	public void setScreen(Pane pane) {
+    		pane.setPadding(new Insets(20));
+    		
+    		ObservableList<Node> children = MainApp.this.pane.getChildren();
+    		
+    		for (int i = 0; i < children.size(); i++) {
+    			if (children.get(i) instanceof GridPane) {
+    				children.remove(i);
+    			}
+    		}
+    		
+    		MainApp.this.pane.setCenter(pane);
+    	}
     }
 
 }

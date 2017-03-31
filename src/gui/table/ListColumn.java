@@ -23,7 +23,7 @@ public class ListColumn<A, B> extends PrimitiveColumn<A> {
 		cb.getItems().setAll(values);
 		System.out.println(value);
 		cb.setValue(value);
-		cb.setOnAction(e -> setter.set(owner, cb.getSelectionModel().getSelectedItem()));
+		cb.valueProperty().addListener(e -> setter.set(owner, cb.getSelectionModel().getSelectedItem()));
 
 		return cb;
 	}
