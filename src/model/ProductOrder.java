@@ -13,12 +13,16 @@ public class ProductOrder {
         this.pricelist = pricelist;
     }
 
-    public double price() throws DiscountParseException {
-        double total = amount * pricelist.getPrice(product);
+    public double individualPrice() throws DiscountParseException {
+        double total = pricelist.getPrice(product);
         if (discount != null) {
             total = discount.getPrice(total);
         }
         return total;
+    }
+
+    public double price() throws DiscountParseException {
+        return amount * individualPrice();
     }
 
     public void setDiscount(String str) throws DiscountParseException {

@@ -141,17 +141,110 @@ public class OrderTest {
 	}
 
 	@Test
-	public void orderPaymentStatusNoItems() throws Exception{
+	public void orderPaymentStatusNoProduct() throws Exception{
 		Order order = new Order(user, pl);
 		PaymentStatus paymentStatus = order.paymentStatus();
 		assertEquals(paymentStatus, PaymentStatus.UNPAID);
 	}
 
 	@Test
-	public void orderPaymentStatusOneItemUnpaid() throws Exception{
+	public void orderPaymentStatusOneProductUnpaid() throws Exception{
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		PaymentStatus paymentStatus = order.paymentStatus();
 		assertEquals(paymentStatus, PaymentStatus.UNPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneProductOneCorrectPayment() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.pay(new Payment(PaymentType.CASH, 100));
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusTwoProductOneCorrectPayment() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.createProductOrder(product50kr0clip);
+		order.pay(new Payment(PaymentType.CASH, 150));
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneProductTwoCorrectPayment() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.pay(new Payment(PaymentType.CASH, 50));
+		order.pay(new Payment(PaymentType.MOBILE_PAY, 50));
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneDepositProductUnpaid() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(depositProduct500kr100rent);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.UNPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneDepositProductDepositPayed() throws Exception{
+		Order order = new Order(user, pl);
+		order.createRentalProductOrder(depositProduct500kr100rent);
+		order.pay(new Payment(PaymentType.CASH, 100));
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.DEPOSITPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneDepositProductReturnedOrderPayed() throws Exception{
+		Order order = new Order(user, pl);
+		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		productOrder.setReturned(1);
+		order.pay(new Payment(PaymentType.CASH, 500));
+
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneDepositProductNotReturnedOrderPayed() throws Exception{
+		Order order = new Order(user, pl);
+		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		productOrder.setNotReturned(1);
+		order.pay(new Payment(PaymentType.CASH, 600));
+
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusOneDepositProductUnopenedOrderPayed() throws Exception{
+		Order order = new Order(user, pl);
+		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		productOrder.setUnused(1);
+		order.pay(new Payment(PaymentType.CASH, 0));
+
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentStatusThreeDepositProductOneOfEachPayed() throws Exception{
+		Order order = new Order(user, pl);
+		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		productOrder.setAmount(3);
+		productOrder.setUnused(1);
+		productOrder.setReturned(1);
+		productOrder.setNotReturned(1);
+		order.pay(new Payment(PaymentType.CASH, 1100));
+
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
 	}
 }
