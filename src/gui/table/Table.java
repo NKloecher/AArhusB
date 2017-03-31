@@ -63,7 +63,9 @@ public class Table<A> extends GridPane {
 			
 			for (int j = 0; j < items.size(); j++) {
 				A item = items.get(j);
-				add(column.getNode(item), i, j+1);
+				Node n = column.getNode(item);
+				
+				add(n, i, j+1);
 			}
 		}
 	}

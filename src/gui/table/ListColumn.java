@@ -3,13 +3,15 @@ package gui.table;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 
-public class ListColumn<A, B> extends PrimitiveColumn<A, B> {
+public class ListColumn<A, B> extends PrimitiveColumn<A> {
 	private B[] values;
 	private ListSetter<A, B> setter;
+	private Getter<A, B> getter;
 
 	public ListColumn(String name, Getter<A, B> getter, ListSetter<A, B> setter, B[] values) {
-		super(name, getter, null);
+		super(name, null, null);
 		this.setter = setter;
+		this.getter = getter;
 		this.values = values;
 	}
 
