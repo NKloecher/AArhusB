@@ -12,4 +12,28 @@ public class Product {
         this.category = category;
         this.image = image;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getClips() {
+        return clips;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setClips(Integer clips) {
+        this.clips = clips;
+    }
 }
