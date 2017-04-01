@@ -1,5 +1,5 @@
 package gui;
 
-public interface Handler {
-	public void exec();
+public interface Handler<T> {
+	public void exec(T v);
 }
