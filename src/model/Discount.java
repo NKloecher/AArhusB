@@ -2,8 +2,6 @@ package model;
 
 import exceptions.DiscountParseException;
 
-import java.text.ParseException;
-
 public class Discount {
     private String discount;
 

@@ -1,7 +1,6 @@
 package gui;
 
 import gui.table.ButtonColumn;
-import gui.table.Column;
 import gui.table.ListColumn;
 import gui.table.Table;
 import gui.table.PrimitiveColumn;
