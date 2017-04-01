@@ -36,4 +36,8 @@ public class Product {
     public void setClips(Integer clips) {
         this.clips = clips;
     }
+    
+    public String getImage() {
+        return image;
+    }
 }

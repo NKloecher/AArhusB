@@ -3,11 +3,8 @@ package gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.relation.RelationServiceNotRegisteredException;
-
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -51,7 +48,6 @@ public class MainApp extends Application {
     }
 
     private void initContent() {
-        Login l = new Login();
         MainMenu m = new MainMenu();
 
         HBox hbMenu = new HBox();
@@ -77,6 +73,13 @@ public class MainApp extends Application {
         cbPricelist.setOnAction(e -> controller.selectPricelist());
         cbPricelist.getSelectionModel().select(0);
 
+        Login l = new Login(x -> {
+            controller.setScreen(m);
+
+            lUser.setText(service.getActiveUser().getUsername());
+            this.pane.setTop(hbMenu);
+        });
+        
         hbMenu.getChildren().add(cbPricelist);
 
         Region r = new Region();
@@ -93,13 +96,7 @@ public class MainApp extends Application {
         hbMenu.getChildren().add(logout);
 
         m.setOnSelect(controller::setScreen);
-        l.setOnLogin(() -> {
-            controller.setScreen(m);
-
-            lUser.setText(service.getActiveUser().getUsername());
-            this.pane.setTop(hbMenu);
-        });
-
+        
         controller.setScreen((GridPane) l);
     }
 
