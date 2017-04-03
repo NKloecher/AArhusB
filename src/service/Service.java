@@ -124,6 +124,10 @@ public class Service {
         return true;
     }
 
+    public void updateProductOrderAmount(ProductOrder productOrder, int amount) {
+    	productOrder.setAmount(amount);
+    }
+    
     public Product createProduct(String name, Integer clips, String category, String image) {
         Product product = new Product(name, clips, category, image);
         storage.addProduct(product);
@@ -154,18 +158,15 @@ public class Service {
         pricelist.addProduct(product, price);
     }
 
+    	
+    public Order createOrder() {
+    	return createOrder(activeUser, selectedPricelist);
+    }
+    
     public Order createOrder(User user, Pricelist pricelist) {
         Order order = new Order(user, pricelist);
         storage.addOrder(order);
         return order;
-    }
-
-    public ProductOrder createProductOrder(Order order, Product product) {
-        return order.createProductOrder(product);
-    }
-
-    public RentalProductOrder createRentalProductOrder(Order order, DepositProduct product) {
-        return order.createRentalProductOrder(product);
     }
 
     public void initStorage() {
@@ -191,7 +192,7 @@ public class Service {
             createProduct("Sweet Georgia Brown", 2, "flaske", null);
         addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl1, 50);
         addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl2, 36);
-        Product productFlaskeExtraPilsner = createProduct("Extra Pilsner", 2, "flaske", null);
+        Product productFlaskeExtraPilsner = createProduct("Extra Pilsner", 2, "flaske", "extra-pilsner.png");
         addProductToPricelist(productFlaskeExtraPilsner, pl1, 50);
         addProductToPricelist(productFlaskeExtraPilsner, pl2, 36);
 
