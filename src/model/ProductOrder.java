@@ -47,4 +47,8 @@ public class ProductOrder {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    public double getOriginalPrice() {
+        return price;
+    }
 }

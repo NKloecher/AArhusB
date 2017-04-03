@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.security.sasl.AuthenticationException;
 
+import exceptions.DiscountParseException;
 import model.*;
 import storage.Storage;
 
@@ -29,20 +30,22 @@ public class Service {
     public void updateProductCategory(Product product, String category) {
         product.setCategory(category);
     }
-    
+
     /**
      * if category is "All" every category will be selected
      */
-    public List<Product> getMatchingProducts(String query, String category, List<Product> products) {
-    	List<Product> selected = new ArrayList<>();
-    	
-    	for (Product p : products) {
-    		if (p.getName().toLowerCase().contains(query.toLowerCase()) && (category == "All" || p.getCategory().equals(category))) {
-    			selected.add(p);
-    		}
-    	}
-    	
-    	return selected;
+    public List<Product> getMatchingProducts(String query, String category,
+        List<Product> products) {
+        List<Product> selected = new ArrayList<>();
+
+        for (Product p : products) {
+            if (p.getName().toLowerCase().contains(query.toLowerCase())
+                && (category == "All" || p.getCategory().equals(category))) {
+                selected.add(p);
+            }
+        }
+
+        return selected;
     }
 
     /**
@@ -87,9 +90,9 @@ public class Service {
     }
 
     public void addCategory(String category) {
-    	storage.addCategory(category);
+        storage.addCategory(category);
     }
-    
+
     public User createUser(String name, String username, String password, Permission permission) {
         User u = new User(name, username, password, permission);
 
@@ -169,13 +172,27 @@ public class Service {
         return order;
     }
 
-    public void initStorage() {
-        createUser("John", "test", "test", Permission.ADMIN);
+    public ProductOrder createProductOrder(Order order, Product product) {
+        return order.createProductOrder(product);
+    }
+
+    public RentalProductOrder createRentalProductOrder(Order order, DepositProduct product) {
+        return order.createRentalProductOrder(product);
+    }
+
+    public Customer createCustomer(String name, String address, String phone, String email) {
+        Customer c = new Customer(name, address, phone, email);
+        storage.addCustomer(c);
+        return c;
+    }
+
+    public void initStorage() throws DiscountParseException {
+        User test = createUser("John", "test", "test", Permission.ADMIN);
 
         Pricelist pl1 = createPricelist("Fredagsbar");
         setSelectedPricelist(pl1);
         Pricelist pl2 = createPricelist("Butik");
-        
+
         addCategory("flaske");
         addCategory("fadøl");
         addCategory("fustage");
@@ -213,6 +230,25 @@ public class Service {
         DepositProduct depositProductExtraPilsner =
             createDepositProduct("Extra Pilsner, 25 liter", null, "fustage", null, 200);
         addProductToPricelist(depositProductExtraPilsner, pl2, 575);
+
+        // Customers
+        createCustomer("Hans Hansen", "Vestervej 38", "35698457", "somewhere@somethere.dk");
+        createCustomer("Hans Jensen", "Østervej 38", "35864557", "somehere@somethere.dk");
+        createCustomer("Østerli Nielsen", "Søndenvej 38", "8979854", "where@somethere.dk");
+        createCustomer("Person 2.0", "Nordenvej 38", "39875557", "here@somethere.dk");
+        createCustomer("Niels Sommer", "Åkæret 1", "35634687", "there@somethere.dk");
+        Customer uno =
+            createCustomer("Jens-Peter Petersen", "Nyborg", "878788457", "somehow@somethere.dk");
+
+        //Order
+        Order order1 = createOrder(test, pl1);
+        ProductOrder test2 = createProductOrder(order1, productFadolKlosterbryg);
+        createProductOrder(order1, productFadolSweetGeorgiaBrown);
+        ProductOrder test3 = createProductOrder(order1, productFlaskeExtraPilsner);
+        test3.setDiscount("-10");
+        test2.setAmount(5);
+        order1.setCustomer(uno);
+
     }
 
     public static Service getInstance() {
