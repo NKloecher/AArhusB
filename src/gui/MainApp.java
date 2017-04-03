@@ -46,8 +46,6 @@ public class MainApp extends Application {
         stage.setTitle("Aarhus Bryghus");
 
         initContent();
-        
-        controller.setScreen(new Sale());
     }
 
     private void initContent() {
@@ -77,15 +75,13 @@ public class MainApp extends Application {
         cbPricelist.getSelectionModel().select(0);
 
         hbMenu.getChildren().add(cbPricelist);
-        
+
         Login l = new Login(x -> {
-        	controller.setScreen(m);
-        	
-        	lUser.setText(service.getActiveUser().getUsername());
-        	this.pane.setTop(hbMenu);
+            controller.setScreen(m);
+
+            lUser.setText(service.getActiveUser().getUsername());
+            this.pane.setTop(hbMenu);
         });
-        
-        hbMenu.getChildren().add(cbPricelist);
 
         Region r = new Region();
         HBox.setHgrow(r, Priority.ALWAYS);
