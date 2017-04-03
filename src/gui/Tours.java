@@ -6,16 +6,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 import model.Tour;
 import service.Service;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Set;
 
 public class Tours extends GridPane {
 	private final Service service = Service.getInstance();
@@ -32,19 +31,37 @@ public class Tours extends GridPane {
 	private final TextField tfNewEnd = new TextField();
 	private final TextField tfNewPrice = new TextField();
 	private final Button btnNew = new Button("Opret");
+	private Set<LocalDate> tourDates;
 
 	public Tours() {
 		setHgap(10);
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 		table.setMinWidth(800);
-		add(datePickerSkin.getPopupContent(), 0, 0);
 
 		table.addColumn(new PrimitiveColumn<>("Antal Personer", Tour::getPersons, controller::updatePersons));
 		table.addColumn(new DateColumn<>("Dato", controller::getDate, controller::updateDate));
 		table.addColumn(new PrimitiveColumn<>("Start", controller::getTimeStart, controller::updateStartTime));
 		table.addColumn(new PrimitiveColumn<>("Slut", controller::getTimeEnd, controller::updateEndTime));
 		table.addColumn(new PrimitiveColumn<>("Pris", Tour::getPrice, controller::updatePrice));
+
+
+		tourDates = service.getTourDates();
+
+
+		Callback<DatePicker, DateCell> dayCellFactory = (DatePicker datePicker) -> new DateCell() {
+			@Override
+			public void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (tourDates.contains(item)){
+					setStyle("-fx-underline: true; -fx-font-weight: bolder");
+				}
+			}
+		};
+
+		dp.setDayCellFactory(dayCellFactory);
+		add(datePickerSkin.getPopupContent(), 0, 0);
+
 
 		controller.openDate(LocalDate.now());
 
@@ -78,6 +95,8 @@ public class Tours extends GridPane {
 			List<Tour> tours = service.getTours(date);
 			table.setVisible(tours.size() != 0);
 			table.setItems(tours);
+			tourDates = service.getTourDates();
+			dpNewDate.setValue(dp.getValue());
 		}
 
 		public LocalDate getDate(Tour tour){

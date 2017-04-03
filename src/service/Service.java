@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.sasl.AuthenticationException;
 
@@ -149,6 +151,14 @@ public class Service {
             }
         }
         return tours;
+    }
+
+    public Set<LocalDate> getTourDates(){
+        Set<LocalDate> dates = new HashSet<>();
+        for (Tour tour : getTours()){
+            dates.add(tour.getDate().toLocalDate());
+        }
+        return dates;
     }
 
     public void updateTourPersons(Tour tour, int persons){
