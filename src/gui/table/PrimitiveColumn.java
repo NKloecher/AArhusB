@@ -26,6 +26,8 @@ public class PrimitiveColumn<A> extends Column<A> {
             setter.set(owner, tf.getText());
         });
 		
+		nodes.add(tf);
+		
 		return tf;
 	}
 }
