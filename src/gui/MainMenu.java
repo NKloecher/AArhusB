@@ -15,6 +15,7 @@ public class MainMenu extends GridPane {
 		setAlignment(Pos.TOP_CENTER);
 
 		Button sale = getBigButton("Lav salg");
+		sale.setOnAction(e -> controller.select(new Sale()));
 		add(sale, 0, 0);
 
 		Button statistics = getBigButton("Statestik");

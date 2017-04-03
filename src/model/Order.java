@@ -19,6 +19,38 @@ public class Order implements Payable{
         this.pricelist = pricelist;
     }
 
+	public ProductOrder addProduct(Product product) {
+		if (product instanceof DepositProduct) {
+			return createRentalProductOrder((DepositProduct)product);
+		}
+		else {
+			return createProductOrder(product);
+		}
+	}
+	public ProductOrder removeProduct(Product product) {
+		for (int i = 0; i < products.size(); i++) {
+			ProductOrder po = products.get(i);
+			
+			if (po.getProduct().equals(product)) {
+				products.remove(po);
+				
+				return po;
+			}
+		}
+			
+		for (int i = 0; i < productsRental.size(); i++) {
+			ProductOrder po = productsRental.get(i);
+			
+			if (po.getProduct().equals(product)) {
+				productsRental.remove(i);
+				
+				return po;
+			}
+		}
+		
+		return null;
+	}
+    
     public ProductOrder createProductOrder(Product product) {
         ProductOrder productOrder = new ProductOrder(product, this.pricelist);
         products.add(productOrder);
@@ -38,7 +70,15 @@ public class Order implements Payable{
         discount.setDiscount(str);
     }
 
-    private List<ProductOrder> getAllProducts(){
+    public List<ProductOrder> getProductOrders() {
+    	return new ArrayList<>(products);
+    }
+    
+    public List<RentalProductOrder> getRentalProductOrders() {
+    	return new ArrayList<>(productsRental);
+    }
+    
+    public List<ProductOrder> getAllProducts(){
         List<ProductOrder> allProducts = new ArrayList<>(products);
         allProducts.addAll(productsRental);
         return allProducts;
