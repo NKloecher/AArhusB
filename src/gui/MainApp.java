@@ -38,13 +38,15 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(pane);
 
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
 
         stage.setTitle("Aarhus Bryghus");
 
         initContent();
+        
+        controller.setScreen(new Sale());
     }
 
     private void initContent() {
@@ -73,14 +75,14 @@ public class MainApp extends Application {
         cbPricelist.setOnAction(e -> controller.selectPricelist());
         cbPricelist.getSelectionModel().select(0);
 
-        Login l = new Login(x -> {
-            controller.setScreen(m);
-
-            lUser.setText(service.getActiveUser().getUsername());
-            this.pane.setTop(hbMenu);
-        });
-        
         hbMenu.getChildren().add(cbPricelist);
+        
+        Login l = new Login(x -> {
+        	controller.setScreen(m);
+        	
+        	lUser.setText(service.getActiveUser().getUsername());
+        	this.pane.setTop(hbMenu);
+        });
 
         Region r = new Region();
         HBox.setHgrow(r, Priority.ALWAYS);
@@ -96,6 +98,7 @@ public class MainApp extends Application {
         hbMenu.getChildren().add(logout);
 
         m.setOnSelect(controller::setScreen);
+        
         
         controller.setScreen((GridPane) l);
     }
