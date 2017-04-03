@@ -5,10 +5,10 @@ import javafx.scene.control.ComboBox;
 
 public class ListColumn<A, B> extends PrimitiveColumn<A> {
 	private B[] values;
-	private ListSetter<A, B> setter;
+	private Setter<A, B> setter;
 	private Getter<A, B> getter;
 
-	public ListColumn(String name, Getter<A, B> getter, ListSetter<A, B> setter, B[] values) {
+	public ListColumn(String name, Getter<A, B> getter, Setter<A, B> setter, B[] values) {
 		super(name, null, null);
 		this.setter = setter;
 		this.getter = getter;

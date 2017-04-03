@@ -5,9 +5,9 @@ import javafx.scene.control.TextField;
 
 public class PrimitiveColumn<A> extends Column<A> {
 	protected final Getter<A,Object> getter;
-	protected final Setter<A> setter;
+	protected final PrimitiveSetter<A> setter;
 	
-	public PrimitiveColumn(String name, Getter<A, Object> getter, Setter<A> setter) {
+	public PrimitiveColumn(String name, Getter<A, Object> getter, PrimitiveSetter<A> setter) {
 		super(name);
 		
 		this.getter = getter;
