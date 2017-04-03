@@ -126,8 +126,6 @@ public class MainApp extends Application {
     			}
     		}
 
-			System.out.println(pane.getClass());
-
     		if (pane instanceof MainMenu){
     			lockPricelist(false);
 			} else {
