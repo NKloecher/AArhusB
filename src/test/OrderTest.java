@@ -247,4 +247,14 @@ public class OrderTest {
 		PaymentStatus paymentStatus = order.paymentStatus();
 		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
 	}
+
+	@Test
+	public void orderPaymentStatusOneDepositProductDepositNotPayedBackPayed() throws Exception{
+		Order order = new Order(user, pl);
+		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		order.pay(new Payment(PaymentType.CASH, 600));
+		productOrder.setReturned(1);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.DEPOSITNOTPAIDBACK);
+	}
 }
