@@ -1,5 +1,9 @@
 package service;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,6 +128,42 @@ public class Service {
         return true;
     }
 
+    public Tour createTour(int persons, LocalDateTime date, double price, Duration duration){
+        Tour tour = new Tour(persons, date, price, duration, activeUser);
+        storage.addTour(tour);
+        return tour;
+    }
+
+    public List<Tour> getTours(){
+        return storage.getTours();
+    }
+
+    public List<Tour> getTours(LocalDate date){
+        List<Tour> tours = new ArrayList<>();
+        for (Tour tour : getTours()){
+            if (tour.getDate().toLocalDate().equals(date)){
+                tours.add(tour);
+            }
+        }
+        return tours;
+    }
+
+    public void updateTourPersons(Tour tour, int persons){
+        tour.setPersons(persons);
+    }
+
+    public void updateTourDate(Tour tour, LocalDateTime date){
+        tour.setDate(date);
+    }
+
+    public void updateTourPrice(Tour tour, double price){
+        tour.setPrice(price);
+    }
+
+    public void updateTourDuration(Tour tour, Duration duration){
+        tour.setDuration(duration);
+    }
+
     public Product createProduct(String name, Integer clips, String category, String image) {
         Product product = new Product(name, clips, category, image);
         storage.addProduct(product);
@@ -212,6 +252,8 @@ public class Service {
         DepositProduct depositProductExtraPilsner =
             createDepositProduct("Extra Pilsner, 25 liter", null, "fustage", null, 200);
         addProductToPricelist(depositProductExtraPilsner, pl2, 575);
+
+        createTour(5, LocalDateTime.now(), 1000, Duration.of(1, ChronoUnit.HOURS));
     }
 
     public static Service getInstance() {

@@ -24,6 +24,7 @@ public class MainMenu extends GridPane {
 		add(rentals, 0, 2);
 
 		Button tours = getBigButton("Rundvisninger");
+		tours.setOnAction(e -> controller.select(new Tours()));
 		add(tours, 0, 3);
 
 		Button products = getBigButton("Produkter");
