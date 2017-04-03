@@ -101,6 +101,10 @@ public class MainApp extends Application {
     }
 
     private class Controller {
+    	public void lockPricelist(boolean state){
+    		cbPricelist.setDisable(state);
+		}
+
 		public void selectPricelist() {
 			String pricelistName = cbPricelist.getSelectionModel().getSelectedItem();
 			
@@ -121,6 +125,14 @@ public class MainApp extends Application {
     				children.remove(i);
     			}
     		}
+
+			System.out.println(pane.getClass());
+
+    		if (pane instanceof MainMenu){
+    			lockPricelist(false);
+			} else {
+    			lockPricelist(true);
+			}
     		
     		MainApp.this.pane.setCenter(pane);
     	}
