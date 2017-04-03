@@ -54,7 +54,7 @@ public class Table<A> extends GridPane {
 	private void showItems() {
 		ObservableList<Node> children = getChildren();
 		
-		for (int i = children.size() - 1; i > columns.size(); i--) {
+		for (int i = children.size() - 1; i > columns.size() - 1; i--) {
 			children.remove(i);
 		}
 		
@@ -64,6 +64,8 @@ public class Table<A> extends GridPane {
 			for (int j = 0; j < items.size(); j++) {
 				A item = items.get(j);
 				Node n = column.getNode(item);
+				
+				n.setUserData(item);
 				
 				add(n, i, j+1);
 			}

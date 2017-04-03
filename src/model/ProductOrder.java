@@ -14,17 +14,22 @@ public class ProductOrder {
     }
 
     public double individualPrice() throws DiscountParseException {
-        double total = price;
-        if (discount != null) {
-            total = discount.getPrice(total);
-        }
-        return total;
+        return price() / amount;
     }
 
     public double price() throws DiscountParseException {
-        return amount * individualPrice();
+    	double p = price * amount;
+    	
+    	if (discount != null) p = discount.getPrice(p);
+    	
+        return p;
     }
 
+    public String getDiscount() {
+    	if (discount == null) return "";
+    	
+    	return discount.getValue();
+    }
     public void setDiscount(String str) throws DiscountParseException {
         if (discount == null) {
             discount = new Discount();
@@ -39,8 +44,11 @@ public class ProductOrder {
     public int getAmount() {
         return amount;
     }
-
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public double getOriginalPrice() {
+        return price;
     }
 }

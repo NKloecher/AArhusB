@@ -21,7 +21,6 @@ public class ListColumn<A, B> extends PrimitiveColumn<A> {
 		B value = getter.get(owner);
 
 		cb.getItems().setAll(values);
-		System.out.println(value);
 		cb.setValue(value);
 		cb.valueProperty().addListener(e -> setter.set(owner, cb.getSelectionModel().getSelectedItem()));
 

@@ -59,7 +59,7 @@ public class Storage {
         users.remove(u);
     }
 
-    public List<Product> getProduct() {
+    public List<Product> getProducts() {
         return new ArrayList<>(products);
     }
 

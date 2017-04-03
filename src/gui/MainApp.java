@@ -3,6 +3,7 @@ package gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptions.DiscountParseException;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -33,18 +34,20 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws DiscountParseException {
         Service.getInstance().initStorage();
 
         Scene scene = new Scene(pane);
 
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
 
         stage.setTitle("Aarhus Bryghus");
 
         initContent();
+        
+        controller.setScreen(new Sale());
     }
 
     private void initContent() {
@@ -66,18 +69,20 @@ public class MainApp extends Application {
         List<String> pricelists = new ArrayList<>();
 
         for (Pricelist pl : storage.getPricelists()) {
-    		pricelists.add(pl.getName());
+            pricelists.add(pl.getName());
         }
 
         cbPricelist.getItems().setAll(pricelists);
         cbPricelist.setOnAction(e -> controller.selectPricelist());
         cbPricelist.getSelectionModel().select(0);
 
+        hbMenu.getChildren().add(cbPricelist);
+        
         Login l = new Login(x -> {
-            controller.setScreen(m);
-
-            lUser.setText(service.getActiveUser().getUsername());
-            this.pane.setTop(hbMenu);
+        	controller.setScreen(m);
+        	
+        	lUser.setText(service.getActiveUser().getUsername());
+        	this.pane.setTop(hbMenu);
         });
         
         hbMenu.getChildren().add(cbPricelist);
@@ -96,44 +101,44 @@ public class MainApp extends Application {
         hbMenu.getChildren().add(logout);
 
         m.setOnSelect(controller::setScreen);
-        
         controller.setScreen((GridPane) l);
     }
 
     private class Controller {
-    	public void lockPricelist(boolean state){
-    		cbPricelist.setDisable(state);
-		}
+        public void lockPricelist(boolean state) {
+            cbPricelist.setDisable(state);
+        }
 
-		public void selectPricelist() {
-			String pricelistName = cbPricelist.getSelectionModel().getSelectedItem();
-			
-			for (Pricelist pl : storage.getPricelists()) {
-				if (pl.getName().equals(pricelistName)) {
-					service.setSelectedPricelist(pl);
-				}
-			}
-		}
-    	
-    	public void setScreen(Pane pane) {
-    		pane.setPadding(new Insets(20));
-    		
-    		ObservableList<Node> children = MainApp.this.pane.getChildren();
-    		
-    		for (int i = 0; i < children.size(); i++) {
-    			if (children.get(i) instanceof GridPane) {
-    				children.remove(i);
-    			}
-    		}
+        public void selectPricelist() {
+            String pricelistName = cbPricelist.getSelectionModel().getSelectedItem();
 
-    		if (pane instanceof MainMenu){
-    			lockPricelist(false);
-			} else {
-    			lockPricelist(true);
-			}
-    		
-    		MainApp.this.pane.setCenter(pane);
-    	}
+            for (Pricelist pl : storage.getPricelists()) {
+                if (pl.getName().equals(pricelistName)) {
+                    service.setSelectedPricelist(pl);
+                }
+            }
+        }
+
+        public void setScreen(Pane pane) {
+            pane.setPadding(new Insets(20));
+
+            ObservableList<Node> children = MainApp.this.pane.getChildren();
+
+            for (int i = 0; i < children.size(); i++) {
+                if (children.get(i) instanceof GridPane) {
+                    children.remove(i);
+                }
+            }
+
+            if (pane instanceof MainMenu) {
+                lockPricelist(false);
+            }
+            else {
+                lockPricelist(true);
+            }
+
+            MainApp.this.pane.setCenter(pane);
+        }
     }
 
 }
