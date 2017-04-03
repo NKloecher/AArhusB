@@ -45,7 +45,7 @@ public class Products extends GridPane {
         table.addColumn(new PrimitiveColumn<Product>("Klips", x -> x.getClips(),
             (x, y) -> controller.updateClips(x, y)));
 
-        table.setItems(storage.getProduct());
+        table.setItems(storage.getProducts());
         add(sp, 0, 0);
 
         add(txfCategory, 1, 1);
