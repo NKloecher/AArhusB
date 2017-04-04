@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tour implements Payable{
+public class Tour implements Payable {
     private List<Payment> payments = new ArrayList<>();
     private int persons;
     private LocalDateTime date;
@@ -63,5 +63,10 @@ public class Tour implements Payable{
 
 	public void setDuration(Duration duration) {
 		this.duration = duration;
+	}
+
+	@Override
+	public double totalPayment() {
+		return 0;
 	}
 }

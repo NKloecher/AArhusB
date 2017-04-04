@@ -4,18 +4,22 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 public class MainMenu extends GridPane {
     private Handler<Pane> selectHandler;
+    private final Stage owner;
     private final Controller controller = new Controller();
 
-    public MainMenu() {
+    public MainMenu(Stage owner) {
+    	this.owner = owner;
+    	
         setHgap(10);
         setVgap(10);
         setAlignment(Pos.TOP_CENTER);
 
 		Button sale = getBigButton("Lav salg");
-		sale.setOnAction(e -> controller.select(new Sale()));
+		sale.setOnAction(e -> controller.selectSale());
 		add(sale, 0, 0);
 
         Button statistics = getBigButton("Statestik");
@@ -61,7 +65,11 @@ public class MainMenu extends GridPane {
     }
 
     private class Controller {
-        private void select(GridPane pane) {
+    	public void selectSale() {
+    		controller.select(new Sale(owner, x -> selectSale()));
+    	}
+    	
+        public void select(GridPane pane) {
             if (selectHandler == null) {
                 return;
             }

@@ -28,6 +28,7 @@ public class MainApp extends Application {
     private final Controller controller = new Controller();
     private final BorderPane pane = new BorderPane();
     private final ComboBox<String> cbPricelist = new ComboBox<>();
+    private Stage owner;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -35,6 +36,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws DiscountParseException {
+    	this.owner = stage;
         Service.getInstance().initStorage();
 
         Scene scene = new Scene(pane);
@@ -49,7 +51,7 @@ public class MainApp extends Application {
     }
 
     private void initContent() {
-        MainMenu m = new MainMenu();
+        MainMenu m = new MainMenu(owner);
 
         HBox hbMenu = new HBox();
         hbMenu.setStyle("-fx-background-color: #666; -fx-padding: 20px;");
