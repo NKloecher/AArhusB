@@ -36,6 +36,20 @@ public class Service {
     public void updateProductCategory(Product product, String category) {
         product.setCategory(category);
     }
+
+    public List<Order> getRentals() {
+    	List<Order> rentals = new ArrayList<>();
+    	
+    	for (Order o : storage.getOrders()) {
+    		PaymentStatus s = o.paymentStatus();
+    		
+			if (s == PaymentStatus.DEPOSITPAID) {
+				rentals.add(o);
+			}
+    	}
+    	
+    	return rentals;
+    }
     
     /**
      * if category is "All" every category will be selected
@@ -310,7 +324,11 @@ public class Service {
         test3.setDiscount("-10");
         test2.setAmount(5);
         order1.setCustomer(uno);
-
+        
+        Order order2 = createOrder(test, pl2);
+        createRentalProductOrder(order2, depositProductKlosterbryg);
+        createPayment(order2, order2.totalPrice() + order2.totalDeposit(), PaymentType.CASH);
+        
     }
 
     public static Service getInstance() {

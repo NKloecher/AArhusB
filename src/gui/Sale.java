@@ -100,13 +100,7 @@ public class Sale extends GridPane {
 				
 				pd.showAndWait();
 				
-				PaymentStatus status = PaymentStatus.UNPAID;
-				try {
-					status = order.paymentStatus();
-				} catch (InvaildPaymentAmount e) {
-					// should never happen
-					e.printStackTrace();
-				}
+				PaymentStatus status = order.paymentStatus();
 				
 				boolean depositOrPriceIsPaid = status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
 				if (depositOrPriceIsPaid) {

@@ -26,6 +26,7 @@ public class MainMenu extends GridPane {
         add(statistics, 0, 1);
 
         Button rentals = getBigButton("Udlejninger");
+        rentals.setOnAction(e -> controller.selectRentals());
         add(rentals, 0, 2);
 
 		Button tours = getBigButton("Rundvisninger");
@@ -65,8 +66,12 @@ public class MainMenu extends GridPane {
     }
 
     private class Controller {
+    	public void selectRentals() {
+    		select(new Rentals(owner, x -> selectRentals()));
+    	}
+    	
     	public void selectSale() {
-    		controller.select(new Sale(owner, x -> selectSale()));
+    		select(new Sale(owner, x -> selectSale()));
     	}
     	
         public void select(GridPane pane) {

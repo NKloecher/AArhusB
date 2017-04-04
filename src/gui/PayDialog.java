@@ -64,7 +64,11 @@ public class PayDialog extends Stage {
 		hbButtons.getChildren().addAll(cash, card, mobilePay, clipCard);
 		
 		HBox hbPrice = new HBox();
-		hbPrice.getChildren().addAll(new Label("Total: " + String.format("%.2f kr.", total)), new Label("Pant: " + String.format("%.2f kr.", deposit)));
+		hbPrice.getChildren().add(new Label("Total: " + String.format("%.2f kr.", total)));
+		
+		if (deposit != null) {
+			hbPrice.getChildren().add(new Label("Pant: " + String.format("%.2f kr.", deposit)));
+		}
 		pane.add(hbPrice, 0, 0);
 		
 		
@@ -115,13 +119,7 @@ public class PayDialog extends Stage {
 			if (!endButtonIsAdded) {
 				endButtonIsAdded = true;
 				
-				PaymentStatus status = PaymentStatus.UNPAID;
-				try {
-					status = payable.paymentStatus();
-				} catch (Exception e) {
-					// should never happen
-					e.printStackTrace();
-				}
+				PaymentStatus status = payable.paymentStatus();
 				
 				if (status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID) {
 					Button end = new Button("Ok");
