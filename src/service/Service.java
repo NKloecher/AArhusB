@@ -211,15 +211,22 @@ public class Service {
         return payment;
     }
 
+    public void removeProductFromPricelist(Product product, Pricelist pricelist){
+        pricelist.removeProduct(product);
+    }
+
     public void addProductToPricelist(Product product, Pricelist pricelist, double price) {
         pricelist.addProduct(product, price);
     }
 
-    	
+    public List<Product> getProducts() {
+        return storage.getProducts();
+    }
+
     public Order createOrder() {
     	return createOrder(activeUser, selectedPricelist);
     }
-    
+
     public Order createOrder(User user, Pricelist pricelist) {
         Order order = new Order(user, pricelist);
         storage.addOrder(order);
@@ -309,5 +316,4 @@ public class Service {
     public static Service getInstance() {
         return instance;
     }
-
 }
