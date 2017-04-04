@@ -6,6 +6,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import service.Service;
@@ -14,7 +15,7 @@ public class Login extends GridPane {
 	private final Service service = Service.getInstance();
 	private final Controller controller = new Controller();
 	private final TextField tfUsername = new TextField();
-	private final TextField tfPassword = new TextField();
+	private final TextField tfPassword = new PasswordField();
 	private final Label lError = new Label();
 	private final Handler<?> loginHandler;
 

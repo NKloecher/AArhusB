@@ -1,9 +1,6 @@
 package gui;
 
-import gui.table.ButtonColumn;
-import gui.table.ListColumn;
-import gui.table.Table;
-import gui.table.PrimitiveColumn;
+import gui.table.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -38,7 +35,7 @@ public class Users extends GridPane {
 		table.addColumn(new PrimitiveColumn<User>("Navn", u -> u.getName(), controller::updateName));
 		table.addColumn(new PrimitiveColumn<User>("Brugernavn", u -> u.getUsername(), controller::updateUsername));
 		table.addColumn(new ListColumn<User, Permission>("Permission", u -> u.getPermission(), (u,v) -> controller.updatePermission(u, v), Permission.values()));
-		table.addColumn(new ButtonColumn<User>("Sæt kode", controller::setPassword));
+		table.addColumn(new PasswordColumn<User>("Sæt kode", controller::setPassword));
 		table.addColumn(new ButtonColumn<User>("Delete", controller::deleteUser));
 		table.setItems(storage.getUsers());
 		
@@ -127,8 +124,8 @@ public class Users extends GridPane {
 			service.deleteUser(user);
 		}
 		
-		public void setPassword(User user) {
-			
+		public void setPassword(User user, String password) {
+			service.updateUserPassword(user, password);
 		}
 		
 		public void addUser() {
