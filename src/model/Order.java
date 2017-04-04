@@ -128,12 +128,15 @@ public class Order implements Payable {
 
     }
 
-    public double totalDeposit() {
+    public Double totalDeposit() {
         double sum = 0;
         for (RentalProductOrder productOrder : productsRental) {
             sum += ((DepositProduct) productOrder.getProduct()).getDeposit()
                 * productOrder.getAmount();
         }
+        
+        if (sum == 0) return null;
+        
         return sum;
     }
 

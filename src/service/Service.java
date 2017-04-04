@@ -36,7 +36,7 @@ public class Service {
     public void updateProductCategory(Product product, String category) {
         product.setCategory(category);
     }
-
+    
     /**
      * if category is "All" every category will be selected
      */

@@ -3,6 +3,7 @@ package gui;
 import java.util.Locale;
 
 import exceptions.DiscountParseException;
+import exceptions.InvaildPaymentAmount;
 import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
@@ -10,15 +11,20 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.DepositProduct;
 import model.Order;
+import model.PaymentStatus;
 import model.ProductOrder;
 import service.Service;
+import storage.Storage;
 
 
 
 public class Sale extends GridPane {
+	private final Stage owner;
 	private final Service service = Service.getInstance();
+	private final Storage storage = Storage.getInstance();
 	private final Controller controller = new Controller();
 	private final Order order = service.createOrder();
 	private final Label lError = new Label(); 
@@ -33,8 +39,12 @@ public class Sale extends GridPane {
 	private final Label lTotal = new Label();
 	private final PrimitiveColumn<ProductOrder> amountColumn = new PrimitiveColumn<ProductOrder>("Antal", po -> po.getAmount(), controller::updateAmount);
 	private final PrimitiveColumn<ProductOrder> discountColumn = new PrimitiveColumn<ProductOrder>("Rabat", po -> po.getDiscount(), controller::updateDiscount);
+	private final Handler<?> orderPaidHanlder;
 	
-	public Sale() {
+	public Sale(Stage owner, Handler<?> orderPaidHanlder) {
+		this.owner = owner;
+		this.orderPaidHanlder = orderPaidHanlder;
+		
 		Table<ProductOrder> productTable = new Table<>();
 		productTable.addColumn(new LabelColumn<ProductOrder>("Navn", po -> po.getProduct().getName()));
 		productTable.addColumn(amountColumn);
@@ -75,10 +85,36 @@ public class Sale extends GridPane {
 		controller.updateTotal();
 		
 		Button pay = new Button("Betal");
+		pay.setOnAction(e -> controller.showPayDialog());
 		add(pay, 3, 1);
 	}
 	
 	class Controller {
+		public void showPayDialog() {
+			try {
+				PayDialog pd = new PayDialog(owner, order, order.totalPrice(), order.totalDeposit());
+				
+				pd.showAndWait();
+				
+				PaymentStatus status = PaymentStatus.UNPAID;
+				try {
+					status = order.paymentStatus();
+				} catch (InvaildPaymentAmount e) {
+					// should never happen
+					e.printStackTrace();
+				}
+				
+				boolean depositOrPriceIsPaid = status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
+				if (depositOrPriceIsPaid) {
+					storage.addOrder(order);
+					
+					orderPaidHanlder.exec(null);
+				}
+			} catch (DiscountParseException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		public void updateRow() {
 			updateTotal();
 			
