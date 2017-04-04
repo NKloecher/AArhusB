@@ -48,7 +48,7 @@ public class Tours extends GridPane {
 
 		tourDates = service.getTourDates();
 
-
+		// Styling for the datepicker widget so that days with active events are bold and underlined
 		Callback<DatePicker, DateCell> dayCellFactory = (DatePicker datePicker) -> new DateCell() {
 			@Override
 			public void updateItem(LocalDate item, boolean empty) {
@@ -95,7 +95,7 @@ public class Tours extends GridPane {
 			List<Tour> tours = service.getTours(date);
 			table.setVisible(tours.size() != 0);
 			table.setItems(tours);
-			tourDates = service.getTourDates();
+			tourDates = service.getTourDates(); // Reload the calendar widget style
 			dpNewDate.setValue(dp.getValue());
 		}
 
