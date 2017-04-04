@@ -34,9 +34,19 @@ public class Pricelists extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 
-		table.addColumn(new LabelColumn<PricelistElement>("Produkt", t -> t.getProduct().getName()));
-		table.addColumn(new PrimitiveColumn<PricelistElement>("Pris", t -> t.getPrice(), controller::updatePrice));
-		table.addColumn(new ButtonColumn<>("Delete", controller::deleteProduct));
+		LabelColumn<PricelistElement> lblC = new LabelColumn<PricelistElement>("Produkt", t -> t.getProduct().getName());
+		lblC.setPrefWidth(99999.0);
+
+		PrimitiveColumn<PricelistElement> pleC = new PrimitiveColumn<PricelistElement>("Pris", t -> t.getPrice(), controller::updatePrice);
+		pleC.setMinWidth(60.0);
+
+		ButtonColumn<PricelistElement> btnC = new ButtonColumn<>("Delete", controller::deleteProduct);
+		btnC.setMinWidth(100.0);
+
+		table.addColumn(lblC);
+		table.addColumn(pleC);
+		table.addColumn(btnC);
+		table.setMaxWidth(700);
 
 		List<PricelistElement> tests = new ArrayList<PricelistElement>();
 

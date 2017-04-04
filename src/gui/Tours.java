@@ -71,7 +71,7 @@ public class Tours extends GridPane {
 
 		add(new Label("Opret ny:"), 0, 2);
 
-		HBox hbAdd = new HBox();
+		HBox hbAdd = new HBox(10);
 		tfNewPersons.setPromptText("Antal Personer");
 		hbAdd.getChildren().add(tfNewPersons);
 		dpNewDate.setPromptText("Dato");

@@ -8,7 +8,8 @@ import javafx.scene.Node;
 
 public abstract class Column<A> {
 	private final String name;
-	protected List<Node> nodes = new ArrayList<>(); 
+	private Double minWidth, prefWidth, maxWidth;
+	protected List<Node> nodes = new ArrayList<>();
 	
 	public Column(String name) {
 		super();
@@ -20,10 +21,28 @@ public abstract class Column<A> {
 	public String getName() {
 		return name;
 	}
-	
-	public void updateNodes(Handler<Node> handler) {
-		for (Node n : nodes) {
-			handler.exec(n);
-		}
+
+	public Double getMinWidth() {
+		return minWidth;
+	}
+
+	public void setMinWidth(Double minWidth) {
+		this.minWidth = minWidth;
+	}
+
+	public Double getPrefWidth() {
+		return prefWidth;
+	}
+
+	public void setPrefWidth(Double prefWidth) {
+		this.prefWidth = prefWidth;
+	}
+
+	public Double getMaxWidth() {
+		return maxWidth;
+	}
+
+	public void setMaxWidth(Double maxWidth) {
+		this.maxWidth = maxWidth;
 	}
 }

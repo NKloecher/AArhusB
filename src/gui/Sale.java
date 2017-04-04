@@ -37,14 +37,18 @@ public class Sale extends GridPane {
 		}
 	});
 	private final Label lTotal = new Label();
-	private final PrimitiveColumn<ProductOrder> amountColumn = new PrimitiveColumn<ProductOrder>("Antal", po -> po.getAmount(), controller::updateAmount);
-	private final PrimitiveColumn<ProductOrder> discountColumn = new PrimitiveColumn<ProductOrder>("Rabat", po -> po.getDiscount(), controller::updateDiscount);
 	private final Handler<?> orderPaidHanlder;
 	
 	public Sale(Stage owner, Handler<?> orderPaidHanlder) {
 		this.owner = owner;
 		this.orderPaidHanlder = orderPaidHanlder;
-		
+
+		PrimitiveColumn<ProductOrder> amountColumn = new PrimitiveColumn<ProductOrder>("Antal", po -> po.getAmount(), controller::updateAmount);
+		PrimitiveColumn<ProductOrder> discountColumn = new PrimitiveColumn<ProductOrder>("Rabat", po -> po.getDiscount(), controller::updateDiscount);
+
+		amountColumn.setMaxWidth(50.0);
+		discountColumn.setMaxWidth(50.0);
+
 		Table<ProductOrder> productTable = new Table<>();
 		productTable.addColumn(new LabelColumn<ProductOrder>("Navn", po -> po.getProduct().getName()));
 		productTable.addColumn(amountColumn);
@@ -117,9 +121,6 @@ public class Sale extends GridPane {
 		
 		public void updateRow() {
 			updateTotal();
-			
-			amountColumn.updateNodes(n -> ((TextField)n).setMaxWidth(50));
-			discountColumn.updateNodes(n -> ((TextField)n).setMaxWidth(50));
 		}
 		
 		public void updateTotal() {

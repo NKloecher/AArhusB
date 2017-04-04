@@ -1,8 +1,11 @@
 package gui.table;
 
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.ColumnConstraintsBuilder;
 import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
@@ -25,14 +28,33 @@ public class Table<A> extends GridPane {
 		showItems();
 	}
 	
-	public void addColumn(Column<A> column) {
+	public void addColumn(Column<A> column){
 		columns.add(column);
 		showHeader();
 	}
-	
+
 	private void showHeader() {
 		ObservableList<Node> children = getChildren();
-		
+
+		List<ColumnConstraints> constraints = new ArrayList<>();
+		for (Column<A> column : columns) {
+			ColumnConstraints constraint = new ColumnConstraints();
+			if (column.getMinWidth() != null){
+				constraint.setMinWidth(column.getMinWidth());
+			}
+			if (column.getPrefWidth() != null){
+				constraint.setPrefWidth(column.getPrefWidth());
+			}
+			if (column.getMaxWidth() != null){
+				constraint.setMaxWidth(column.getMaxWidth());
+			}
+			constraints.add(constraint);
+		}
+		getColumnConstraints().setAll(constraints);
+
+		setHgap(10);
+		setVgap(10);
+
 		if (children.size() != 0) {
 			for (int i = columns.size() - 2; i >= 0; i--) {
 				children.remove(i);
@@ -41,7 +63,8 @@ public class Table<A> extends GridPane {
 		
 		for (int i = 0; i < columns.size(); i++) {
 			Column<A> column = columns.get(i);
-			Label l = new Label();				
+			Label l = new Label();
+			l.setStyle("-fx-font-weight: bolder");
 			
 			if (!(column instanceof ButtonColumn<?>)) {
 				l.setText(column.getName());
