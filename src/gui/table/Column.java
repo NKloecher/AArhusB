@@ -10,12 +10,17 @@ public abstract class Column<A> {
 	private final String name;
 	private Double minWidth, prefWidth, maxWidth;
 	protected List<Node> nodes = new ArrayList<>();
-	
+	protected ColumnValidateHandler validateHandler;
+
 	public Column(String name) {
 		super();
 		this.name = name;
 	}
-	
+
+	public void setUpdateHandler(ColumnValidateHandler handler) {
+		validateHandler = handler;
+	}
+
 	public abstract Node getNode(A owner);
 
 	public String getName() {
