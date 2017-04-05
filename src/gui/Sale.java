@@ -7,6 +7,7 @@ import exceptions.InvaildPaymentAmount;
 import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -24,7 +25,6 @@ import storage.Storage;
 public class Sale extends GridPane {
 	private final Stage owner;
 	private final Service service = Service.getInstance();
-	private final Storage storage = Storage.getInstance();
 	private final Controller controller = new Controller();
 	private final Order order = service.createOrder();
 	private final Label lError = new Label(); 
@@ -40,27 +40,40 @@ public class Sale extends GridPane {
 	private final Handler<?> orderPaidHanlder;
 	
 	public Sale(Stage owner, Handler<?> orderPaidHanlder) {
+		setPadding(new Insets(20));
+		setHgap(10);
+		setVgap(10);
+		
 		this.owner = owner;
 		this.orderPaidHanlder = orderPaidHanlder;
 
-		PrimitiveColumn<ProductOrder> amountColumn = new PrimitiveColumn<ProductOrder>("Antal", po -> po.getAmount(), controller::updateAmount);
-		PrimitiveColumn<ProductOrder> discountColumn = new PrimitiveColumn<ProductOrder>("Rabat", po -> po.getDiscount(), controller::updateDiscount);
-
-		amountColumn.setMaxWidth(50.0);
-		discountColumn.setMaxWidth(50.0);
-
 		Table<ProductOrder> productTable = new Table<>();
-		productTable.addColumn(new LabelColumn<ProductOrder>("Navn", po -> po.getProduct().getName()));
-		productTable.addColumn(amountColumn);
-		productTable.addColumn(discountColumn);
-		productTable.addColumn(new LabelColumn<ProductOrder>("Pant", po -> {
+		
+		LabelColumn<ProductOrder> nameColumn = new LabelColumn<>("Navn", po -> po.getProduct().getName());
+		nameColumn.setPrefWidth(99999.0);
+		
+		PrimitiveColumn<ProductOrder> amountColumn = new PrimitiveColumn<ProductOrder>("Antal", po -> po.getAmount(), controller::updateAmount);
+		amountColumn.setMinWidth(50.0);
+		
+		PrimitiveColumn<ProductOrder> discountColumn = new PrimitiveColumn<ProductOrder>("Rabat", po -> po.getDiscount(), controller::updateDiscount);
+		discountColumn.setMinWidth(50.0);
+		
+		LabelColumn<ProductOrder> depositColumn = new LabelColumn<>("Pant", po -> {
 			if (po.getProduct() instanceof DepositProduct) {
 				return String.format(Locale.GERMAN, "%.2f kr.", ((DepositProduct)po.getProduct()).getDeposit());
 			}
 			else {
 				return "";
 			}
-		}));
+		});
+		depositColumn.setMinWidth(80.0);
+
+		priceColumn.setMinWidth(80.0);
+		
+		productTable.addColumn(nameColumn);
+		productTable.addColumn(amountColumn);
+		productTable.addColumn(discountColumn);
+		productTable.addColumn(depositColumn);
 		productTable.addColumn(priceColumn);
 		productTable.setItems(order.getAllProducts());
 		
@@ -89,6 +102,8 @@ public class Sale extends GridPane {
 		controller.updateTotal();
 		
 		Button pay = new Button("Betal");
+		pay.setDefaultButton(true);
+		pay.setMinWidth(80);
 		pay.setOnAction(e -> controller.showPayDialog());
 		add(pay, 3, 1);
 	}
@@ -104,7 +119,7 @@ public class Sale extends GridPane {
 				
 				boolean depositOrPriceIsPaid = status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
 				if (depositOrPriceIsPaid) {
-					storage.addOrder(order);
+					service.updateOrder(order);
 					
 					orderPaidHanlder.exec(null);
 				}
@@ -119,6 +134,8 @@ public class Sale extends GridPane {
 		
 		public void updateTotal() {
 			try {
+				// TODO manger at betalte			
+				lTotal.setText("Mangler at betale: " + String.format("%.2f kr.", 0.0));
 				lTotal.setText("Total " + String.format(Locale.GERMAN, "%.2f kr.", order.totalPrice()));
 			} catch (DiscountParseException e) {
 				e.printStackTrace();

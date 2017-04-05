@@ -23,7 +23,9 @@ public class PrimitiveColumn<A> extends Column<A> {
 		if (o != null) tf.setText(o.toString());
 		
 		tf.setOnKeyReleased(e -> {
-            setter.set(owner, tf.getText());
+			boolean result = validateHandler.exec();
+			
+			if (result) setter.set(owner, tf.getText());
         });
 		
 		nodes.add(tf);
