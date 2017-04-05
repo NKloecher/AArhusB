@@ -38,6 +38,7 @@ public class Users extends GridPane {
 		table.addColumn(new PasswordColumn<User>("Sæt kode", controller::setPassword));
 		table.addColumn(new ButtonColumn<User>("Delete", controller::deleteUser));
 		table.setItems(storage.getUsers());
+		table.setValidateHandler((row, user) -> controller.validateName(((TextField)row.getCell("Navn")).getText()) && controller.validateUsername(((TextField)row.getCell("Brugernavn")).getText(), user));
 		
 		ScrollPane sp = new ScrollPane();
 		sp.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -99,16 +100,10 @@ public class Users extends GridPane {
 			service.updateUserPermission(user, permission);
 		}
 		public void updateName(User user, String name) {
-			if (!validateName(name))
-				return;
-			
 			lError.setText("");
 			service.updateUserName(user, name);
 		}
 		public void updateUsername(User user, String username) {
-			if (!validateUsername(username, user))
-				return;
-			
 			lError.setText("");
 			service.updateUserUsername(user, username);
 		}
