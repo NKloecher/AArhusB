@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,19 +93,22 @@ public class ProductList extends BorderPane {
 			pane.setVgap(10);
 			pane.setAlignment(Pos.TOP_CENTER);
 
+			products.sort((a,b) -> a.getName().compareTo(b.getName()));
+			
 			for (int i = 0; i < products.size(); i++) {
 				final Product p = products.get(i);
 				Node node;
 
-//				if (p.getImage() != null) {
-//					Image image = new Image("file://../product_images/" + p.getImage(), productSize - 20, productSize - 20, true, true);
-//					ImageView imageView = new ImageView(image);
-//					BorderPane bp = new BorderPane(imageView);
-//
-//					bp.setPadding(new Insets(10));
-//
-//					node = bp;
-//				} else {
+				if (p.getImage() != null) {
+					File file = new File("product_images/" + p.getImage());
+					Image image = new Image(file.toURI().toString(), productSize - 20, productSize - 20, true, true);
+					ImageView imageView = new ImageView(image);
+					BorderPane bp = new BorderPane(imageView);
+
+					bp.setPadding(new Insets(10));
+
+					node = bp;
+				} else {
 					Label label = new Label(p.getName());
 
 					label.setMinWidth(productSize);
@@ -115,7 +119,7 @@ public class ProductList extends BorderPane {
 					label.setTextAlignment(TextAlignment.CENTER);
 
 					node = label;
-//				}
+				}
 
 				node.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
 				GridPane.setHalignment(node, HPos.CENTER);
@@ -145,4 +149,4 @@ public class ProductList extends BorderPane {
 			setCenter(pane);
 		}
 	}
-}
+	}
