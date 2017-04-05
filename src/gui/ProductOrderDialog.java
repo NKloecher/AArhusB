@@ -54,7 +54,7 @@ public class ProductOrderDialog extends Stage {
                 return "";
             }
         }));
-        table.addColumn(new LabelColumn<ProductOrder>("Rabat Pris", x -> {
+        table.addColumn(new LabelColumn<ProductOrder>("Rabat", x -> {
             try {
                 return "" + (x.getAmount() * x.getOriginalPrice() - x.price());
             }
