@@ -62,6 +62,7 @@ public class Customers extends GridPane {
         hbox.getChildren().addAll(btnAddCustomer, btnViewCustomer);
         add(hbox, 0, 2);
         btnAddCustomer.setOnAction(e -> controller.createCustomerDialogAction());
+        btnViewCustomer.setOnAction(e -> controller.viewCustomerAction());
 
     }
 
@@ -76,11 +77,21 @@ public class Customers extends GridPane {
                     orders.add(o);
                 }
             }
+            lvOrders.getItems().clear();
             lvOrders.getItems().addAll(orders);
         }
 
-        public void createCustomerDialogAction() {
-
+        public void viewCustomerAction() {
+            try {
+                if (lvCustomers.getSelectionModel().getSelectedItem() != null) {
+                    Customer c = lvCustomers.getSelectionModel().getSelectedItem();
+                    ViewCustomerDialog vc = new ViewCustomerDialog(c);
+                    vc.showAndWait();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         public void loadProductOrdersAction() {
@@ -93,18 +104,23 @@ public class Customers extends GridPane {
                 }
                 createProductOrderDialog.showAndWait();
             }
+        }
 
-            //MÅSKE TIL SENERE
-//            List<ProductOrder> orders = new ArrayList<>();
-//            for (ProductOrder p : lvOrders.getSelectionModel().getSelectedItem().getProducts()) {
-//                orders.add(p);
-//            }
-//            for (RentalProductOrder r : lvOrders.getSelectionModel().getSelectedItem()
-//                .getProductsRental()) {
-//                orders.add(r);
-//            }
+        public void createCustomerDialogAction() {
+            try {
+                CreateCustomerDialog cd = new CreateCustomerDialog();
+                cd.showAndWait();
+                updateCustomers(cd.getNewCustomer());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
+        public void updateCustomers(Customer c) {
+            if (c != null) {
+                lvCustomers.getItems().add(c);
+            }
         }
     }
-
 }
