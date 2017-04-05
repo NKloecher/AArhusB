@@ -5,6 +5,7 @@ import exceptions.InvaildPaymentAmount;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Order implements Payable {
@@ -140,11 +141,52 @@ public class Order implements Payable {
         return sum;
     }
 
+    private int totalClipCardPaid(){
+        int sum = 0;
+        for (Payment payment : payments) {
+            if (payment.getPaymentType() == PaymentType.CLIP_CARD){
+                sum += payment.getAmount();
+            }
+        }
+        return sum;
+    }
+
+    private double totalPaymentClipCard(){
+        double sum = 0;
+        int clips = totalClipCardPaid();
+
+        if (clips == 0){
+            return 0;
+        }
+        List<ProductOrder> productOrders = new ArrayList<>(this.products);
+
+        productOrders.sort((ProductOrder p1, ProductOrder p2) -> {
+            double p1ClipRatio = p1.individualPrice() / (double) p1.getProduct().getClips();
+            double p2ClipRatio = p2.individualPrice() / (double) p2.getProduct().getClips();
+            return Double.compare(p2ClipRatio, p1ClipRatio);
+        });
+
+        for (ProductOrder productOrder : productOrders) {
+            int orderClips = productOrder.getProduct().getClips() * productOrder.getAmount();
+            if (clips > orderClips){
+                clips -= orderClips;
+                sum += productOrder.price();
+            } else {
+                sum += (productOrder.individualPrice() / (double) productOrder.getProduct().getClips()) * clips;
+                return sum;
+            }
+        }
+        throw new InvaildPaymentAmount("");
+    }
+
     public double totalPayment() {
         double sum = 0;
         for (Payment payment : payments) {
-            sum += payment.getAmount();
+            if (payment.getPaymentType() != PaymentType.CLIP_CARD){
+                sum += payment.getAmount();
+            }
         }
+        sum += totalPaymentClipCard();
         return sum;
     }
 

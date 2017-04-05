@@ -16,4 +16,8 @@ public class Payment {
     public double getAmount() {
         return amount;
     }
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
 }

@@ -257,4 +257,52 @@ public class OrderTest {
 		PaymentStatus paymentStatus = order.paymentStatus();
 		assertEquals(paymentStatus, PaymentStatus.DEPOSITNOTPAIDBACK);
 	}
+
+	@Test
+	public void orderPaymentClipCardOneProductPayed() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.pay(new Payment(PaymentType.CLIP_CARD, 4));
+
+		assertEquals(order.totalPayment(), 100, 0.01);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentClipCardTwoProductPayed() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.createProductOrder(product100kr3clip);
+		order.pay(new Payment(PaymentType.CLIP_CARD, 7));
+
+		assertEquals(order.totalPayment(), 200, 0.01);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
+	public void orderPaymentClipCardTwoProductOnePayed() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		order.createProductOrder(product100kr3clip);
+		order.pay(new Payment(PaymentType.CLIP_CARD, 3));
+
+		assertEquals(order.totalPayment(), 100, 0.01);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.UNPAID);
+	}
+
+	@Test
+	public void orderPaymentClipCardOneProductTwoItemsPayed() throws Exception{
+		Order order = new Order(user, pl);
+		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
+		productOrder.setAmount(2);
+		order.pay(new Payment(PaymentType.CLIP_CARD, 8));
+
+		assertEquals(order.totalPayment(), 200, 0.01);
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
 }
