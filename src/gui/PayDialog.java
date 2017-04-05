@@ -1,11 +1,20 @@
 package gui;
 
+import java.io.File;
+
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Payable;
@@ -25,6 +34,10 @@ public class PayDialog extends Stage {
 	private double total;
 	private Double deposit;
 	private final Payable payable;
+	private BorderPane cash;
+	private BorderPane card;
+	private BorderPane mobilePay;
+	private BorderPane clipCard;
 	
 	public PayDialog(Stage owner, Payable payable, double total, Double deposit) {
 		this.payable = payable;
@@ -49,19 +62,37 @@ public class PayDialog extends Stage {
 	}
 
 	private void initContent(GridPane pane) {
-		Button cash = new Button("Kontant");
-		Button card= new Button("Kredit kort");
-		Button mobilePay = new Button("Mobile pay");
-		Button clipCard = new Button("Klippe kort");
+		int buttonSize = 150;
 		
-		cash.setOnAction(e -> paymentType = PaymentType.CASH);
-		card.setOnAction(e -> paymentType = PaymentType.CREDIT_CARD);
-		mobilePay.setOnAction(e -> paymentType = PaymentType.MOBILE_PAY);
-		clipCard.setOnAction(e -> paymentType = PaymentType.CLIP_CARD);
+		pane.setPadding(new Insets(20));
+		pane.setHgap(10);
+		pane.setVgap(10);
+		
+		cash = new BorderPane(new ImageView(new Image(new File("images/kontant.jpg").toURI().toString(), buttonSize, buttonSize, true, true)));
+		card = new BorderPane(new ImageView(new Image(new File("images/kredit-kort.jpg").toURI().toString(), buttonSize, buttonSize, true, true)));
+		mobilePay = new BorderPane(new ImageView(new Image(new File("images/mobile-pay.png").toURI().toString(), buttonSize, buttonSize, true, true)));
+		clipCard = new BorderPane(new ImageView(new Image(new File("images/klippekort.png").toURI().toString(), buttonSize, buttonSize, true, true)));
+		
+		cash.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+		cash.setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), null, null)));
+		cash.setOnMouseClicked(e -> controller.selectPaymentType(PaymentType.CASH, cash));
+		
+		card.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+		card.setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), null, null)));
+		card.setOnMouseClicked(e -> controller.selectPaymentType(PaymentType.CREDIT_CARD, card));
+		
+		mobilePay.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+		mobilePay.setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), null, null)));
+		mobilePay.setOnMouseClicked(e -> controller.selectPaymentType(PaymentType.MOBILE_PAY, mobilePay));
+		
+		clipCard.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+		clipCard.setBackground(new Background(new BackgroundFill(Paint.valueOf("white"), null, null)));
+		clipCard.setOnMouseClicked(e -> controller.selectPaymentType(PaymentType.CLIP_CARD, clipCard));
 		
 		HBox hbButtons = new HBox();
 		
 		hbButtons.getChildren().addAll(cash, card, mobilePay, clipCard);
+		hbButtons.setSpacing(10);
 		
 		HBox hbPrice = new HBox();
 		hbPrice.getChildren().add(new Label("Total: " + String.format("%.2f kr.", total)));
@@ -78,15 +109,53 @@ public class PayDialog extends Stage {
 		
 		pane.add(hbButtons, 0, 2);
 		pane.add(tfAmount, 0, 3);
+		tfAmount.setPromptText("Betalte mængde");
+		
+		HBox hb = new HBox();
+		pane.add(hb, 0, 4);
 		
 		Button pay = new Button("Betal");
+		pay.setDefaultButton(true);
 		pay.setOnAction(e -> controller.pay());
-		pane.add(pay, 0, 4);
-		pane.add(lError, 1, 4);
+		
+		lError.setStyle("-fx-text-fill: red");
+		hb.getChildren().addAll(pay, lError);
 	}
 	
 	class Controller {
 		private boolean endButtonIsAdded = false;
+		
+		public void selectPaymentType(PaymentType paymentType, BorderPane iw) {
+			if (cash.equals(iw)) {
+				cash.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
+			}
+			else {
+				cash.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+			}
+			
+			if (card.equals(iw)) {
+				card.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
+			}
+			else {
+				card.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+			}
+			
+			if (mobilePay.equals(iw)) {
+				mobilePay.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
+			}
+			else {
+				mobilePay.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+			}
+			
+			if (clipCard.equals(iw)) {
+				clipCard.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
+			}
+			else {
+				clipCard.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+			}
+			
+			PayDialog.this.paymentType = paymentType;
+		}
 		
 		public void setTotal() {
 			lTotal.setText("Mangler at betale: " + String.format("%.2f kr.", total));
@@ -108,12 +177,16 @@ public class PayDialog extends Stage {
 				return;
 			}
 			
-			service.createPayment(payable, amount, paymentType);
+			if (amount > total) {
+				service.createPayment(payable, amount-(amount-total), paymentType);
+			}
+			else {
+				service.createPayment(payable, amount, paymentType);
+			}
 			
 			total -= amount;
 			setTotal();
 			
-			paymentType = null;
 			lError.setText("");
 			
 			if (!endButtonIsAdded) {
