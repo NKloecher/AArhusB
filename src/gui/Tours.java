@@ -37,13 +37,26 @@ public class Tours extends GridPane {
 		setHgap(10);
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
-		table.setMinWidth(800);
 
-		table.addColumn(new PrimitiveColumn<>("Antal Personer", Tour::getPersons, controller::updatePersons));
-		table.addColumn(new DateColumn<>("Dato", controller::getDate, controller::updateDate));
-		table.addColumn(new PrimitiveColumn<>("Start", controller::getTimeStart, controller::updateStartTime));
-		table.addColumn(new PrimitiveColumn<>("Slut", controller::getTimeEnd, controller::updateEndTime));
-		table.addColumn(new PrimitiveColumn<>("Pris", Tour::getPrice, controller::updatePrice));
+		final PrimitiveColumn<Tour> personsColumn = new PrimitiveColumn<>("Antal", Tour::getPersons, controller::updatePersons);
+		personsColumn.setPrefWidth(60.0);
+		table.addColumn(personsColumn);
+
+		final DateColumn<Tour> dateColumn = new DateColumn<>("Dato", controller::getDate, controller::updateDate);
+		dateColumn.setPrefWidth(110.);
+		table.addColumn(dateColumn);
+
+		final PrimitiveColumn<Tour> startColumn = new PrimitiveColumn<>("Start", controller::getTimeStart, controller::updateStartTime);
+		startColumn.setPrefWidth(70.);
+		table.addColumn(startColumn);
+
+		final PrimitiveColumn<Tour> endColumn = new PrimitiveColumn<>("Slut", controller::getTimeEnd, controller::updateEndTime);
+		endColumn.setPrefWidth(70.);
+		table.addColumn(endColumn);
+
+		final PrimitiveColumn<Tour> priceColumn = new PrimitiveColumn<>("Pris", Tour::getPrice, controller::updatePrice);
+		priceColumn.setPrefWidth(120.);
+		table.addColumn(priceColumn);
 
 
 		tourDates = service.getTourDates();
@@ -73,14 +86,19 @@ public class Tours extends GridPane {
 
 		HBox hbAdd = new HBox(10);
 		tfNewPersons.setPromptText("Antal Personer");
+		tfNewPersons.setPrefWidth(60);
 		hbAdd.getChildren().add(tfNewPersons);
 		dpNewDate.setPromptText("Dato");
+		dpNewDate.setPrefWidth(110);
 		hbAdd.getChildren().add(dpNewDate);
-		tfNewStart.setPromptText("Startstidspunkt");
+		tfNewStart.setPromptText("Start tid");
+		tfNewStart.setPrefWidth(70);
 		hbAdd.getChildren().add(tfNewStart);
-		tfNewEnd.setPromptText("Startstidspunkt");
+		tfNewEnd.setPromptText("Slut tid");
+		tfNewEnd.setPrefWidth(70);
 		hbAdd.getChildren().add(tfNewEnd);
 		tfNewPrice.setPromptText("Pris");
+		tfNewPrice.setPrefWidth(120.);
 		hbAdd.getChildren().add(tfNewPrice);
 		hbAdd.getChildren().add(btnNew);
 		btnNew.setOnAction(x -> controller.createTour());
