@@ -5,14 +5,15 @@ import exceptions.DiscountParseException;
 public class Discount {
     private String discount;
 
-    public String getValue() { 
-    	return discount;
+    public String getValue() {
+        return discount;
     }
+
     public void setDiscount(String discount) throws DiscountParseException {
-    	if (discount.isEmpty() || discount == null) {
-    		this.discount = null;
-    	}
-    	else if (discount.matches("^[\\d,]+%|-[\\d,]+|[\\d,]+$")) {
+        if (discount.isEmpty() || discount == null) {
+            this.discount = null;
+        }
+        else if (discount.matches("^[\\d,]+%|-[\\d,]+|[\\d,]+$")) {
             this.discount = discount;
         }
         else {
@@ -22,15 +23,18 @@ public class Discount {
     }
 
     public double getPrice(double total) throws DiscountParseException {
-    	if (discount == null) return total;
-    	
+        if (discount == null) {
+            return total;
+        }
+
         double newTotal = 0;
         double discountAmount = 0;
         if (discount.startsWith("-")) {
-        	
+
             discountAmount = Double.parseDouble(discount.substring(1, discount.length()));
             if (discountAmount > total) {
-                throw new DiscountParseException(discountAmount + " rabat er h\u00F8jere end " + total);
+                throw new DiscountParseException(
+                    discountAmount + " rabat er h\u00F8jere end " + total);
             }
             newTotal = total - discountAmount;
         }

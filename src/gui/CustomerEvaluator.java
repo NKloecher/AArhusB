@@ -4,10 +4,15 @@ import java.util.regex.Pattern;
 
 public class CustomerEvaluator {
 
+    /**
+     * Test om information er gyldige
+     * @param name testes kun på om strengen ikke er tom
+     * @param phone testes på om den kun indeholder tal
+     * @param email testes på gyldig email adresse (se tidligere lektion) <br>
+     * adresse er bare gyldig
+     * @return
+     */
     public boolean isValid(String name, String phone, String email) {
-//        System.out.println("navn" + nameIsValid(name));
-//        System.out.println("phone" + phoneIsValid(phone));
-//        System.out.println("mail" + emailIsValid(email));
         return nameIsValid(name) && phoneIsValid(phone) && emailIsValid(email)
             && addresssValid();
     }

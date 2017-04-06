@@ -64,6 +64,10 @@ public class ViewCustomerDialog extends Stage {
 
     }
 
+    public Customer getCustomer() {
+        return c;
+    }
+
     private class Controller {
         CustomerEvaluator ce = new CustomerEvaluator();
 
