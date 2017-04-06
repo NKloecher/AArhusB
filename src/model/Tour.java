@@ -67,6 +67,10 @@ public class Tour implements Payable {
 
 	@Override
 	public double totalPayment() {
-		return 0;
+		double sum = 0;
+		for (Payment payment : payments) {
+			sum += payment.getAmount();
+		}
+		return sum;
 	}
 }

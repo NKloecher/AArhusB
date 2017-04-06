@@ -58,6 +58,7 @@ public class Tours extends GridPane {
 		priceColumn.setPrefWidth(120.);
 		table.addColumn(priceColumn);
 
+		final ButtonColumn<Tour> buttonColumn = new ButtonColumn<>("Betal", controller::getPayments);
 
 		tourDates = service.getTourDates();
 
@@ -250,6 +251,10 @@ public class Tours extends GridPane {
 				lError.setText("Prisen er formateret forkert");
 			}
 
+		}
+
+		public double getPayments(Tour tour) {
+			return tour.totalPayment();
 		}
 	}
 }

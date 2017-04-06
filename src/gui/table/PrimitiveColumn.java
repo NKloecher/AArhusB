@@ -24,7 +24,6 @@ public class PrimitiveColumn<A> extends Column<A> {
 		
 		tf.setOnKeyReleased(e -> {
 			boolean result = validateHandler.exec();
-			
 			if (result) setter.set(owner, tf.getText());
         });
 		
