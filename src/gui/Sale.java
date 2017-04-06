@@ -125,8 +125,6 @@ public class Sale extends GridPane {
 				
 				boolean depositOrPriceIsPaid = status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
 				if (depositOrPriceIsPaid) {
-					service.updateOrder(order);
-					
 					orderPaidHanlder.exec(null);
 				}
 			} catch (DiscountParseException e) {

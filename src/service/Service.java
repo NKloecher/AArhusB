@@ -25,10 +25,6 @@ public class Service {
     private Service() {
     }
 
-    public void updateOrder(Order order) {
-        // does nothing because there is no database
-    }
-
     public void updateProductName(Product product, String name) {
         product.setName(name);
     }
