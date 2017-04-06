@@ -21,7 +21,7 @@ public class Users extends GridPane {
 	private final Service service = Service.getInstance();
 	private final Controller controller = new Controller();
 	private final Label lError = new Label();
-	private final Table<User> table = new Table<>();
+	private final Table<User> table = new Table<>((error, isValid) -> lError.setText(error));
 	private final TextField tfName = new TextField();
 	private final TextField tfUsername = new TextField();
 	private final TextField tfPassword = new TextField();
@@ -32,19 +32,38 @@ public class Users extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 		
-		table.addColumn(new PrimitiveColumn<User>("Navn", u -> u.getName(), controller::updateName));
-		table.addColumn(new PrimitiveColumn<User>("Brugernavn", u -> u.getUsername(), controller::updateUsername));
-		table.addColumn(new ListColumn<User, Permission>("Permission", u -> u.getPermission(), (u,v) -> controller.updatePermission(u, v), Permission.values()));
-		table.addColumn(new PasswordColumn<User>("Sæt kode", controller::setPassword));
-		table.addColumn(new ButtonColumn<User>("Delete", controller::deleteUser));
+		Column<User> nameColumn = new PrimitiveColumn<>("Navn", String.class, User::getName, controller::updateName, (u, n) -> controller.validateName(n));
+		nameColumn.setMinWidth(150.0);
+		nameColumn.setMaxWidth(150.0);
+		table.addColumn(nameColumn);
+		
+		Column<User> usernameColumn = new PrimitiveColumn<>("Brugernavn", String.class, User::getUsername, controller::updateUsername, (u, bn) -> controller.validateUsername(bn, u));
+		usernameColumn.setMinWidth(150.0);
+		usernameColumn.setMaxWidth(150.0);
+		table.addColumn(usernameColumn);
+		
+		Column<User> permissionColumn = new ListColumn<>("Permission", User::getPermission, service::updateUserPermission, Permission.values());
+		permissionColumn.setMinWidth(100.0);
+		permissionColumn.setMaxWidth(100.0);
+		table.addColumn(permissionColumn);
+		
+		Column<User> passwordColumn = new PasswordColumn<>("Sæt kode", controller::setPassword);
+		passwordColumn.setMinWidth(90.0);
+		passwordColumn.setMaxWidth(90.0);
+		table.addColumn(passwordColumn);
+		
+		Column<User> deleteColumn = new ButtonColumn<>("Delete", controller::deleteUser);
+		deleteColumn.setMinWidth(80.0);
+		deleteColumn.setMaxWidth(80.0);
+		table.addColumn(deleteColumn);
+		
 		table.setItems(storage.getUsers());
-		table.setValidateHandler((row, user) -> controller.validateName(((TextField)row.getCell("Navn")).getText()) && controller.validateUsername(((TextField)row.getCell("Brugernavn")).getText(), user));
 		
 		ScrollPane sp = new ScrollPane();
 		sp.setHbarPolicy(ScrollBarPolicy.NEVER);
 		sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		sp.setStyle("-fx-background-color:transparent;");
-		sp.setContent(table);
+		sp.setContent(table.getPane());
 		add(sp, 0, 0);
 		
 		HBox hbAdd = new HBox();
@@ -72,33 +91,25 @@ public class Users extends GridPane {
 	}
 	
 	private class Controller {
-		public boolean validateName(String name) {
+		public String validateName(String name) {
 			if (name.isEmpty()) {
-				lError.setText("Navn er påkrævet");
-				return false;
+				return "Navn er påkrævet";
 			}
 			
-			return true;
+			return null;
 		}
 		
-		public boolean validateUsername(String username, User user) {
+		public String validateUsername(String username, User user) {
 			if (username.isEmpty()) {
-				lError.setText("Brugernavn er påkrævet");
-				return false;
+				return "Brugernavn er påkrævet";
 			}
 			if (!service.usernameIsUnique(username, user)) {
-				lError.setText("Brugernavnet er allerede brugt");
-				return false;
+				return "Brugernavnet er allerede brugt";
 			}
 			
-			return true;
+			return null;
 		}
 		
-		public void updatePermission(User user, Permission permission) {
-			// TODO hvis du er brugeren kan du ikke fjerne admin
-			
-			service.updateUserPermission(user, permission);
-		}
 		public void updateName(User user, String name) {
 			lError.setText("");
 			service.updateUserName(user, name);
@@ -134,8 +145,17 @@ public class Users extends GridPane {
 				return;
 			}
 			
-			if (!validateName(name) || !validateUsername(username, null))
+			String nameError = validateName(name);
+			if (nameError != null) {
+				lError.setText(nameError);
 				return;
+			}
+			
+			String usernameError = validateUsername(username, null);
+			if (usernameError != null) {
+				lError.setText(usernameError);
+				return;
+			}
 			
 			if (password.isEmpty()) {
 				lError.setText("Kodeord er påkrævet");

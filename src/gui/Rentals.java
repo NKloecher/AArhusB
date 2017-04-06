@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.regex.Pattern;
+
 import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
@@ -20,9 +22,9 @@ public class Rentals extends GridPane {
 	private final Service service = Service.getInstance();
 	private final Controller controller = new Controller();
 	private final ListView<Order> lwRentals = new ListView<>();
-	private final Table<ProductOrder> table = new Table<>();
 	private final Label lTotal = new Label();
 	private final Label lError = new Label();
+	private final Table<ProductOrder> table = new Table<>((error, isValid) -> lError.setText(error));
 	private final Handler<?> rentalPaidHandler;
 	private final Stage owner;
 	private Order selectedRental;
@@ -36,28 +38,13 @@ public class Rentals extends GridPane {
 		lwRentals.getSelectionModel().selectedItemProperty().addListener(e -> controller.selectRental());
 		add(lwRentals, 0, 0);
 
-		table.addColumn(new LabelColumn<ProductOrder>("Navn", po -> po.getProduct().getName()));
-		table.addColumn(new LabelColumn<ProductOrder>("Antal", po -> Integer.toString(po.getAmount())));
-		table.addColumn(new PrimitiveColumn<ProductOrder>("Ubrugte", po -> {
-			if (po instanceof RentalProductOrder) {
-				return ((RentalProductOrder) po).getUnused();
-			} else {
-				return null;
-			}
-		}, controller::updateUnused));
-		table.addColumn(new PrimitiveColumn<>("Returneret", po -> {
-			if (po instanceof RentalProductOrder) {
-				return ((RentalProductOrder) po).getReturned();
-			} else {
-				return null;
-			}
-		}, controller::updateReturned));
-		table.setPadding(new Insets(10));
-		table.setValidateHandler((row, po) -> {
-			return true;
-		});
+		table.addColumn(new LabelColumn<>("Navn", po -> po.getProduct().getName()));
+		table.addColumn(new LabelColumn<>("Antal", po -> Integer.toString(po.getAmount())));
+		table.addColumn(new PrimitiveColumn<>("Ubrugte", Integer.class, controller::getUnused, controller::updateUnused, controller::validateUnused));
+		table.addColumn(new PrimitiveColumn<>("Returneret", Integer.class, controller::getReturned, controller::updateReturned, controller::validateReturned));
+		table.getPane().setPadding(new Insets(10));
 
-		add(table, 1, 0);
+		add(table.getPane(), 1, 0);
 		add(lError, 0, 1);
 		add(lTotal, 1, 1);
 
@@ -98,67 +85,75 @@ public class Rentals extends GridPane {
 
 			setTotal();
 		}
-
-		public void updateUnused(ProductOrder po, String value) {
-			int unused = -1;
-			int returned = -1;
-
-			try {
-				returned = Integer.parseInt(((TextField)table.getCell("Antal", 0)).getText());
-			} catch (NumberFormatException e) {
+		
+		public Integer getUnused(ProductOrder po) {
+			if (po instanceof RentalProductOrder) {
+				return ((RentalProductOrder) po).getUnused();
+			} else {
+				return null;
 			}
-			if (returned < 0) {
-				lError.setText("Returneret skal være et posetivt tal");
-				return;
-			}
-			
-			try {
-				unused = Integer.parseInt(value);
-			} catch (NumberFormatException e) {
-			}
-			if (unused < 0) {
-				lError.setText("Ubrugte skal være et posetivt tal");
-				return;
-			}
-
-			if (unused + returned > po.getAmount()) {
-				lError.setText("der er for mange ");
-				return;
-			}
-			
-			lError.setText("");
-			((RentalProductOrder) po).setUnused(unused);
-
-			setTotal();
 		}
-
-		public void updateReturned(ProductOrder po, String value) {
-			int returned = -1;
-			int unused = -1;
+		public void updateUnused(ProductOrder po, int value) {
+			if (po instanceof RentalProductOrder) {
+				// TODO service
+				((RentalProductOrder) po).setUnused(value);
+			}
+		}
+		public String validateUnused(ProductOrder po, String value) {
+			if (!(po instanceof RentalProductOrder)) return null;
+			if (Pattern.matches("^\\d+$", value)) {
+				RentalProductOrder rpo = (RentalProductOrder)po;
+				int sum = Integer.parseInt(value) + rpo.getReturned();
 				
-			try {
-				unused = Integer.parseInt(value);
-			} catch (NumberFormatException e) {
+				if (sum > rpo.getAmount()) {
+					return "Det kan ikke være flere ubrugte og returnerede end der er udlejet";
+				}
+				if (sum < rpo.getAmount()) {
+					return "Der ikke nok ubrugte eller returnerede";
+				}
+				else {
+					return null;					
+				}
 			}
-			if (unused < 0) {
-				lError.setText("Ubrugte skal være et posetivt tal");
-				return;
+			else {
+				return "Ubrugte skal være et posetivt tal";
 			}
-			
-			try {
-				returned = Integer.parseInt(value);
-			} catch (NumberFormatException e) {
+		}
+		
+		public Integer getReturned(ProductOrder po) {
+			if (po instanceof RentalProductOrder) {
+				return ((RentalProductOrder) po).getReturned();
+			} else {
+				return null;
 			}
-			if (returned < 0) {
-				lError.setText("Returneret skal være et posetivt tal");
-				return;
+		}
+		public void updateReturned(ProductOrder po, int value) {
+			if (po instanceof RentalProductOrder) {
+				RentalProductOrder rpo = (RentalProductOrder) po;
+				// TODO service
+				rpo.setReturned(value);
+				rpo.setNotReturned(po.getAmount() - value);
 			}
-			int notReturned = po.getAmount() - returned;
-
-			lError.setText("");
-			((RentalProductOrder) po).setReturned(returned);
-			((RentalProductOrder) po).setNotReturned(notReturned);
-			setTotal();
+		}
+		public String validateReturned(ProductOrder po, String value) {
+			if (!(po instanceof RentalProductOrder)) return null;
+			if (Pattern.matches("^\\d+$", value)) {
+				RentalProductOrder rpo = (RentalProductOrder)po;
+				int sum = Integer.parseInt(value) + rpo.getUnused();
+				
+				if (sum > rpo.getAmount()) {
+					return "Det kan ikke være flere ubrugte og retunerede end der er udlejet";
+				}
+				else if (sum < rpo.getAmount()) {
+					return "Det er ikke nok afleverede eller returnerede";
+				}
+				else {
+					return null;					
+				}
+			}
+			else {
+				return "Ubrugte skal være et posetivt tal";
+			}
 		}
 	}
 }

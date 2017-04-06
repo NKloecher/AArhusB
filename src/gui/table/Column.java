@@ -1,28 +1,26 @@
 package gui.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import gui.Handler;
 import javafx.scene.Node;
 
 public abstract class Column<A> {
 	private final String name;
-	private Double minWidth, prefWidth, maxWidth;
-	protected List<Node> nodes = new ArrayList<>();
-	protected ColumnValidateHandler validateHandler;
-
+	private Double minWidth, prefWidth, maxWidth = null;
+	protected ValidationHandler validationHandler; 
+	
 	public Column(String name) {
-		super();
+		assert name != null;
+		
 		this.name = name;
 	}
+	
+	/**
+	 * @param item
+	 * @return the node to add to the table column in the row with the item passed in
+	 */
+	public abstract Node getNode(A item);
 
-	public void setUpdateHandler(ColumnValidateHandler handler) {
-		validateHandler = handler;
-	}
-
-	public abstract Node getNode(A owner);
-
+	public abstract boolean isValid();
+	
 	public String getName() {
 		return name;
 	}
