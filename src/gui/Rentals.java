@@ -1,5 +1,6 @@
 package gui;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import gui.table.LabelColumn;
@@ -69,7 +70,7 @@ public class Rentals extends GridPane {
 			total = selectedRental.totalPrice() + selectedRental.totalDepositAfterReturn()
 					- selectedRental.totalPayment();
 
-			lTotal.setText(String.format("At betale: %.2f kr.", total));
+			lTotal.setText(String.format(Locale.GERMAN, "At betale: %.2f kr.", total));
 		}
 
 		public void selectRental() {

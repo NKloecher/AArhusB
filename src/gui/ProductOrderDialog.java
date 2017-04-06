@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.Locale;
+
 import exceptions.DiscountParseException;
 import gui.table.LabelColumn;
 import gui.table.Table;
@@ -44,7 +46,7 @@ public class ProductOrderDialog extends Stage {
 
         table.addColumn(new LabelColumn<>("Produkt", x -> x.getProduct().toString()));
         table.addColumn(new LabelColumn<>("Antal", x -> "" + x.getAmount()));
-        table.addColumn(new LabelColumn<>("Pris", x -> "" + x.price()));
+        table.addColumn(new LabelColumn<>("Pris", x -> String.format(Locale.GERMAN, "%.2f", x.price())));
         table.addColumn(new LabelColumn<ProductOrder>("Rabat", x -> {
             try {
                 return "" + (x.getAmount() * x.getOriginalPrice() - x.price());

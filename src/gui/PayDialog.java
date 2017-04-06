@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.File;
+import java.util.Locale;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -95,10 +96,10 @@ public class PayDialog extends Stage {
 		hbButtons.setSpacing(10);
 		
 		HBox hbPrice = new HBox();
-		hbPrice.getChildren().add(new Label("Total: " + String.format("%.2f kr.", total)));
+		hbPrice.getChildren().add(new Label("Total: " + String.format(Locale.GERMAN, "%.2f kr.", total)));
 		
 		if (deposit != null) {
-			hbPrice.getChildren().add(new Label("Pant: " + String.format("%.2f kr.", deposit)));
+			hbPrice.getChildren().add(new Label("Pant: " + String.format(Locale.GERMAN, "%.2f kr.", deposit)));
 		}
 		pane.add(hbPrice, 0, 0);
 		
@@ -158,7 +159,7 @@ public class PayDialog extends Stage {
 		}
 		
 		public void setTotal() {
-			lTotal.setText("Mangler at betale: " + String.format("%.2f kr.", total));
+			lTotal.setText("Mangler at betale: " + String.format(Locale.GERMAN, "%.2f kr.", total));
 		}
 		
 		public void pay() {

@@ -139,13 +139,13 @@ public class Sale extends GridPane {
 		}
 		
 		public void updateTotal() {
-			try {
-				// TODO manger at betalte			
-				lTotal.setText("Mangler at betale: " + String.format("%.2f kr.", 0.0));
-				lTotal.setText("Total " + String.format(Locale.GERMAN, "%.2f kr.", order.totalPrice()));
-			} catch (DiscountParseException e) {
-				e.printStackTrace();
-			}
+				String text = String.format(Locale.GERMAN, "Total %.2f kr.", order.totalPrice());
+				
+				if (order.totalPayment() != 0) {
+					text += String.format(Locale.GERMAN, " Mangler at betale: %.2f kr.", order.totalPrice() - order.totalPayment());
+				}
+				
+				lTotal.setText(text);
 		}
 		
 		public void updateDiscount(ProductOrder po, String value) {
