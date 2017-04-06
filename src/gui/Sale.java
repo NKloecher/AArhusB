@@ -1,9 +1,9 @@
 package gui;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import exceptions.DiscountParseException;
-import exceptions.InvaildPaymentAmount;
 import gui.table.Column;
 import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
@@ -11,7 +11,6 @@ import gui.table.Table;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.DepositProduct;
@@ -19,7 +18,6 @@ import model.Order;
 import model.PaymentStatus;
 import model.ProductOrder;
 import service.Service;
-import storage.Storage;
 
 public class Sale extends GridPane {
 	private final Stage owner;
@@ -58,7 +56,10 @@ public class Sale extends GridPane {
 		LabelColumn<ProductOrder> nameColumn = new LabelColumn<>("Navn", po -> po.getProduct().getName());
 		nameColumn.setPrefWidth(99999.0);
 		
-		Column<ProductOrder> amountColumn = new PrimitiveColumn<>("Antal", Integer.class, ProductOrder::getAmount, controller::updateAmount);
+		Column<ProductOrder> amountColumn = new PrimitiveColumn<>("Antal", Integer.class, ProductOrder::getAmount, controller::updateAmount, (po, v) -> {
+			if (Pattern.matches("^\\d+$", v)) return null;
+			return "Antal skal være et posetivt tal";
+		});
 		amountColumn.setMinWidth(50.0);
 		
 		Column<ProductOrder> discountColumn = new PrimitiveColumn<>("Rabat", String.class, ProductOrder::getDiscount, controller::updateDiscount);

@@ -25,7 +25,6 @@ public class Tours extends GridPane {
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 	private final Label lError = new Label();
 	private final Table<Tour> table = new Table<>((error, isValid) -> lError.setText(error));
-
 	private final TextField tfNewPersons = new TextField();
 	private final DatePicker dpNewDate = new DatePicker();
 	private final TextField tfNewStart = new TextField();
