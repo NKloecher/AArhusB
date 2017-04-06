@@ -1,16 +1,16 @@
 package gui;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import exceptions.DiscountParseException;
-import exceptions.InvaildPaymentAmount;
+import gui.table.Column;
 import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.DepositProduct;
@@ -18,9 +18,6 @@ import model.Order;
 import model.PaymentStatus;
 import model.ProductOrder;
 import service.Service;
-import storage.Storage;
-
-
 
 public class Sale extends GridPane {
 	private final Stage owner;
@@ -28,6 +25,7 @@ public class Sale extends GridPane {
 	private final Controller controller = new Controller();
 	private final Order order = service.createOrder();
 	private final Label lError = new Label(); 
+	private final Button pay = new Button("Betal");
 	private final LabelColumn<ProductOrder> priceColumn = new LabelColumn<>("Pris", po -> {
 		try {
 			return String.format(Locale.GERMAN, "%.2f kr.", po.price());			
@@ -44,18 +42,27 @@ public class Sale extends GridPane {
 		setHgap(10);
 		setVgap(10);
 		
+		
+		
 		this.owner = owner;
 		this.orderPaidHanlder = orderPaidHanlder;
 
-		Table<ProductOrder> productTable = new Table<>();
+		Table<ProductOrder> productTable = new Table<>((error, isValid)-> {
+			pay.setDisable(!isValid);
+			
+			lError.setText(error);
+		});
 		
 		LabelColumn<ProductOrder> nameColumn = new LabelColumn<>("Navn", po -> po.getProduct().getName());
 		nameColumn.setPrefWidth(99999.0);
 		
-		PrimitiveColumn<ProductOrder> amountColumn = new PrimitiveColumn<ProductOrder>("Antal", po -> po.getAmount(), controller::updateAmount);
+		Column<ProductOrder> amountColumn = new PrimitiveColumn<>("Antal", Integer.class, ProductOrder::getAmount, controller::updateAmount, (po, v) -> {
+			if (Pattern.matches("^\\d+$", v)) return null;
+			return "Antal skal være et posetivt tal";
+		});
 		amountColumn.setMinWidth(50.0);
 		
-		PrimitiveColumn<ProductOrder> discountColumn = new PrimitiveColumn<ProductOrder>("Rabat", po -> po.getDiscount(), controller::updateDiscount);
+		Column<ProductOrder> discountColumn = new PrimitiveColumn<>("Rabat", String.class, ProductOrder::getDiscount, controller::updateDiscount);
 		discountColumn.setMinWidth(50.0);
 		
 		LabelColumn<ProductOrder> depositColumn = new LabelColumn<>("Pant", po -> {
@@ -97,11 +104,10 @@ public class Sale extends GridPane {
 		add(lError, 0, 1);
 		
 		add(pl, 0, 0);
-		add(productTable, 1, 0);
+		add(productTable.getPane(), 1, 0);
 		add(lTotal, 1, 1);
 		controller.updateTotal();
 		
-		Button pay = new Button("Betal");
 		pay.setDefaultButton(true);
 		pay.setMinWidth(80);
 		pay.setOnAction(e -> controller.showPayDialog());
@@ -133,13 +139,13 @@ public class Sale extends GridPane {
 		}
 		
 		public void updateTotal() {
-			try {
-				// TODO manger at betalte			
-				lTotal.setText("Mangler at betale: " + String.format("%.2f kr.", 0.0));
-				lTotal.setText("Total " + String.format(Locale.GERMAN, "%.2f kr.", order.totalPrice()));
-			} catch (DiscountParseException e) {
-				e.printStackTrace();
-			}
+				String text = String.format(Locale.GERMAN, "Total %.2f kr.", order.totalPrice());
+				
+				if (order.totalPayment() != 0) {
+					text += String.format(Locale.GERMAN, " Mangler at betale: %.2f kr.", order.totalPrice() - order.totalPayment());
+				}
+				
+				lTotal.setText(text);
 		}
 		
 		public void updateDiscount(ProductOrder po, String value) {
@@ -148,29 +154,16 @@ public class Sale extends GridPane {
 				
 				lError.setText("");
 				
-				priceColumn.updateChild(po);
+				priceColumn.updateCell(po);
 				controller.updateTotal();
 			} catch (Exception e) {
 				lError.setText("ugyldig rabat på \"" + po.getProduct().getName() + "\"");
 			}
 		}
 		
-		public void updateAmount(ProductOrder po, String value) {
-			int amount = -1;
-			
-			try {
-				amount = Integer.parseInt(value);
-			} catch (Exception e) {}
-			if (amount < 1) {
-				lError.setText("antal skal være et tal og mere over 0");
-				return;
-			}
-			
-			lError.setText("");
-			
+		public void updateAmount(ProductOrder po, int amount) {
 			service.updateProductOrderAmount(po, amount);
-			
-			priceColumn.updateChild(po);
+			priceColumn.updateCell(po);
 			controller.updateTotal();
 		}
 	}

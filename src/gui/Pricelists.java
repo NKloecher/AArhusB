@@ -2,8 +2,10 @@ package gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import gui.table.ButtonColumn;
+import gui.table.Column;
 import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
@@ -24,10 +26,10 @@ public class Pricelists extends GridPane {
 	private final Controller controller = new Controller();
 	private final Service service = Service.getInstance();
 	private final Pricelist selectedPricelist = service.getSelectedPricelist();
-	private final Table<PricelistElement> table = new Table<>();
 	private final TextField tfNewPrice = new TextField();
 	private final ProductList productList;
 	private final Label lError = new Label();
+	private final Table<PricelistElement> table = new Table<>((error, isValid) -> lError.setText(error));
 
 	public Pricelists() {
 		setHgap(10);
@@ -37,7 +39,10 @@ public class Pricelists extends GridPane {
 		LabelColumn<PricelistElement> lblC = new LabelColumn<PricelistElement>("Produkt", t -> t.getProduct().getName());
 		lblC.setPrefWidth(99999.0);
 
-		PrimitiveColumn<PricelistElement> pleC = new PrimitiveColumn<PricelistElement>("Pris", t -> t.getPrice(), controller::updatePrice);
+		Column<PricelistElement> pleC = new PrimitiveColumn<>("Pris", Double.class, PricelistElement::getPrice, controller::updatePrice, (pe, v) -> {
+			if (Pattern.matches("^\\d+(\\.\\d+)?", v)) return null;
+			return "Pris skal være et posetivt tal";
+		});
 		pleC.setMinWidth(60.0);
 
 		ButtonColumn<PricelistElement> btnC = new ButtonColumn<>("Delete", controller::deleteProduct);
@@ -46,7 +51,7 @@ public class Pricelists extends GridPane {
 		table.addColumn(lblC);
 		table.addColumn(pleC);
 		table.addColumn(btnC);
-		table.setMaxWidth(700);
+		table.getPane().setMaxWidth(700);
 
 		List<PricelistElement> tests = new ArrayList<PricelistElement>();
 
@@ -64,8 +69,8 @@ public class Pricelists extends GridPane {
 		sp.setContent(gp);
 		add(sp, 0, 0);
 
-		table.maxWidth(300);
-		gp.add(table, 0, 0,2,1);
+		table.getPane().maxWidth(300);
+		gp.add(table.getPane(), 0, 0,2,1);
 
 		Label newProductLabel = new Label("Tilføj nyt produkt:");
 		GridPane.setMargin(newProductLabel, new Insets(10, 0, 10, 0));
@@ -117,17 +122,8 @@ public class Pricelists extends GridPane {
 			table.removeItem(t);
 			service.removeProductFromPricelist(t.product, selectedPricelist);
 		}
-		public void updatePrice(PricelistElement t, String price) {
-			double p;
-
-			try {
-				p = Double.parseDouble(price);
-			} catch (NumberFormatException e) {
-				// TODO: handle exception
-				return;
-			}
-
-			service.setPricelistPrice(service.getSelectedPricelist(), t.getProduct(), p);
+		public void updatePrice(PricelistElement t, Double price) {
+			service.setPricelistPrice(service.getSelectedPricelist(), t.getProduct(), price);
 		}
 
 	}

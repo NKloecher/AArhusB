@@ -21,7 +21,7 @@ public class Products extends GridPane {
     private final Storage storage = Storage.getInstance();
     private final Service service = Service.getInstance();
     private final Controller controller = new Controller();
-    private final Table<Product> table = new Table<>();
+    private final Table<Product> table = new Table<>(null);
     private final TextField txfCategory = new TextField();
 
     public Products() {
@@ -32,18 +32,18 @@ public class Products extends GridPane {
         ScrollPane sp = new ScrollPane();
         sp.setHbarPolicy(ScrollBarPolicy.NEVER);
         sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        sp.setContent(table);
+        sp.setContent(table.getPane());
 
         List<String> categories = new ArrayList<>();
         categories.addAll(storage.getCategories());
 
-        table.addColumn(new PrimitiveColumn<Product>("Navn", x -> x.getName(),
-            (x, y) -> controller.updateName(x, y)));
-        table.addColumn(new ListColumn<Product, String>("Kategori", x -> x.getCategory(),
-            (x, y) -> controller.updateCategory(x, y),
+        table.addColumn(new PrimitiveColumn<>("Navn", String.class, Product::getName,
+        		service::updateProductName));
+        table.addColumn(new ListColumn<Product, String>("Kategori", Product::getCategory,
+            service::updateProductCategory,
             categories.toArray(new String[categories.size()])));
-        table.addColumn(new PrimitiveColumn<Product>("Klips", x -> x.getClips(),
-            (x, y) -> controller.updateClips(x, y)));
+        table.addColumn(new PrimitiveColumn<>("Klips", Integer.class, x -> x.getClips(),
+        	service::updateProductClips));
 
         table.setItems(storage.getProducts());
         add(sp, 0, 0);
@@ -57,29 +57,9 @@ public class Products extends GridPane {
     }
 
     private class Controller {
-
-        public void updateName(Product product, String name) {
-            service.updateProductName(product, name);
-        }
-
         public void createCategoryAction() {
             service.addCategory(txfCategory.getText().trim());
         }
-
-        public void updateClips(Product product, String clips) {
-            if (clips.isEmpty()) {
-                service.updateProductClips(product, null);
-            }
-            else {
-                service.updateProductClips(product, Integer.parseInt(clips));
-            }
-
-        }
-
-        public void updateCategory(Product x, String category) {
-            service.updateProductCategory(x, category);
-        }
-
     }
 
 }

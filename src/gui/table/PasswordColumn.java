@@ -53,4 +53,9 @@ public class PasswordColumn<A> extends Column<A> {
 		this.owner = owner;
 		return h;
 	}
+
+	@Override
+	public boolean isValid() {
+		return true;
+	}
 }

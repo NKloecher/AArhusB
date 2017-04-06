@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Tours extends GridPane {
 	private final Service service = Service.getInstance();
@@ -23,8 +24,7 @@ public class Tours extends GridPane {
 	private final DatePickerSkin datePickerSkin = new DatePickerSkin(dp);
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 	private final Label lError = new Label();
-	private final Table<Tour> table = new Table<>();
-
+	private final Table<Tour> table = new Table<>((error, isValid) -> lError.setText(error));
 	private final TextField tfNewPersons = new TextField();
 	private final DatePicker dpNewDate = new DatePicker();
 	private final TextField tfNewStart = new TextField();
@@ -38,7 +38,10 @@ public class Tours extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 
-		final PrimitiveColumn<Tour> personsColumn = new PrimitiveColumn<>("Antal", Tour::getPersons, controller::updatePersons);
+		final Column<Tour> personsColumn = new PrimitiveColumn<>("Antal", Integer.class, Tour::getPersons, service::updateTourPersons, (t, v) -> {
+			if (Pattern.matches("^\\d+$", v)) return null;
+			return "Antal skal være et posetivt tal";
+		});
 		personsColumn.setPrefWidth(60.0);
 		table.addColumn(personsColumn);
 
@@ -46,15 +49,18 @@ public class Tours extends GridPane {
 		dateColumn.setPrefWidth(110.);
 		table.addColumn(dateColumn);
 
-		final PrimitiveColumn<Tour> startColumn = new PrimitiveColumn<>("Start", controller::getTimeStart, controller::updateStartTime);
+		final Column<Tour> startColumn = new PrimitiveColumn<>("Start", String.class, controller::getTimeStart, controller::updateStartTime);
 		startColumn.setPrefWidth(70.);
 		table.addColumn(startColumn);
 
-		final PrimitiveColumn<Tour> endColumn = new PrimitiveColumn<>("Slut", controller::getTimeEnd, controller::updateEndTime);
+		final Column<Tour> endColumn = new PrimitiveColumn<>("Slut", String.class, controller::getTimeEnd, controller::updateEndTime);
 		endColumn.setPrefWidth(70.);
 		table.addColumn(endColumn);
 
-		final PrimitiveColumn<Tour> priceColumn = new PrimitiveColumn<>("Pris", Tour::getPrice, controller::updatePrice);
+		final Column<Tour> priceColumn = new PrimitiveColumn<>("Pris", Double.class, Tour::getPrice, service::updateTourPrice, (t,v) -> {
+			if (Pattern.matches("^\\d+$", v)) return null;
+			return "Pris skal være et posetivt tal";
+		});
 		priceColumn.setPrefWidth(120.);
 		table.addColumn(priceColumn);
 
@@ -78,7 +84,7 @@ public class Tours extends GridPane {
 
 		controller.openDate(LocalDate.now());
 
-		add(table, 0,1);
+		add(table.getPane(), 0,1);
 
 		dp.valueProperty().addListener((x, y, value) -> controller.openDate(value));
 
@@ -111,7 +117,7 @@ public class Tours extends GridPane {
 	private class Controller {
 		public void openDate(LocalDate date){
 			List<Tour> tours = service.getTours(date);
-			table.setVisible(tours.size() != 0);
+			table.getPane().setVisible(tours.size() != 0);
 			table.setItems(tours);
 			tourDates = service.getTourDates(); // Reload the calendar widget style
 			dpNewDate.setValue(dp.getValue());
@@ -186,20 +192,6 @@ public class Tours extends GridPane {
 			lError.setText("");
 		}
 
-		public void updatePersons(Tour tour, String value){
-			try {
-				int amount = Integer.parseInt(value);
-				if (amount > 0){
-					service.updateTourPersons(tour, amount);
-					lError.setText("");
-				} else {
-					lError.setText("Antallet af personer skal være størrer en 0");
-				}
-			} catch (NumberFormatException ex){
-				lError.setText("Antal personer er formateret forkert");
-			}
-		}
-
 		public void updateDate(Tour tour, LocalDate date){
 			service.updateTourDate(tour, LocalDateTime.of(date, tour.getDate().toLocalTime()));
 		}
@@ -235,21 +227,6 @@ public class Tours extends GridPane {
 			} catch (DateTimeParseException e){
 				lError.setText("Sluttiden er formateret forkert (HH:MM)");
 			}
-		}
-
-		public void updatePrice(Tour tour, String value){
-			try {
-				Double price = Double.parseDouble(value);
-				if (price >= 0){
-					service.updateTourPrice(tour, price);
-					lError.setText("");
-				} else {
-					lError.setText("Prisen skal mindst værre 0");
-				}
-			} catch (NumberFormatException ex){
-				lError.setText("Prisen er formateret forkert");
-			}
-
 		}
 	}
 }
