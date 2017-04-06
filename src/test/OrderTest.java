@@ -143,4 +143,15 @@ public class OrderTest {
 		assertEquals(10, order.totalDeposit(), 0.01);
 	}
 
+	@Test
+	public void orderTotalDepositTS4TwoDepositProductsOrder() throws Exception {
+		Order order = new Order(user, pricelist);
+		order.addProduct(simpleDepositProduct);
+		DepositProduct dp = new DepositProduct("Test desposit", null, "test", null, 20);
+		pricelist.addProduct(dp, 100);
+		order.addProduct(dp);
+
+		assertEquals(30, order.totalDeposit(), 0.01);
+	}
+
 }

@@ -120,9 +120,7 @@ public class Order implements Payable {
     public double totalDepositAfterReturn() throws DiscountParseException {
         double sum = 0;
         for (RentalProductOrder productOrder : productsRental) {
-            double deposit = ((DepositProduct) productOrder.getProduct()).getDeposit();
-            sum += productOrder.getNotReturned() * deposit;
-            sum -= productOrder.getUnused() * productOrder.individualPrice();
+            sum += productOrder.getDepositAfterReturn();
         }
         return sum;
 
@@ -131,8 +129,7 @@ public class Order implements Payable {
     public Double totalDeposit() {
         double sum = 0;
         for (RentalProductOrder productOrder : productsRental) {
-            sum += ((DepositProduct) productOrder.getProduct()).getDeposit()
-                * productOrder.getAmount();
+            sum += productOrder.getDeposit();
         }
         
         if (sum == 0) return null;
