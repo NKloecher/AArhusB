@@ -14,6 +14,10 @@ public class RentalProductOrder extends ProductOrder {
         return unused + returned == getAmount();
     }
 
+    public boolean isReturned(){
+        return getAmount() == getReturned() + getUnused() + getNotReturned();
+    }
+
     public int getUnused() {
         return unused;
     }

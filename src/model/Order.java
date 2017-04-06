@@ -110,8 +110,7 @@ public class Order implements Payable {
 
     public boolean allRentalsReturned() {
         for (RentalProductOrder order : productsRental) {
-            if (order.getAmount() != order.getReturned() + order.getUnused()
-                + order.getNotReturned()) {
+            if (!order.isReturned()) {
                 return false;
             }
         }
