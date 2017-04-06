@@ -260,12 +260,4 @@ public class Order implements Payable {
             return date.toString();
         }
     }
-
-    public List<ProductOrder> getProducts() {
-        return products;
-    }
-
-    public List<RentalProductOrder> getProductsRental() {
-        return productsRental;
-    }
 }
