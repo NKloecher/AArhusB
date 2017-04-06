@@ -165,6 +165,17 @@ public class OrderTest {
 	}
 
 	@Test
+	public void orderPaymentStatusOneProductManyCorrectPayment() throws Exception{
+		Order order = new Order(user, pl);
+		order.createProductOrder(product100kr4clip);
+		for (int i = 0; i < 100; i++) {
+			order.pay(new Payment(PaymentType.CASH, 1));
+		}
+		PaymentStatus paymentStatus = order.paymentStatus();
+		assertEquals(paymentStatus, PaymentStatus.ORDERPAID);
+	}
+
+	@Test
 	public void orderPaymentStatusTwoProductOneCorrectPayment() throws Exception{
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
