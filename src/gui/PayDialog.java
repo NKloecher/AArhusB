@@ -190,11 +190,11 @@ public class PayDialog extends Stage {
 			lError.setText("");
 			
 			if (!endButtonIsAdded) {
-				endButtonIsAdded = true;
-				
+
 				PaymentStatus status = payable.paymentStatus();
-				
+
 				if (status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID) {
+					endButtonIsAdded = true;
 					Button end = new Button("Ok");
 					end.setOnAction(e -> PayDialog.this.close());
 					hbTop.getChildren().add(end);
