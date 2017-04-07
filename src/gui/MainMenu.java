@@ -23,6 +23,7 @@ public class MainMenu extends GridPane {
 		add(sale, 0, 0);
 
         Button statistics = getBigButton("Statestik");
+        statistics.setOnAction(e -> controller.select(new Statistics()));
         add(statistics, 0, 1);
 
         Button rentals = getBigButton("Udlejninger");

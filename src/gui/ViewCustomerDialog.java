@@ -1,15 +1,22 @@
 package gui;
 
+import java.util.Optional;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Customer;
+import service.Service;
 
 public class ViewCustomerDialog extends Stage {
     private Customer c;
@@ -34,8 +41,10 @@ public class ViewCustomerDialog extends Stage {
     private final TextField txfAddress = new TextField();
     private final Button btnCancel = new Button("Afslut");
     private final Button btnOk = new Button("OK");
+    private final Button btnRemove = new Button("Fjern Kunde");
     private final Controller controller = new Controller();
     private final Label lblError = new Label();
+    private Service service = Service.getInstance();
 
     private void initContent(GridPane pane) {
         pane.setVgap(10);
@@ -51,7 +60,7 @@ public class ViewCustomerDialog extends Stage {
         pane.add(hbox, 0, 0, 2, 1);
 
         HBox btnBox = new HBox();
-        btnBox.getChildren().addAll(btnCancel, btnOk);
+        btnBox.getChildren().addAll(btnRemove, btnCancel, btnOk);
         btnBox.setAlignment(Pos.BASELINE_RIGHT);
         btnBox.setSpacing(15);
         pane.add(btnBox, 1, 1);
@@ -59,6 +68,7 @@ public class ViewCustomerDialog extends Stage {
         btnCancel.setOnAction(e -> ViewCustomerDialog.this.close());
         btnOk.setOnAction(e -> controller.okAction());
         btnOk.setDefaultButton(true);
+        btnRemove.setOnAction(e -> controller.removeAction());
 
         pane.add(lblError, 0, 1);
 
@@ -95,6 +105,26 @@ public class ViewCustomerDialog extends Stage {
             else if (phone.isEmpty() && email.isEmpty()) {
                 lblError.setText("Skal have mindst én kontaktoplysning");
             }
+        }
+
+        public void removeAction() {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Sletning af kunde");
+            alert.setHeaderText("Du er i gang med at slette en kunde fra systemet");
+            alert.setContentText(
+                "Klik OK hvis du vil fortsætte, eller fortryd for at komme tilbage");
+
+            ButtonType btnCancel = new ButtonType("Fortryd", ButtonData.CANCEL_CLOSE);
+            ButtonType btnOK = new ButtonType("OK");
+
+            alert.getButtonTypes().setAll(btnOK, btnCancel);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == btnOK) {
+                service.removeCustomer(c);
+                close();
+            }
+
         }
 
     }

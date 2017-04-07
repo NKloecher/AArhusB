@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,10 +26,6 @@ public class Service {
     private Pricelist selectedPricelist;
 
     private Service() {
-    }
-
-    public void updateOrder(Order order) {
-        // does nothing because there is no database
     }
 
     public void updateProductName(Product product, String name) {
@@ -204,6 +202,10 @@ public class Service {
         productOrder.setAmount(amount);
     }
 
+    public void updateOrderCutsomer(Order order, Customer customer) {
+    	order.setCustomer(customer);
+    }
+    
     public Product createProduct(String name, Integer clips, String category, String image) {
         Product product = new Product(name, clips, category, image);
         storage.addProduct(product);
@@ -270,10 +272,13 @@ public class Service {
         return c;
     }
 
+    public void removeCustomer(Customer c) {
+        storage.removeCustomer(c);
+    }
+
     public Storage loadStorage() throws IOException, ClassNotFoundException {
         return Storage.loadStorage();
     }
-
     public void saveStorage() throws IOException {
         Storage.saveStorage();
     }
@@ -357,6 +362,27 @@ public class Service {
         createPayment(order2, order2.totalPrice() + order2.totalDeposit(), PaymentType.CASH);
         order2.setCustomer(uno);
 
+    }
+    
+    public List<Order> getOrdersInPeriod(TimePeriod timePeriod) {
+    	List<Order> selected = new ArrayList<Order>();
+    	LocalDate fromDate = LocalDate.now();
+    	
+    	switch (timePeriod) {
+			case DAY: fromDate = fromDate.minus(1, ChronoUnit.DAYS);
+			case WEEK: fromDate = fromDate.minus(1, ChronoUnit.WEEKS);
+			case MONTH: fromDate = fromDate.minus(1, ChronoUnit.MONTHS);
+			case YEAR: fromDate = fromDate.minus(1, ChronoUnit.YEARS);
+			case FOREVER: fromDate = LocalDate.ofYearDay(1970, 1);
+		}
+    	
+    	for (Order o : storage.getOrders()) {
+    		if (o.getDate().isAfter(fromDate)) {
+    			selected.add(o);
+    		}
+    	}
+    	
+    	return selected;
     }
 
     public static Service getInstance() {
