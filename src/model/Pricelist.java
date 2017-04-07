@@ -20,6 +20,9 @@ public class Pricelist {
         products.put(product, price);
     }
 
+    /**
+     * Returns the price of a product
+     */
     public double getPrice(Product key) {
         return products.get(key);
     }

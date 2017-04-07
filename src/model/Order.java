@@ -88,13 +88,16 @@ public class Order implements Payable {
         return allProducts;
     }
 
+    /**
+     * Checks if order has any rental orders
+     */
     public boolean hasRentalOrder() {
         return productsRental.size() > 0;
     }
 
     /**
-     * Doesn't include deposit
-     * @return
+     * Calculate the total price
+     * NOTE: Doesn't include deposit
      */
     public double totalPrice() throws DiscountParseException {
         double sum = 0;
@@ -108,6 +111,9 @@ public class Order implements Payable {
         return sum;
     }
 
+    /**
+     * Checks if all products are returned
+     */
     public boolean allRentalsReturned() {
         for (RentalProductOrder order : productsRental) {
             if (!order.isReturned()) {
@@ -117,6 +123,9 @@ public class Order implements Payable {
         return true;
     }
 
+    /**
+     * Calculate the total deposit after the products are returned
+     */
     public double totalDepositAfterReturn() throws DiscountParseException {
         double sum = 0;
         for (RentalProductOrder productOrder : productsRental) {
@@ -126,6 +135,9 @@ public class Order implements Payable {
 
     }
 
+    /**
+     * Calculate the total deposit
+     */
     public Double totalDeposit() {
         double sum = 0;
         for (RentalProductOrder productOrder : productsRental) {
@@ -137,6 +149,9 @@ public class Order implements Payable {
         return sum;
     }
 
+    /**
+     * Calculate the amount of clip card paid
+     */
     private int totalClipCardPaid(){
         int sum = 0;
         for (Payment payment : payments) {
@@ -147,6 +162,10 @@ public class Order implements Payable {
         return sum;
     }
 
+    /**
+     * Calculate the how much the clip card payments are worth
+     * NOTE: It will always try to maximize the value of each clip card
+     */
     private double totalPaymentClipCard(){
         double sum = 0;
         int clips = totalClipCardPaid();
@@ -175,6 +194,9 @@ public class Order implements Payable {
         throw new InvaildPaymentAmount("");
     }
 
+    /**
+     * Calculate the total of all payments, including clip cards
+     */
     public double totalPayment() {
         double sum = 0;
         for (Payment payment : payments) {
@@ -186,11 +208,17 @@ public class Order implements Payable {
         return sum;
     }
 
+    /**
+     * Add a payment to the order
+     */
     @Override
     public void pay(Payment payment) {
         payments.add(payment);
     }
 
+    /**
+     * Calculates the current status of an order
+     */
     @Override
     public PaymentStatus paymentStatus() throws DiscountParseException, InvaildPaymentAmount {
         if (getAllProducts().size() == 0) {
