@@ -42,7 +42,7 @@ public class Products extends GridPane {
         table.addColumn(new ListColumn<>("Kategori", Product::getCategory,
 				service::updateProductCategory,
 				categories.toArray(new String[categories.size()])));
-        table.addColumn(new PrimitiveColumn<>("Klips", Integer.class, x -> x.getClips(),
+        table.addColumn(new PrimitiveColumn<>("Klips", Integer.class, Product::getClips,
         	service::updateProductClips));
 
         table.setItems(storage.getProducts());
