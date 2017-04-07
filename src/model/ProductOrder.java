@@ -2,7 +2,9 @@ package model;
 
 import exceptions.DiscountParseException;
 
-public class ProductOrder {
+import java.io.Serializable;
+
+public class ProductOrder implements Serializable {
     private Discount discount = null;
     private int amount = 1;
     private Product product;

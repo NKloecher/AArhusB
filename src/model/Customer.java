@@ -1,6 +1,8 @@
 package model;
 
-public class Customer extends Person implements Comparable<Customer> {
+import java.io.Serializable;
+
+public class Customer extends Person implements Comparable<Customer>, Serializable {
     private String address;
     private String phone;
     private String email;

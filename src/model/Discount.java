@@ -2,7 +2,9 @@ package model;
 
 import exceptions.DiscountParseException;
 
-public class Discount {
+import java.io.Serializable;
+
+public class Discount implements Serializable {
     private String discount;
 
     public String getValue() {

@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Payment {
+public class Payment implements Serializable {
     private PaymentType paymentType;
     private double amount;
     private LocalDateTime date;

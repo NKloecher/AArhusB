@@ -3,12 +3,13 @@ package model;
 import exceptions.DiscountParseException;
 import exceptions.InvaildPaymentAmount;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Order implements Payable {
+public class Order implements Payable, Serializable {
     private List<ProductOrder> products = new ArrayList<>();
     private List<RentalProductOrder> productsRental = new ArrayList<>();
     private List<Payment> payments = new ArrayList<>();

@@ -1,6 +1,8 @@
 package model;
 
-public class RentalProductOrder extends ProductOrder {
+import java.io.Serializable;
+
+public class RentalProductOrder extends ProductOrder implements Serializable {
     private int unused = 0;
     private int returned = 0;
     private int notReturned = 0;

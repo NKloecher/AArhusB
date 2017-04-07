@@ -2,12 +2,13 @@ package model;
 
 import exceptions.DiscountParseException;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tour implements Payable {
+public class Tour implements Payable, Serializable {
     private List<Payment> payments = new ArrayList<>();
     private int persons;
     private LocalDateTime date;

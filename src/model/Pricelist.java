@@ -1,10 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Pricelist {
+public class Pricelist implements Serializable {
     private String name;
     private Map<Product, Double> products = new HashMap<>();
 

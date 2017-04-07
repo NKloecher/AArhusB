@@ -1,5 +1,6 @@
 package service;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -265,7 +266,24 @@ public class Service {
         return c;
     }
 
+    public Storage loadStorage() throws IOException, ClassNotFoundException {
+        return Storage.loadStorage();
+    }
+
+    public void saveStorage() throws IOException {
+        Storage.saveStorage();
+    }
+
     public void initStorage() throws DiscountParseException {
+        try {
+            storage = loadStorage();
+            setSelectedPricelist(storage.getPricelists().get(0));
+            System.out.println(storage.getCustomers());
+            return;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Could not load storage, generating data from initStorage");
+        }
+
         User test = createUser("John", "test", "test", Permission.ADMIN);
 
         Pricelist pl1 = createPricelist("Fredagsbar");

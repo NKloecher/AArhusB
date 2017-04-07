@@ -13,7 +13,7 @@ public class MainMenu extends GridPane {
 
     public MainMenu(Stage owner) {
     	this.owner = owner;
-    	
+
         setHgap(10);
         setVgap(10);
         setAlignment(Pos.TOP_CENTER);

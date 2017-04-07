@@ -1,6 +1,8 @@
 package gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import exceptions.DiscountParseException;
@@ -102,6 +104,19 @@ public class MainApp extends Application {
         controller.setScreen(l);
     }
 
+    @Override
+    public void stop(){
+        try {
+            service.saveStorage();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error!");
+            alert.setHeaderText("Error saving data");
+            alert.setContentText("Could not save the data: " + e);
+            alert.showAndWait();
+        }
+    }
+
     private class Controller {
         public void lockPricelist(boolean state) {
             cbPricelist.setDisable(state);
@@ -138,5 +153,4 @@ public class MainApp extends Application {
             MainApp.this.pane.setCenter(pane);
         }
     }
-
 }

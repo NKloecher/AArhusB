@@ -2,13 +2,14 @@ package model;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Random;
 
-public class User extends Person {
+public class User extends Person implements Serializable {
     private String username;
     private byte[] passwordHash;
     private byte[] salt = new byte[16];
