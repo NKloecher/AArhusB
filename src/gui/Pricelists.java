@@ -36,7 +36,7 @@ public class Pricelists extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 
-		LabelColumn<PricelistElement> lblC = new LabelColumn<PricelistElement>("Produkt", t -> t.getProduct().getName());
+		LabelColumn<PricelistElement> lblC = new LabelColumn<>("Produkt", t -> t.getProduct().getName());
 		lblC.setPrefWidth(99999.0);
 
 		Column<PricelistElement> pleC = new PrimitiveColumn<>("Pris", Double.class, PricelistElement::getPrice, controller::updatePrice, (pe, v) -> {
@@ -53,7 +53,7 @@ public class Pricelists extends GridPane {
 		table.addColumn(btnC);
 		table.getPane().setMaxWidth(700);
 
-		List<PricelistElement> tests = new ArrayList<PricelistElement>();
+		List<PricelistElement> tests = new ArrayList<>();
 
 		for (Product p : selectedPricelist.getProducts()) {
 			tests.add(new PricelistElement(p, selectedPricelist.getPrice(p)));

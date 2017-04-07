@@ -47,15 +47,14 @@ public class ProductOrderDialog extends Stage {
         table.addColumn(new LabelColumn<>("Produkt", x -> x.getProduct().toString()));
         table.addColumn(new LabelColumn<>("Antal", x -> "" + x.getAmount()));
         table.addColumn(new LabelColumn<>("Pris", x -> String.format(Locale.GERMAN, "%.2f", x.price())));
-        table.addColumn(new LabelColumn<ProductOrder>("Rabat", x -> {
-            try {
-                return "" + (x.getAmount() * x.getOriginalPrice() - x.price());
-            }
-            catch (DiscountParseException e) {
-                e.printStackTrace();
-                return "";
-            }
-        }));
+        table.addColumn(new LabelColumn<>("Rabat", x -> {
+			try {
+				return "" + (x.getAmount() * x.getOriginalPrice() - x.price());
+			} catch (DiscountParseException e) {
+				e.printStackTrace();
+				return "";
+			}
+		}));
         table.setItems(order.getAllProducts());
 
         pane.add(table.getPane(), 0, 0);

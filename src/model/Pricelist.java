@@ -28,7 +28,7 @@ public class Pricelist {
     }
 
     public ArrayList<Product> getProducts() {
-        return new ArrayList<Product>(products.keySet());
+        return new ArrayList<>(products.keySet());
     }
 
     public void removeProduct(Product product) {
