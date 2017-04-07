@@ -25,12 +25,13 @@ public class Storage {
     }
 
     public void addCategory(String category) {
-    	categories.add(category);
+        categories.add(category);
     }
+
     public List<String> getCategories() {
-    	return new ArrayList<>(categories);
+        return new ArrayList<>(categories);
     }
-    
+
     public List<Tour> getTours() {
         return new ArrayList<>(tours);
     }
@@ -45,6 +46,10 @@ public class Storage {
 
     public void addCustomer(Customer c) {
         customers.add(c);
+    }
+
+    public void removeCustomer(Customer c) {
+        customers.remove(c);
     }
 
     public List<User> getUsers() {

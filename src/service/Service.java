@@ -265,6 +265,10 @@ public class Service {
         return c;
     }
 
+    public void removeCustomer(Customer c) {
+        storage.removeCustomer(c);
+    }
+
     public void initStorage() throws DiscountParseException {
         User test = createUser("John", "test", "test", Permission.ADMIN);
 
