@@ -54,6 +54,14 @@ public class Order implements Payable {
 		
 		return null;
 	}
+	
+	public User getUser() {
+		return user;
+	}
+	
+	public Pricelist getPricelist() {
+		return pricelist;
+	}
     
     public ProductOrder createProductOrder(Product product) {
         ProductOrder productOrder = new ProductOrder(product, this.pricelist);
