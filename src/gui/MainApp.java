@@ -26,7 +26,6 @@ import storage.Storage;
 
 public class MainApp extends Application {
     private final Service service = Service.getInstance();
-    private final Storage storage = Storage.getInstance();
     private final Controller controller = new Controller();
     private final BorderPane pane = new BorderPane();
     private final ComboBox<String> cbPricelist = new ComboBox<>();
@@ -70,7 +69,7 @@ public class MainApp extends Application {
 
         List<String> pricelists = new ArrayList<>();
 
-        for (Pricelist pl : storage.getPricelists()) {
+        for (Pricelist pl : service.getPricelists()) {
             pricelists.add(pl.getName());
         }
 
@@ -125,7 +124,7 @@ public class MainApp extends Application {
         public void selectPricelist() {
             String pricelistName = cbPricelist.getSelectionModel().getSelectedItem();
 
-            for (Pricelist pl : storage.getPricelists()) {
+            for (Pricelist pl : service.getPricelists()) {
                 if (pl.getName().equals(pricelistName)) {
                     service.setSelectedPricelist(pl);
                 }

@@ -217,6 +217,10 @@ public class Service {
         return depositProduct;
     }
 
+    public List<Pricelist> getPricelists() {
+        return storage.getPricelists();
+    }
+
     public Pricelist createPricelist(String name) {
         Pricelist pricelist = new Pricelist(name);
         storage.addPricelist(pricelist);
@@ -277,8 +281,8 @@ public class Service {
     public void initStorage() throws DiscountParseException {
         try {
             storage = loadStorage();
+            System.out.println(storage.getPricelists());
             setSelectedPricelist(storage.getPricelists().get(0));
-            System.out.println(storage.getCustomers());
             return;
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Could not load storage, generating data from initStorage");
