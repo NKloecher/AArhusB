@@ -18,12 +18,7 @@ public class CustomerEvaluator {
     }
 
     public boolean nameIsValid(String s) {
-        if (s != null && !s.isEmpty()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return s != null && !s.isEmpty();
     }
 
     public boolean phoneIsValid(String s) {

@@ -2,6 +2,7 @@ package gui;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javafx.geometry.HPos;
@@ -93,7 +94,7 @@ public class ProductList extends BorderPane {
 			pane.setVgap(10);
 			pane.setAlignment(Pos.TOP_CENTER);
 
-			products.sort((a,b) -> a.getName().compareTo(b.getName()));
+			products.sort(Comparator.comparing(Product::getName));
 			
 			for (int i = 0; i < products.size(); i++) {
 				final Product p = products.get(i);

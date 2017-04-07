@@ -62,7 +62,7 @@ public class Service {
 
         for (Product p : products) {
             if (p.getName().toLowerCase().contains(query.toLowerCase())
-                && (category == "All" || p.getCategory().equals(category))) {
+                && (category.equals("All") || p.getCategory().equals(category))) {
                 selected.add(p);
             }
         }
@@ -265,6 +265,10 @@ public class Service {
         Customer c = new Customer(name, address, phone, email);
         storage.addCustomer(c);
         return c;
+    }
+
+    public void removeCustomer(Customer c) {
+        storage.removeCustomer(c);
     }
 
     public void initStorage() throws DiscountParseException {

@@ -27,8 +27,8 @@ public class Discount {
             return total;
         }
 
-        double newTotal = 0;
-        double discountAmount = 0;
+        double newTotal;
+        double discountAmount;
         if (discount.startsWith("-")) {
 
             discountAmount = Double.parseDouble(discount.substring(1, discount.length()));

@@ -22,7 +22,10 @@ public class User extends Person {
         
         setPassword(password);
     }
-    
+
+    /**
+     * Generates the password hash
+     */
     public byte[] getHash(String password){
         try{
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
@@ -37,6 +40,9 @@ public class User extends Person {
 
     }
 
+    /**
+     * Check if the input matches the stored hash
+     */
     public boolean checkPassword(String password){
         return Arrays.equals(passwordHash, this.getHash(password));
     }
@@ -54,7 +60,10 @@ public class User extends Person {
     public void setUsername(String username) {
     	this.username = username;
     }
-    
+
+    /**
+     * Hashes a new password
+     */
     public void setPassword(String password) {
         new Random().nextBytes(salt);
         passwordHash = this.getHash(password);
