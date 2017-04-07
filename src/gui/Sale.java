@@ -108,13 +108,26 @@ public class Sale extends GridPane {
 		add(lTotal, 1, 1);
 		controller.updateTotal();
 		
+		Button selectCustomer = new Button("Vælg Kunde");
+		selectCustomer.setMinWidth(110);
+		selectCustomer.setOnAction(e -> controller.selectCustomer());
+		add(selectCustomer, 3, 1);
+		
 		pay.setDefaultButton(true);
 		pay.setMinWidth(80);
 		pay.setOnAction(e -> controller.showPayDialog());
-		add(pay, 3, 1);
+		add(pay, 4, 1);
 	}
 	
 	class Controller {
+		public void selectCustomer() {
+			SelectCustomerDialog scd = new SelectCustomerDialog();
+			
+			scd.showAndWait();
+			
+			service.updateOrderCutsomer(order, scd.getSelectedCustomer());
+		}
+		
 		public void showPayDialog() {
 			try {
 				PayDialog pd = new PayDialog(owner, order, order.totalPrice(), order.totalDeposit());
