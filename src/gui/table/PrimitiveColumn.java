@@ -91,7 +91,7 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 	@Override
 	public boolean isValid() {
 		for (boolean validity : this.validity) {
-			if (validity == false) return false;
+			if (!validity) return false;
 		}
 		
 		return true;

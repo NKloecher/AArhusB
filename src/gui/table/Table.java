@@ -124,7 +124,7 @@ public class Table<A> {
 	
 	public boolean isValid() {
 		for (Column<A> c : columns) {
-			if (c.isValid() == false) return false;
+			if (!c.isValid()) return false;
 		}
 		
 		return true;
