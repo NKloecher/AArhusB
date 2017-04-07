@@ -99,7 +99,7 @@ public class MainApp extends Application {
         hbMenu.getChildren().add(logout);
 
         m.setOnSelect(controller::setScreen);
-        controller.setScreen((GridPane) l);
+        controller.setScreen(l);
     }
 
     private class Controller {
