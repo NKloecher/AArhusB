@@ -143,4 +143,5 @@ public class Table<A> {
 
         return true;
     }
+
 }

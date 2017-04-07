@@ -64,7 +64,7 @@ public class Service {
 
         for (Product p : products) {
             if (p.getName().toLowerCase().contains(query.toLowerCase())
-                && (category == "All" || p.getCategory().equals(category))) {
+                && (category.equals("All") || p.getCategory().equals(category))) {
                 selected.add(p);
             }
         }

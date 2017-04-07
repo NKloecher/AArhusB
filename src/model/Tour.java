@@ -23,14 +23,23 @@ public class Tour implements Payable {
         this.user = user;
     }
 
-    @Override
+	/**
+	 * Adds a payment
+	 */
+	@Override
     public void pay(Payment payment) {
 		payments.add(payment);
     }
 
+	/**
+	 * Calculates the current payment status
+	 */
 	@Override
 	public PaymentStatus paymentStatus() throws DiscountParseException {
-		return null;
+		if (totalPayment() >= price){
+			return PaymentStatus.ORDERPAID;
+		}
+		return PaymentStatus.UNPAID;
 	}
 
 	public int getPersons() {
@@ -65,8 +74,15 @@ public class Tour implements Payable {
 		this.duration = duration;
 	}
 
+	/**
+	 * Calculate the total payment
+	 */
 	@Override
 	public double totalPayment() {
-		return 0;
+		double sum = 0;
+		for (Payment payment : payments) {
+			sum += payment.getAmount();
+		}
+		return sum;
 	}
 }

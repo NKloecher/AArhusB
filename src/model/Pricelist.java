@@ -20,6 +20,9 @@ public class Pricelist {
         products.put(product, price);
     }
 
+    /**
+     * Returns the price of a product
+     */
     public double getPrice(Product key) {
         return products.get(key);
     }
@@ -28,7 +31,7 @@ public class Pricelist {
     }
 
     public ArrayList<Product> getProducts() {
-        return new ArrayList<Product>(products.keySet());
+        return new ArrayList<>(products.keySet());
     }
 
     public void removeProduct(Product product) {

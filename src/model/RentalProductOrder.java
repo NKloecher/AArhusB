@@ -9,15 +9,16 @@ public class RentalProductOrder extends ProductOrder {
         super(product, pricelist);
     }
 
-    public boolean rentalComplete(){
-        assert unused + returned <= getAmount();
-        return unused + returned == getAmount();
-    }
-
+    /**
+     * Returns true if all items are returned and accounted for
+     */
     public boolean isReturned(){
         return getAmount() == getReturned() + getUnused() + getNotReturned();
     }
 
+    /**
+     * Get the total deposit price
+     */
     public double getDeposit(){
         return ((DepositProduct) getProduct()).getDeposit() * getAmount();
     }
@@ -46,6 +47,10 @@ public class RentalProductOrder extends ProductOrder {
         this.notReturned = notReturned;
     }
 
+    /**
+     * Returns the price of the deposit after the return
+     * NOTE: The refund on unopened returned items is also calculated here
+     */
     public double getDepositAfterReturn() {
         double sum = getNotReturned() * ((DepositProduct) getProduct()).getDeposit();
 

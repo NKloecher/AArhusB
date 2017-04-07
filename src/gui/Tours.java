@@ -6,7 +6,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import javafx.util.Callback;
+import model.PaymentStatus;
 import model.Tour;
 import service.Service;
 
@@ -32,8 +34,11 @@ public class Tours extends GridPane {
 	private final TextField tfNewPrice = new TextField();
 	private final Button btnNew = new Button("Opret");
 	private Set<LocalDate> tourDates;
+	private final Stage owner;
 
-	public Tours() {
+	public Tours(Stage owner) {
+		this.owner = owner;
+
 		setHgap(10);
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
@@ -64,6 +69,8 @@ public class Tours extends GridPane {
 		priceColumn.setPrefWidth(120.);
 		table.addColumn(priceColumn);
 
+		final ButtonColumn<Tour> buttonColumn = new ButtonColumn<>("Betal", controller::getPayments, controller::pay);
+		table.addColumn(buttonColumn);
 
 		tourDates = service.getTourDates();
 
@@ -227,6 +234,44 @@ public class Tours extends GridPane {
 			} catch (DateTimeParseException e){
 				lError.setText("Sluttiden er formateret forkert (HH:MM)");
 			}
+		}
+
+		public void updatePrice(Tour tour, String value){
+			try {
+				Double price = Double.parseDouble(value);
+				if (price >= 0){
+					service.updateTourPrice(tour, price);
+					lError.setText("");
+				} else {
+					lError.setText("Prisen skal mindst værre 0");
+				}
+			} catch (NumberFormatException ex){
+				lError.setText("Prisen er formateret forkert");
+			}
+
+		}
+
+		public Button getPayments(Tour tour) {
+			Button btn = new Button();
+			if (tour.paymentStatus() == PaymentStatus.ORDERPAID){
+				btn.setText("Betalt");
+				btn.setDisable(true);
+			} else {
+				btn.setText("Betal Nu");
+			}
+			return btn;
+		}
+
+		public void pay(Tour tour) {
+			PayDialog pd = new PayDialog(owner, tour, tour.getPrice(), null);
+
+			pd.showAndWait();
+
+			if (tour.paymentStatus() == PaymentStatus.ORDERPAID){
+				// Update the ui
+				openDate(dp.getValue());
+			}
+
 		}
 	}
 }

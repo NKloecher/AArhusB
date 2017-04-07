@@ -13,10 +13,16 @@ public class ProductOrder {
         this.price = pricelist.getPrice(product);
     }
 
+    /**
+     * Returns the price of an individual product when the discount is applied
+     */
     public double individualPrice() throws DiscountParseException {
         return price() / amount;
     }
 
+    /**
+     * Returns the price of the product order with the discount applied
+     */
     public double price() throws DiscountParseException {
     	double p = price * amount;
     	
