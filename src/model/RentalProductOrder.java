@@ -14,6 +14,14 @@ public class RentalProductOrder extends ProductOrder {
         return unused + returned == getAmount();
     }
 
+    public boolean isReturned(){
+        return getAmount() == getReturned() + getUnused() + getNotReturned();
+    }
+
+    public double getDeposit(){
+        return ((DepositProduct) getProduct()).getDeposit() * getAmount();
+    }
+
     public int getUnused() {
         return unused;
     }
@@ -36,5 +44,13 @@ public class RentalProductOrder extends ProductOrder {
 
     public void setNotReturned(int notReturned) {
         this.notReturned = notReturned;
+    }
+
+    public double getDepositAfterReturn() {
+        double sum = getNotReturned() * ((DepositProduct) getProduct()).getDeposit();
+
+        sum -= getUnused() * individualPrice();
+
+        return sum;
     }
 }

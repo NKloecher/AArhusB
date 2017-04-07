@@ -1,34 +1,99 @@
 package gui.table;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 
-public class PrimitiveColumn<A> extends Column<A> {
-	protected final Getter<A,Object> getter;
-	protected final PrimitiveSetter<A> setter;
+public class PrimitiveColumn<A, B> extends Column<A> {
+	private final Object type;
+	private final Getter<A, B> getter;
+	private final Setter<A, B> setter;
+	private final Validator<A> validator;
+	private List<Boolean> validity = new ArrayList<>();
 	
-	public PrimitiveColumn(String name, Getter<A, Object> getter, PrimitiveSetter<A> setter) {
+	/**
+	 * @param type
+	 * must be one of String.class, Integer.class or Double.class
+	 * @param getter
+	 * getter gets a value from the item in the current row of the table and populates the TextField with it.
+	 * @param setter
+	 * gets called, with the current item and the new value, when the text of the TextField gets updated and the validator function returns true.
+	 * @param validator
+	 * should return true when the value of the textfield should be set. 
+	 * can be null
+	 */
+	public PrimitiveColumn(String name, Object type, Getter<A, B> getter, Setter<A, B> setter, Validator<A> validator) {
 		super(name);
 		
+		assert type == String.class || type == Integer.class || type == Double.class;
+		assert getter != null;
+		assert setter != null;
+		
+		this.type = type;
 		this.getter = getter;
 		this.setter = setter;
+		this.validator = validator;
+	}
+	
+	public PrimitiveColumn(String name, Object type, Getter<A, B> getter, Setter<A, B> setter) {
+		this(name, type, getter, setter, null);
 	}
 	
 	@Override
-	public Node getNode(A owner) {
-		TextField tf = new TextField();
+	@SuppressWarnings("unchecked")
+	public Node getNode(A item) {
+		final int id = validity.size();
+		final TextField tf = new TextField(); 
+		final B value = getter.get(item);
 		
-		Object o = getter.get(owner);
+		validity.add(true);
 		
-		if (o != null) tf.setText(o.toString());
+		if (value != null) {
+			tf.setText(value.toString());			
+		}
+		else {
+			tf.setText("");
+		}
 		
 		tf.setOnKeyReleased(e -> {
-			boolean result = validateHandler.exec();
-			if (result) setter.set(owner, tf.getText());
-        });
-		
-		nodes.add(tf);
-		
+			final String text = tf.getText();
+			final String error = ((validator == null) ? null : validator.validate(item, text));
+			
+			validity.set(id, error == null);
+			
+			if (error == null) {
+				if (type.equals(String.class)) {
+					((Setter<A, String>)setter).set(item, text);
+				}
+				else if (type.equals(Integer.class)) {
+					Integer i = null;
+					if (!text.isEmpty()) i = Integer.parseInt(text); 
+					
+					((Setter<A, Integer>)setter).set(item, i);
+				}
+				else if (type.equals(Double.class)) {
+					Double d = null;
+					if (!text.isEmpty()) d = Double.parseDouble(text);
+					
+					((Setter<A, Double>)setter).set(item, d);
+				}
+				validationHandler.onValidate(null, true);
+			}
+			else {
+				validationHandler.onValidate(error, false);
+			}
+		});
+
 		return tf;
+	}
+
+	@Override
+	public boolean isValid() {
+		for (boolean validity : this.validity) {
+			if (validity == false) return false;
+		}
+		
+		return true;
 	}
 }

@@ -1,5 +1,6 @@
 package gui.table;
 
+
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 
@@ -9,6 +10,12 @@ public class DateColumn<A> extends Column<A> {
 	private Getter<A, LocalDate> getter;
 	private Setter<A, LocalDate> setter;
 
+	/**
+	 * @param getter
+	 * the datepicker gets the value retuened
+	 * @param setter
+	 * gets called when a new date is selected 
+	 */
 	public DateColumn(String name, Getter<A, LocalDate> getter, Setter<A, LocalDate> setter) {
 		super(name);
 		
@@ -24,5 +31,10 @@ public class DateColumn<A> extends Column<A> {
 		datePicker.setOnAction(e -> setter.set(owner, datePicker.getValue()));
 
 		return datePicker;
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
 	}
 }

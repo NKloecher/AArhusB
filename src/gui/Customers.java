@@ -13,6 +13,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Customer;
 import model.Order;
 import storage.Storage;
@@ -44,6 +45,7 @@ public class Customers extends GridPane {
 
         lvCustomers.setPrefSize(200, 300);
         lvCustomers.getItems().addAll(storage.getCustomers());
+        lvCustomers.getItems().sort(null);
         ChangeListener<Customer> listener =
             (ov, oldString, newString) -> controller.loadOrdersAction();
         lvCustomers.getSelectionModel().selectedItemProperty().addListener(listener);
@@ -66,7 +68,7 @@ public class Customers extends GridPane {
 
     }
 
-    private class Controller {
+    private class Controller extends Window {
         private ProductOrderDialog createProductOrderDialog;
 
         public void loadOrdersAction() {
@@ -87,6 +89,9 @@ public class Customers extends GridPane {
                     Customer c = lvCustomers.getSelectionModel().getSelectedItem();
                     ViewCustomerDialog vc = new ViewCustomerDialog(c);
                     vc.showAndWait();
+                    lvCustomers.getItems().clear();
+                    lvCustomers.getItems().addAll(storage.getCustomers());
+                    lvCustomers.getItems().sort(null);
                 }
             }
             catch (Exception e) {
@@ -120,7 +125,9 @@ public class Customers extends GridPane {
         public void updateCustomers(Customer c) {
             if (c != null) {
                 lvCustomers.getItems().add(c);
+                lvCustomers.getItems().sort(null);
             }
         }
+
     }
 }

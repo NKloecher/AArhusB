@@ -1,5 +1,6 @@
 package gui.table;
 
+@FunctionalInterface
 public interface Getter<A, B> {
-	public B get(A owner);
+	public B get(A item);
 }

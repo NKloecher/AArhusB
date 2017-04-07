@@ -26,9 +26,9 @@ public class Service {
     }
 
     public void updateOrder(Order order) {
-    	// does nothing because there is no database
+        // does nothing because there is no database
     }
-    
+
     public void updateProductName(Product product, String name) {
         product.setName(name);
     }
@@ -42,19 +42,19 @@ public class Service {
     }
 
     public List<Order> getRentals() {
-    	List<Order> rentals = new ArrayList<>();
-    	
-    	for (Order o : storage.getOrders()) {
-    		PaymentStatus s = o.paymentStatus();
-    		
-			if (s == PaymentStatus.DEPOSITPAID) {
-				rentals.add(o);
-			}
-    	}
-    	
-    	return rentals;
+        List<Order> rentals = new ArrayList<>();
+
+        for (Order o : storage.getOrders()) {
+            PaymentStatus s = o.paymentStatus();
+
+            if (s == PaymentStatus.DEPOSITPAID) {
+                rentals.add(o);
+            }
+        }
+
+        return rentals;
     }
-    
+
     /**
      * if category is "All" every category will be selected
      */
@@ -125,7 +125,7 @@ public class Service {
         return u;
     }
 
-    public void updateUserPassword(User user, String password){
+    public void updateUserPassword(User user, String password) {
         user.setPassword(password);
     }
 
@@ -155,54 +155,54 @@ public class Service {
         return true;
     }
 
-    public Tour createTour(int persons, LocalDateTime date, double price, Duration duration){
+    public Tour createTour(int persons, LocalDateTime date, double price, Duration duration) {
         Tour tour = new Tour(persons, date, price, duration, activeUser);
         storage.addTour(tour);
         return tour;
     }
 
-    public List<Tour> getTours(){
+    public List<Tour> getTours() {
         return storage.getTours();
     }
 
-    public List<Tour> getTours(LocalDate date){
+    public List<Tour> getTours(LocalDate date) {
         List<Tour> tours = new ArrayList<>();
-        for (Tour tour : getTours()){
-            if (tour.getDate().toLocalDate().equals(date)){
+        for (Tour tour : getTours()) {
+            if (tour.getDate().toLocalDate().equals(date)) {
                 tours.add(tour);
             }
         }
         return tours;
     }
 
-    public Set<LocalDate> getTourDates(){
+    public Set<LocalDate> getTourDates() {
         Set<LocalDate> dates = new HashSet<>();
-        for (Tour tour : getTours()){
+        for (Tour tour : getTours()) {
             dates.add(tour.getDate().toLocalDate());
         }
         return dates;
     }
 
-    public void updateTourPersons(Tour tour, int persons){
+    public void updateTourPersons(Tour tour, int persons) {
         tour.setPersons(persons);
     }
 
-    public void updateTourDate(Tour tour, LocalDateTime date){
+    public void updateTourDate(Tour tour, LocalDateTime date) {
         tour.setDate(date);
     }
 
-    public void updateTourPrice(Tour tour, double price){
+    public void updateTourPrice(Tour tour, double price) {
         tour.setPrice(price);
     }
 
-    public void updateTourDuration(Tour tour, Duration duration){
+    public void updateTourDuration(Tour tour, Duration duration) {
         tour.setDuration(duration);
     }
 
     public void updateProductOrderAmount(ProductOrder productOrder, int amount) {
-    	productOrder.setAmount(amount);
+        productOrder.setAmount(amount);
     }
-    
+
     public Product createProduct(String name, Integer clips, String category, String image) {
         Product product = new Product(name, clips, category, image);
         storage.addProduct(product);
@@ -229,7 +229,7 @@ public class Service {
         return payment;
     }
 
-    public void removeProductFromPricelist(Product product, Pricelist pricelist){
+    public void removeProductFromPricelist(Product product, Pricelist pricelist) {
         pricelist.removeProduct(product);
     }
 
@@ -242,7 +242,7 @@ public class Service {
     }
 
     public Order createOrder() {
-    	return createOrder(activeUser, selectedPricelist);
+        return createOrder(activeUser, selectedPricelist);
     }
 
     public Order createOrder(User user, Pricelist pricelist) {
@@ -288,7 +288,8 @@ public class Service {
             createProduct("Sweet Georgia Brown", 2, "flaske", null);
         addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl1, 50);
         addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl2, 36);
-        Product productFlaskeExtraPilsner = createProduct("Extra Pilsner", 2, "flaske", "extra-pilsner.png");
+        Product productFlaskeExtraPilsner =
+            createProduct("Extra Pilsner", 2, "flaske", "extra-pilsner.png");
         addProductToPricelist(productFlaskeExtraPilsner, pl1, 50);
         addProductToPricelist(productFlaskeExtraPilsner, pl2, 36);
 
@@ -328,11 +329,12 @@ public class Service {
         test3.setDiscount("-10");
         test2.setAmount(5);
         order1.setCustomer(uno);
-        
+
         Order order2 = createOrder(test, pl2);
         createRentalProductOrder(order2, depositProductKlosterbryg);
         createPayment(order2, order2.totalPrice() + order2.totalDeposit(), PaymentType.CASH);
-        
+        order2.setCustomer(uno);
+
     }
 
     public static Service getInstance() {
