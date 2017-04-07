@@ -30,7 +30,10 @@ public class Tour implements Payable {
 
 	@Override
 	public PaymentStatus paymentStatus() throws DiscountParseException {
-		return null;
+		if (totalPayment() >= price){
+			return PaymentStatus.ORDERPAID;
+		}
+		return PaymentStatus.UNPAID;
 	}
 
 	public int getPersons() {
