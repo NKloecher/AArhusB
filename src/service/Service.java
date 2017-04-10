@@ -203,9 +203,9 @@ public class Service {
     }
 
     public void updateOrderCutsomer(Order order, Customer customer) {
-    	order.setCustomer(customer);
+        order.setCustomer(customer);
     }
-    
+
     public Product createProduct(String name, Integer clips, String category, String image) {
         Product product = new Product(name, clips, category, image);
         storage.addProduct(product);
@@ -279,6 +279,7 @@ public class Service {
     public Storage loadStorage() throws IOException, ClassNotFoundException {
         return Storage.loadStorage();
     }
+
     public void saveStorage() throws IOException {
         Storage.saveStorage();
     }
@@ -289,7 +290,8 @@ public class Service {
             System.out.println(storage.getPricelists());
             setSelectedPricelist(storage.getPricelists().get(0));
             return;
-        } catch (IOException | ClassNotFoundException e) {
+        }
+        catch (IOException | ClassNotFoundException e) {
             System.out.println("Could not load storage, generating data from initStorage");
         }
 
@@ -363,26 +365,33 @@ public class Service {
         order2.setCustomer(uno);
 
     }
-    
+
     public List<Order> getOrdersInPeriod(TimePeriod timePeriod) {
-    	List<Order> selected = new ArrayList<Order>();
-    	LocalDate fromDate = LocalDate.now();
-    	
-    	switch (timePeriod) {
-			case DAY: fromDate = fromDate.minus(1, ChronoUnit.DAYS);
-			case WEEK: fromDate = fromDate.minus(1, ChronoUnit.WEEKS);
-			case MONTH: fromDate = fromDate.minus(1, ChronoUnit.MONTHS);
-			case YEAR: fromDate = fromDate.minus(1, ChronoUnit.YEARS);
-			case FOREVER: fromDate = LocalDate.ofYearDay(1970, 1);
-		}
-    	
-    	for (Order o : storage.getOrders()) {
-    		if (o.getDate().isAfter(fromDate)) {
-    			selected.add(o);
-    		}
-    	}
-    	
-    	return selected;
+        List<Order> selected = new ArrayList<Order>();
+        LocalDate fromDate = LocalDate.now();
+
+        switch (timePeriod) {
+        case DAY:
+            fromDate = fromDate.minus(1, ChronoUnit.DAYS);
+        case WEEK:
+            fromDate = fromDate.minus(1, ChronoUnit.WEEKS);
+        case MONTH:
+            fromDate = fromDate.minus(1, ChronoUnit.MONTHS);
+        case YEAR:
+            fromDate = fromDate.minus(1, ChronoUnit.YEARS);
+        case FOREVER:
+            fromDate = LocalDate.ofYearDay(1970, 1);
+        default:
+            break;
+        }
+
+        for (Order o : storage.getOrders()) {
+            if (o.getDate().isAfter(fromDate)) {
+                selected.add(o);
+            }
+        }
+
+        return selected;
     }
 
     public static Service getInstance() {
