@@ -2,7 +2,6 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import exceptions.DiscountParseException;
@@ -22,7 +21,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.Pricelist;
 import service.Service;
-import storage.Storage;
 
 public class MainApp extends Application {
     private final Service service = Service.getInstance();
