@@ -37,7 +37,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws DiscountParseException {
-    	this.owner = stage;
+        this.owner = stage;
         Service.getInstance().initStorage();
 
         Scene scene = new Scene(pane);
@@ -104,10 +104,11 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         try {
             service.saveStorage();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error!");
             alert.setHeaderText("Error saving data");
@@ -132,6 +133,15 @@ public class MainApp extends Application {
         }
 
         public void setScreen(Pane pane) {
+            List<String> pricelists = new ArrayList<>();
+
+            for (Pricelist pl : service.getPricelists()) {
+                pricelists.add(pl.getName());
+            }
+
+            cbPricelist.getItems().setAll(pricelists);
+            cbPricelist.getSelectionModel().select(0);
+
             pane.setPadding(new Insets(20));
 
             ObservableList<Node> children = MainApp.this.pane.getChildren();

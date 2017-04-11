@@ -12,17 +12,17 @@ public class MainMenu extends GridPane {
     private final Controller controller = new Controller();
 
     public MainMenu(Stage owner) {
-    	this.owner = owner;
+        this.owner = owner;
 
         setHgap(10);
         setVgap(10);
         setAlignment(Pos.TOP_CENTER);
 
-		Button sale = getBigButton("Lav salg");
-		sale.setOnAction(e -> controller.selectSale());
-		add(sale, 0, 0);
+        Button sale = getBigButton("Lav salg");
+        sale.setOnAction(e -> controller.selectSale());
+        add(sale, 0, 0);
 
-        Button statistics = getBigButton("Statestik");
+        Button statistics = getBigButton("Statistik");
         statistics.setOnAction(e -> controller.select(new Statistics()));
         add(statistics, 0, 1);
 
@@ -30,9 +30,9 @@ public class MainMenu extends GridPane {
         rentals.setOnAction(e -> controller.selectRentals());
         add(rentals, 0, 2);
 
-		Button tours = getBigButton("Rundvisninger");
-		tours.setOnAction(e -> controller.select(new Tours(owner)));
-		add(tours, 0, 3);
+        Button tours = getBigButton("Rundvisninger");
+        tours.setOnAction(e -> controller.select(new Tours(owner)));
+        add(tours, 0, 3);
 
         Button products = getBigButton("Produkter");
         products.setOnAction(e -> controller.select(new Products()));
@@ -67,14 +67,14 @@ public class MainMenu extends GridPane {
     }
 
     private class Controller {
-    	public void selectRentals() {
-    		select(new Rentals(owner, x -> selectRentals()));
-    	}
-    	
-    	public void selectSale() {
-    		select(new Sale(owner, x -> selectSale()));
-    	}
-    	
+        public void selectRentals() {
+            select(new Rentals(owner, x -> selectRentals()));
+        }
+
+        public void selectSale() {
+            select(new Sale(owner, x -> selectSale()));
+        }
+
         public void select(GridPane pane) {
             if (selectHandler == null) {
                 return;

@@ -223,6 +223,11 @@ public class Service {
         return storage.getPricelists();
     }
 
+    public void removePricelist(Pricelist pricelist) {
+        storage.removePricelist(pricelist);
+        setSelectedPricelist(storage.getPricelists().get(0));
+    }
+
     public Pricelist createPricelist(String name) {
         Pricelist pricelist = new Pricelist(name);
         storage.addPricelist(pricelist);
@@ -287,7 +292,7 @@ public class Service {
     public void initStorage() throws DiscountParseException {
         try {
             storage = loadStorage();
-            System.out.println(storage.getPricelists());
+            System.out.println("Loaded pricelists" + storage.getPricelists());
             setSelectedPricelist(storage.getPricelists().get(0));
             return;
         }

@@ -14,9 +14,9 @@ public class Pricelist implements Serializable {
     }
 
     public String getName() {
-    	return name;
+        return name;
     }
-    
+
     public void addProduct(Product product, double price) {
         products.put(product, price);
     }
@@ -27,8 +27,9 @@ public class Pricelist implements Serializable {
     public double getPrice(Product key) {
         return products.get(key);
     }
+
     public void setPrice(Product product, double price) {
-    	products.put(product, price);
+        products.put(product, price);
     }
 
     public ArrayList<Product> getProducts() {
@@ -37,5 +38,10 @@ public class Pricelist implements Serializable {
 
     public void removeProduct(Product product) {
         products.remove(product);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
