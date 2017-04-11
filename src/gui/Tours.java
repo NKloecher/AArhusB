@@ -236,21 +236,6 @@ public class Tours extends GridPane {
 			}
 		}
 
-		public void updatePrice(Tour tour, String value){
-			try {
-				Double price = Double.parseDouble(value);
-				if (price >= 0){
-					service.updateTourPrice(tour, price);
-					lError.setText("");
-				} else {
-					lError.setText("Prisen skal mindst værre 0");
-				}
-			} catch (NumberFormatException ex){
-				lError.setText("Prisen er formateret forkert");
-			}
-
-		}
-
 		public Button getPayments(Tour tour) {
 			Button btn = new Button();
 			if (tour.paymentStatus() == PaymentStatus.ORDERPAID){
