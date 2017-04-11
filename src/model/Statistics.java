@@ -42,7 +42,7 @@ public class Statistics {
 				Product p = po.getProduct();
 				String category = po.getProduct().getCategory();
 				
-				if (category.equals("fadøl") || category.equals("falske") || category.equals("fustage")) {
+				if (category.equals("fadøl") || category.equals("flaske") || category.equals("fustage")) {
 					
 					String name = p.getName().split(",")[0].trim();
 					Double currentTotal = sales.get(name);
