@@ -2,16 +2,23 @@ package gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import gui.table.ButtonColumn;
+import gui.table.Column;
 import gui.table.ListColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import model.Permission;
 import model.Product;
 import service.Service;
 import storage.Storage;
@@ -23,6 +30,7 @@ public class Products extends GridPane {
     private final Controller controller = new Controller();
     private final Table<Product> table = new Table<>(null);
     private final TextField txfCategory = new TextField();
+    private final TextField txfProduct = new TextField();
 
     public Products() {
         setHgap(10);
@@ -38,27 +46,82 @@ public class Products extends GridPane {
         categories.addAll(storage.getCategories());
 
         table.addColumn(new PrimitiveColumn<>("Navn", String.class, Product::getName,
-        		service::updateProductName));
+            service::updateProductName));
         table.addColumn(new ListColumn<>("Kategori", Product::getCategory,
-				service::updateProductCategory,
-				categories.toArray(new String[categories.size()])));
+            service::updateProductCategory,
+            categories.toArray(new String[categories.size()])));
         table.addColumn(new PrimitiveColumn<>("Klips", Integer.class, Product::getClips,
-        	service::updateProductClips));
+            service::updateProductClips));
+        if (service.getActiveUser().getPermission() == Permission.ADMIN) {
+            Column<Product> delete =
+                new ButtonColumn<>("Delete", x -> controller.deleteProduct(x));
+            table.addColumn(delete);
+        }
 
         table.setItems(storage.getProducts());
-        add(sp, 0, 0);
+        add(sp, 0, 0, 4, 1);
 
-        add(txfCategory, 1, 1);
+        add(txfCategory, 0, 1);
 
         Button btnCreateCategory = new Button("Lav ny Kategori");
-        add(btnCreateCategory, 2, 1);
+        add(btnCreateCategory, 1, 1);
         btnCreateCategory.setOnAction(e -> controller.createCategoryAction());
+
+        add(txfProduct, 0, 2);
+
+        Button btnCreateProduct = new Button("Lav nyt Produkt");
+        add(btnCreateProduct, 1, 2);
+        btnCreateProduct.setOnAction(e -> controller.createProduct());
 
     }
 
     private class Controller {
+
+//        public Button adminPrivileges() {
+//            Button b = new Button("Delete");
+//            if (service.getActiveUser().getPermission() != Permission.ADMIN) {
+//                b.setDisable(true);
+//            }
+//            return b;
+//        }
+
+        public void deleteProduct(Product product) {
+            try {
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Sletning af produkt");
+                alert.setHeaderText("Du er i gang med at slette" + product);
+                alert.setContentText(
+                    "Tryk OK for at slette, vær opmærksom på at slettede produkter ikke kan genoprettes");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    table.removeItem(product);
+                    service.removeProduct(product);
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void createProduct() {
+            try {
+                String name = txfProduct.getText().trim();
+                if (!name.isEmpty()) {
+                    service.createProduct(name, null, null, null);
+                    table.setItems(storage.getProducts());
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         public void createCategoryAction() {
-            service.addCategory(txfCategory.getText().trim());
+            String category = txfCategory.getText().trim();
+            if (!category.isEmpty()) {
+                service.addCategory(category);
+            }
         }
     }
 

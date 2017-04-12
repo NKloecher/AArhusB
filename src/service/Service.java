@@ -204,6 +204,10 @@ public class Service {
         order.setCustomer(customer);
     }
 
+    public void removeProduct(Product p) {
+        storage.removeProduct(p);
+    }
+
     public Product createProduct(String name, Integer clips, String category, String image) {
         Product product = new Product(name, clips, category, image);
         storage.addProduct(product);

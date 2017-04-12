@@ -92,6 +92,10 @@ public class Storage implements Serializable {
         products.add(p);
     }
 
+    public void removeProduct(Product p) {
+        products.remove(p);
+    }
+
     public List<Pricelist> getPricelists() {
         return new ArrayList<>(pricelists);
     }
