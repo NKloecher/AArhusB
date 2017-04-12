@@ -78,10 +78,14 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 					
 					((Setter<A, Double>)setter).set(item, d);
 				}
-				validationHandler.onValidate(null, true);
+				if (validationHandler != null) {
+					validationHandler.onValidate(null, true);					
+				}
 			}
 			else {
-				validationHandler.onValidate(error, false);
+				if (validationHandler != null) {
+					validationHandler.onValidate(error, false);
+				}
 			}
 		});
 
