@@ -138,7 +138,6 @@ public class MainApp extends Application {
             }
 
             cbPricelist.getItems().setAll(pricelists);
-            cbPricelist.getSelectionModel().select(0);
 
             pane.setPadding(new Insets(20));
 
