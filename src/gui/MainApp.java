@@ -50,15 +50,13 @@ public class MainApp extends Application {
     }
 
     private void initContent() {
-        MainMenu m = new MainMenu(owner);
-
-        HBox hbMenu = new HBox();
+    	HBox hbMenu = new HBox();
         hbMenu.setStyle("-fx-background-color: #666; -fx-padding: 20px;");
 
         hbMenu.setAlignment(Pos.BASELINE_LEFT);
 
         Button home = new Button("Hjem");
-        home.setOnAction(e -> controller.setScreen(m));
+        
         hbMenu.getChildren().add(home);
 
         Label lUser = new Label();
@@ -78,6 +76,9 @@ public class MainApp extends Application {
         hbMenu.getChildren().add(cbPricelist);
 
         Login l = new Login(x -> {
+        	MainMenu m = new MainMenu(owner);
+        	home.setOnAction(e -> controller.setScreen(m));
+        	m.setOnSelect(controller::setScreen);
             controller.setScreen(m);
 
             lUser.setText(service.getActiveUser().getUsername());
@@ -96,8 +97,7 @@ public class MainApp extends Application {
             this.pane.getChildren().removeIf(n -> (n instanceof HBox));
         });
         hbMenu.getChildren().add(logout);
-
-        m.setOnSelect(controller::setScreen);
+        
         controller.setScreen(l);
     }
 

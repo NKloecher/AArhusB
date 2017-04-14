@@ -5,9 +5,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import model.Permission;
+import service.Service;
 
 public class MainMenu extends GridPane {
     private Handler<Pane> selectHandler;
+    private final Service service = Service.getInstance();
     private final Stage owner;
     private final Controller controller = new Controller();
 
@@ -49,7 +52,13 @@ public class MainMenu extends GridPane {
         Button customers = getBigButton("Kunder");
         add(customers, 0, 7);
         customers.setOnAction(e -> controller.select(new Customers()));
-
+        
+        if (service.getActiveUser().getPermission() != Permission.ADMIN) {
+        	products.setDisable(true);
+        	pricelists.setDisable(true);
+        	users.setDisable(true);
+        	customers.setDisable(true);
+        }
     }
 
     public void setOnSelect(Handler<Pane> handler) {
