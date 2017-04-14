@@ -59,6 +59,34 @@ public class Statistics {
 		return sales;
 	}
 	
+	public double getClipCardSales() {
+		double d = 0;
+		
+		for (Order o : orders) {
+			for (ProductOrder po : o.getProductOrders()) {
+				if (po.getProduct().getName().startsWith("Klippekort")) {
+					d += po.price();
+				}
+			}
+		}
+		
+		return d;
+	}
+	
+	public int getClipCardUses() {
+		int d = 0;
+		
+		for (Order o : orders) {
+			for (Payment p : o.getPayments()) {
+				if (p.getPaymentType() == PaymentType.CLIP_CARD) {
+					d += p.getAmount();
+				}	
+			}
+		}
+		
+		return d;
+	}
+	
 	public Map<String, Double> getSalesPrCategory() {
 		Map<String, Double> sales = new HashMap<>();
 		

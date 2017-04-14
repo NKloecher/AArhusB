@@ -223,6 +223,10 @@ public class Order implements Payable, Serializable {
     public void pay(Payment payment) {
         payments.add(payment);
     }
+    
+    public List<Payment> getPayments() {
+    	return new ArrayList<>(payments);
+    }
 
     /**
      * Calculates the current status of an order
