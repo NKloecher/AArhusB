@@ -302,7 +302,8 @@ public class Service {
             System.out.println("Could not load storage, generating data from initStorage");
         }
 
-        User test = createUser("John", "test", "test", Permission.ADMIN);
+        User user = createUser("John", "test", "test", Permission.ADMIN);
+        User user1 = createUser("John Johnson", "test1", "test", Permission.ADMIN);
 
         Pricelist pl1 = createPricelist("Fredagsbar");
         setSelectedPricelist(pl1);
@@ -352,24 +353,31 @@ public class Service {
         createCustomer("Hans Hansen", "Vestervej 38", "35698457", "somewhere@somethere.dk");
         createCustomer("Hans Jensen", "Østervej 38", "35864557", "somehere@somethere.dk");
         createCustomer("Østerli Nielsen", "Søndenvej 38", "8979854", "where@somethere.dk");
-        createCustomer("Person 2.0", "Nordenvej 38", "39875557", "here@somethere.dk");
+        Customer dos = createCustomer("Person 2.0", "Nordenvej 38", "39875557", "here@somethere.dk");
         createCustomer("Niels Sommer", "Åkæret 1", "35634687", "there@somethere.dk");
         Customer uno =
             createCustomer("Jens-Peter Petersen", "Nyborg", "878788457", "somehow@somethere.dk");
 
         //Order
-        Order order1 = createOrder(test, pl1);
-        ProductOrder test2 = createProductOrder(order1, productFadolKlosterbryg);
+        Order order1 = createOrder(user, pl1);
+        ProductOrder po1 = createProductOrder(order1, productFadolKlosterbryg);
         createProductOrder(order1, productFadolSweetGeorgiaBrown);
-        ProductOrder test3 = createProductOrder(order1, productFlaskeExtraPilsner);
-        test3.setDiscount("-10");
-        test2.setAmount(5);
+        ProductOrder po2 = createProductOrder(order1, productFlaskeExtraPilsner);
+        po1.setAmount(5);
+        po2.setDiscount("-10");
         order1.setCustomer(uno);
 
-        Order order2 = createOrder(test, pl2);
+        Order order2 = createOrder(user, pl2);
         createRentalProductOrder(order2, depositProductKlosterbryg);
         createPayment(order2, order2.totalPrice() + order2.totalDeposit(), PaymentType.CASH);
         order2.setCustomer(uno);
+        
+        Order order3 = createOrder(user1, pl1);
+        createProductOrder(order3, productFadolKlosterbryg);
+        createProductOrder(order3, productFadolSweetGeorgiaBrown);
+        ProductOrder po4 = createProductOrder(order3, productFlaskeExtraPilsner);
+        po4.setAmount(5);
+        order3.setCustomer(dos);
 
     }
 
