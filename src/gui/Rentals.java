@@ -24,7 +24,11 @@ public class Rentals extends GridPane {
 	private final ListView<Order> lwRentals = new ListView<>();
 	private final Label lTotal = new Label();
 	private final Label lError = new Label();
-	private final Table<ProductOrder> table = new Table<>((error, isValid) -> lError.setText(error));
+	private final Table<ProductOrder> table = new Table<>((error, isValid) -> {
+		controller.setTotal();
+		
+		lError.setText(error);
+	});
 	private final Handler<?> rentalPaidHandler;
 	private final Stage owner;
 	private Order selectedRental;
@@ -40,8 +44,8 @@ public class Rentals extends GridPane {
 
 		table.addColumn(new LabelColumn<>("Navn", po -> po.getProduct().getName()));
 		table.addColumn(new LabelColumn<>("Antal", po -> Integer.toString(po.getAmount())));
-		table.addColumn(new PrimitiveColumn<>("Ubrugte", Integer.class, controller::getUnused, controller::updateUnused, controller::validateUnused));
-		table.addColumn(new PrimitiveColumn<>("Returneret", Integer.class, controller::getReturned, controller::updateReturned, controller::validateReturned));
+		table.addColumn(new PrimitiveColumn<>("Ubrugte", PrimitiveColumn.Type.Integer, controller::getUnused, controller::updateUnused, controller::validateUnused));
+		table.addColumn(new PrimitiveColumn<>("Returneret", PrimitiveColumn.Type.Integer, controller::getReturned, controller::updateReturned, controller::validateReturned));
 		table.getPane().setPadding(new Insets(10));
 
 		add(table.getPane(), 1, 0);

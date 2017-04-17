@@ -59,7 +59,7 @@ public class Sale extends GridPane {
             new LabelColumn<>("Navn", po -> po.getProduct().getName());
         nameColumn.setPrefWidth(99999.0);
 
-        Column<ProductOrder> amountColumn = new PrimitiveColumn<>("Antal", Integer.class,
+        Column<ProductOrder> amountColumn = new PrimitiveColumn<>("Antal", PrimitiveColumn.Type.Integer,
             ProductOrder::getAmount, controller::updateAmount, (po, v) -> {
                 if (Pattern.matches("^\\d+$", v)) {
                     return null;
@@ -68,7 +68,7 @@ public class Sale extends GridPane {
             });
         amountColumn.setMinWidth(50.0);
 
-        Column<ProductOrder> discountColumn = new PrimitiveColumn<>("Rabat", String.class,
+        Column<ProductOrder> discountColumn = new PrimitiveColumn<>("Rabat", PrimitiveColumn.Type.String,
             ProductOrder::getDiscount, controller::updateDiscount);
         discountColumn.setMinWidth(50.0);
 

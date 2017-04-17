@@ -45,12 +45,12 @@ public class Products extends GridPane {
         List<String> categories = new ArrayList<>();
         categories.addAll(storage.getCategories());
 
-        table.addColumn(new PrimitiveColumn<>("Navn", String.class, Product::getName,
+        table.addColumn(new PrimitiveColumn<>("Navn", PrimitiveColumn.Type.String, Product::getName,
             service::updateProductName));
         table.addColumn(new ListColumn<>("Kategori", Product::getCategory,
             service::updateProductCategory,
             categories.toArray(new String[categories.size()])));
-        table.addColumn(new PrimitiveColumn<>("Klips", Integer.class, Product::getClips,
+        table.addColumn(new PrimitiveColumn<>("Klip", PrimitiveColumn.Type.Integer, Product::getClips,
             service::updateProductClips));
         if (service.getActiveUser().getPermission() == Permission.ADMIN) {
             Column<Product> delete =

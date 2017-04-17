@@ -43,7 +43,7 @@ public class Tours extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 
-		final Column<Tour> personsColumn = new PrimitiveColumn<>("Antal", Integer.class, Tour::getPersons, service::updateTourPersons, (t, v) -> {
+		final Column<Tour> personsColumn = new PrimitiveColumn<>("Antal", PrimitiveColumn.Type.Integer, Tour::getPersons, service::updateTourPersons, (t, v) -> {
 			if (Pattern.matches("^\\d+$", v)) return null;
 			return "Antal skal være et posetivt tal";
 		});
@@ -54,15 +54,15 @@ public class Tours extends GridPane {
 		dateColumn.setPrefWidth(110.);
 		table.addColumn(dateColumn);
 
-		final Column<Tour> startColumn = new PrimitiveColumn<>("Start", String.class, controller::getTimeStart, controller::updateStartTime);
+		final Column<Tour> startColumn = new PrimitiveColumn<>("Start", PrimitiveColumn.Type.String, controller::getTimeStart, controller::updateStartTime);
 		startColumn.setPrefWidth(70.);
 		table.addColumn(startColumn);
 
-		final Column<Tour> endColumn = new PrimitiveColumn<>("Slut", String.class, controller::getTimeEnd, controller::updateEndTime);
+		final Column<Tour> endColumn = new PrimitiveColumn<>("Slut", PrimitiveColumn.Type.String, controller::getTimeEnd, controller::updateEndTime);
 		endColumn.setPrefWidth(70.);
 		table.addColumn(endColumn);
 
-		final Column<Tour> priceColumn = new PrimitiveColumn<>("Pris", Double.class, Tour::getPrice, service::updateTourPrice, (t,v) -> {
+		final Column<Tour> priceColumn = new PrimitiveColumn<>("Pris", PrimitiveColumn.Type.Double, Tour::getPrice, service::updateTourPrice, (t,v) -> {
 			if (Pattern.matches("^\\d+$", v)) return null;
 			return "Pris skal være et posetivt tal";
 		});

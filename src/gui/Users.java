@@ -32,12 +32,12 @@ public class Users extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 		
-		Column<User> nameColumn = new PrimitiveColumn<>("Navn", String.class, User::getName, controller::updateName, (u, n) -> controller.validateName(n));
+		Column<User> nameColumn = new PrimitiveColumn<>("Navn", PrimitiveColumn.Type.String, User::getName, controller::updateName, (u, n) -> controller.validateName(n));
 		nameColumn.setMinWidth(150.0);
 		nameColumn.setMaxWidth(150.0);
 		table.addColumn(nameColumn);
 		
-		Column<User> usernameColumn = new PrimitiveColumn<>("Brugernavn", String.class, User::getUsername, controller::updateUsername, (u, bn) -> controller.validateUsername(bn, u));
+		Column<User> usernameColumn = new PrimitiveColumn<>("Brugernavn", PrimitiveColumn.Type.String, User::getUsername, controller::updateUsername, (u, bn) -> controller.validateUsername(bn, u));
 		usernameColumn.setMinWidth(150.0);
 		usernameColumn.setMaxWidth(150.0);
 		table.addColumn(usernameColumn);

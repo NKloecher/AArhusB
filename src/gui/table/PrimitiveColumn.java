@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 
 public class PrimitiveColumn<A, B> extends Column<A> {
-	private final Object type;
+	private final Type<B> type;
 	private final Getter<A, B> getter;
 	private final Setter<A, B> setter;
 	private final Validator<A> validator;
@@ -23,10 +23,9 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 	 * should return true when the value of the textfield should be set. 
 	 * can be null
 	 */
-	public PrimitiveColumn(String name, Object type, Getter<A, B> getter, Setter<A, B> setter, Validator<A> validator) {
+	public PrimitiveColumn(String name, Type<B> type, Getter<A, B> getter, Setter<A, B> setter, Validator<A> validator) {
 		super(name);
 		
-		assert type == String.class || type == Integer.class || type == Double.class;
 		assert getter != null;
 		assert setter != null;
 		
@@ -36,12 +35,11 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 		this.validator = validator;
 	}
 	
-	public PrimitiveColumn(String name, Object type, Getter<A, B> getter, Setter<A, B> setter) {
+	public PrimitiveColumn(String name, Type<B> type, Getter<A, B> getter, Setter<A, B> setter) {
 		this(name, type, getter, setter, null);
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public Node getNode(A item) {
 		final int id = validity.size();
 		final TextField tf = new TextField(); 
@@ -62,22 +60,9 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 			
 			validity.set(id, error == null);
 			
-			if (error == null) {
-				if (type.equals(String.class)) {
-					((Setter<A, String>)setter).set(item, text);
-				}
-				else if (type.equals(Integer.class)) {
-					Integer i = null;
-					if (!text.isEmpty()) i = Integer.parseInt(text); 
-					
-					((Setter<A, Integer>)setter).set(item, i);
-				}
-				else if (type.equals(Double.class)) {
-					Double d = null;
-					if (!text.isEmpty()) d = Double.parseDouble(text);
-					
-					((Setter<A, Double>)setter).set(item, d);
-				}
+			if (error == null) { 
+				setter.set(item, type.parse(text));
+				
 				if (validationHandler != null) {
 					validationHandler.onValidate(null, true);					
 				}
@@ -99,5 +84,33 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 		}
 		
 		return true;
+	}
+	
+	public interface Type<C> {
+		public static String String = new String();
+		public static Integer Integer = new Integer();
+		public static Double Double = new Double();
+		
+		public C parse(java.lang.String text);
+		
+		class String implements Type<java.lang.String> {
+			private String() {}
+			public java.lang.String parse(java.lang.String text) { return text; }
+		}
+		
+		class Integer implements Type<java.lang.Integer> {
+			private Integer() {}
+			public java.lang.Integer parse(java.lang.String text) {
+				if (!text.isEmpty()) return java.lang.Integer.parseInt(text);
+				else return null;
+			}
+		}
+		class Double implements Type<java.lang.Double> {
+			private Double() {}
+			public java.lang.Double parse(java.lang.String text) {
+				if (!text.isEmpty()) return java.lang.Double.parseDouble(text);
+				else return null;
+			}
+		}
 	}
 }
