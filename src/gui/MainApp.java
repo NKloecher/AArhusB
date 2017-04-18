@@ -108,6 +108,7 @@ public class MainApp extends Application {
         stackPane.getChildren().add(hMenu);
 
         VBox imgPane = new VBox();
+        imgPane.setPickOnBounds(false);
         ImageView img = new ImageView(new Image(new File("images/rsz_logo.png").toURI().toString()));
         imgPane.setPadding(new Insets(5, 0, 5, 0));
         imgPane.getChildren().add(img);
