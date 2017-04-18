@@ -12,7 +12,7 @@ public class Discount implements Serializable {
     }
 
     public void setDiscount(String discount) throws DiscountParseException {
-        if (discount.isEmpty() || discount == null) {
+        if (discount == null || discount.isEmpty()) {
             this.discount = null;
         }
         else if (discount.matches("^[\\d,]+%|-[\\d,]+|[\\d,]+$")) {
