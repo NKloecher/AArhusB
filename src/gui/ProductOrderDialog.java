@@ -3,12 +3,10 @@ package gui;
 import java.util.Locale;
 
 import exceptions.DiscountParseException;
-import gui.table.LabelColumn;
-import gui.table.Table;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -32,32 +30,37 @@ public class ProductOrderDialog extends Stage {
 
     }
 
-    private final Table<ProductOrder> table = new Table<>(null);
-
     private void initContent(GridPane pane) {
         pane.setHgap(10);
         pane.setVgap(10);
+        pane.setPadding(new Insets(10));
         pane.setAlignment(Pos.TOP_CENTER);
 
-        ScrollPane sp = new ScrollPane();
-        sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        sp.setHbarPolicy(ScrollBarPolicy.NEVER);
-        sp.setContent(table.getPane());
-
-        table.addColumn(new LabelColumn<>("Produkt", x -> x.getProduct().toString()));
-        table.addColumn(new LabelColumn<>("Antal", x -> "" + x.getAmount()));
-        table.addColumn(new LabelColumn<>("Pris", x -> String.format(Locale.GERMAN, "%.2f", x.price())));
-        table.addColumn(new LabelColumn<>("Rabat", x -> {
-			try {
-				return "" + (x.getAmount() * x.getOriginalPrice() - x.price());
-			} catch (DiscountParseException e) {
-				e.printStackTrace();
-				return "";
-			}
-		}));
-        table.setItems(order.getAllProducts());
-
-        pane.add(table.getPane(), 0, 0);
+        pane.add(new Label("Produkt"), 0, 0);
+        pane.add(new Label("Antal"), 1, 0);
+        pane.add(new Label("Pris"), 2, 0);
+        pane.add(new Label("Rabat"), 3, 0);
+        
+        for (int i = 0; i < order.getAllProducts().size(); i++) {
+        	ProductOrder po = order.getAllProducts().get(i);
+        	
+        	pane.add(new Label(po.getProduct().toString()), 0, i+1);
+        	pane.add(new Label(""+po.getAmount()), 1, i+1);
+        	pane.add(new Label(String.format(Locale.GERMAN, "%.2f", po.price())), 2, i+1);
+        	String rabat = "";
+        	
+        	try {
+        		rabat = "" + (po.getAmount() * po.getOriginalPrice() - po.price());
+			} catch (DiscountParseException e) {}
+        	
+        	pane.add(new Label(rabat), 3, i+1);
+        }
+        
+        pane.add(new Label("Payments"), 0, order.getAllProducts().size() + 1);
+        
+        for (int i = 0; i < order.getPayments().size(); i++) {
+        	pane.add(new Label(order.getPayments().get(i).toString()), 0, i + order.getAllProducts().size() + 2);
+        }
     }
 
 }

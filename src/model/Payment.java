@@ -2,6 +2,9 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 public class Payment implements Serializable {
     private PaymentType paymentType;
@@ -20,5 +23,10 @@ public class Payment implements Serializable {
 
     public PaymentType getPaymentType() {
         return paymentType;
+    }
+    
+    @Override
+    public String toString() { 
+    	return date.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)) + " " + paymentType + " " + String.format(Locale.GERMAN, "%.2fkr.", amount);
     }
 }
