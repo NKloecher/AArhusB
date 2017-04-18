@@ -5,16 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import service.Service;
-import storage.Storage;
 
 public class Statistics {
 	private final Service service = Service.getInstance();
-	private final Storage storage = Storage.getInstance();
 	private List<Order> orders;
-	
-	public Statistics() {
-		
-	}
 	
 	public Map<Pricelist, Double> getSalesPrPricelist() {
 		Map<Pricelist, Double> sales = new HashMap<>();

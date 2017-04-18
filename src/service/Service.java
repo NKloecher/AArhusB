@@ -307,7 +307,7 @@ public class Service {
         }
 
         User user = createUser("John", "test", "test", Permission.ADMIN);
-        User user1 = createUser("John Johnson", "test1", "test", Permission.ADMIN);
+        User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
 
         Pricelist pl1 = createPricelist("Fredagsbar");
         setSelectedPricelist(pl1);
