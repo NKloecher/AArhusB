@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import model.Payable;
 import model.PaymentStatus;
 import model.PaymentType;
@@ -43,12 +44,7 @@ public class PayDialog extends Stage {
 	public PayDialog(Stage owner, Payable payable, double total, Double deposit) {
 		this.payable = payable;
 		this.deposit = deposit;
-		
-		this.total = total - payable.totalPayment();
-		
-		if (deposit != null) {
-			this.total += deposit;
-		}
+		this.total = total;
 		
 		initOwner(owner);
 		initModality(Modality.APPLICATION_MODAL);
@@ -96,7 +92,13 @@ public class PayDialog extends Stage {
 		hbButtons.setSpacing(10);
 		
 		HBox hbPrice = new HBox();
-		hbPrice.getChildren().add(new Label("Total: " + String.format(Locale.GERMAN, "%.2f kr.", total)));
+		
+		double paymentRemaining = total - payable.totalPayment();
+		
+		if (deposit != null) {
+			paymentRemaining += deposit;
+		}
+		hbPrice.getChildren().add(new Label("Total: " + String.format(Locale.GERMAN, "%.2f kr.", paymentRemaining)));
 		
 		if (deposit != null) {
 			hbPrice.getChildren().add(new Label("Pant: " + String.format(Locale.GERMAN, "%.2f kr.", deposit)));
@@ -125,6 +127,7 @@ public class PayDialog extends Stage {
 	
 	class Controller {
 		private boolean endButtonIsAdded = false;
+		private double overpaidAmount;
 		
 		public void selectPaymentType(PaymentType paymentType, BorderPane iw) {
 			if (cash.equals(iw)) {
@@ -156,20 +159,30 @@ public class PayDialog extends Stage {
 			}
 			
 			PayDialog.this.paymentType = paymentType;
+			
+			setTotal();
 		}
 		
 		public void setTotal() {
-			lTotal.setText("Mangler at betale: " + String.format(Locale.GERMAN, "%.2f kr.", total));
+			double remaining = payable.getPrice() - payable.totalPayment() + overpaidAmount;
+			
+			if (paymentType == PaymentType.CLIP_CARD) {
+				Pair<Integer, Double> clipPrice = payable.totalClipCardPrice();
+				
+				lTotal.setText("Mangler at betale: " + String.format(Locale.GERMAN, "%.2f kr.", remaining) + " eller " + clipPrice.getKey() + "klip + " + String.format(Locale.GERMAN, "%.2f kr.", clipPrice.getValue()));
+			}
+			else {
+				lTotal.setText("Mangler at betale: " + String.format(Locale.GERMAN, "%.2f kr.", remaining));
+			}
 		}
 		
 		public void pay() {
-			double amount = -1;
+			double amount;
 					
 			try {
 				amount = Double.parseDouble(tfAmount.getText());
-			} catch (NumberFormatException e) {}
-			if (amount < 0) {
-				lError.setText("den betalte mængde skal være et posetivt tal");
+			} catch (NumberFormatException e) {
+				lError.setText("den betalte mængde skal være et tal");
 				return;
 			}
 			
@@ -178,14 +191,28 @@ public class PayDialog extends Stage {
 				return;
 			}
 			
-			if (amount > total) {
-				service.createPayment(payable, amount-(amount-total), paymentType);
+			double paymentRemaning = total - payable.totalPayment();
+			
+			if (deposit != null) {
+				paymentRemaning += deposit;
+			}
+			
+			if (paymentType == PaymentType.CLIP_CARD) {
+				paymentRemaning = payable.totalClipCardPrice().getKey();
+			}
+			else {
+				paymentRemaning = payable.getPrice() - payable.totalPayment();
+			}
+			
+			if (amount > paymentRemaning) {
+				overpaidAmount += paymentRemaning - amount;
+				
+				service.createPayment(payable, amount-(amount-paymentRemaning), paymentType);
 			}
 			else {
 				service.createPayment(payable, amount, paymentType);
 			}
 			
-			total -= amount;
 			setTotal();
 			
 			lError.setText("");

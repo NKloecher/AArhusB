@@ -36,8 +36,9 @@ public class ProductList extends BorderPane {
 	public ProductList(List<Product> products) {
 		allProducts = products;
 
-		setMaxWidth(0);
-
+		setMinWidth(630);
+		setMaxWidth(630);
+		
 		final HBox hbQuery = new HBox();
 		hbQuery.setStyle("-fx-padding: 0 0 16px 0;");
 

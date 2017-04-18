@@ -127,7 +127,7 @@ public class Service {
     }
 
     public void deleteUser(User user) {
-        storage.deleteUser(user);
+        user.setDeleted();
     }
 
     public void updateUserName(User user, String name) {
@@ -281,7 +281,11 @@ public class Service {
         return c;
     }
 
-    public void removeCustomer(Customer c) {
+    public void removeCustomer(Customer c) throws Exception {
+    	for (Order o : storage.getOrders()) {
+    		if (o.getCustomer() != null && o.getCustomer().equals(c)) throw new Exception("Customer has orders");
+    	}
+    	
         storage.removeCustomer(c);
     }
 
@@ -305,7 +309,7 @@ public class Service {
 //        }
 
         User user = createUser("John", "test", "test", Permission.ADMIN);
-        User user1 = createUser("John Johnson", "test1", "test", Permission.ADMIN);
+        User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
 
         Pricelist pl1 = createPricelist("Fredagsbar");
         setSelectedPricelist(pl1);

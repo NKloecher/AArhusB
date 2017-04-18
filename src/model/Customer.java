@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 
 public class Customer extends Person implements Comparable<Customer>, Serializable {
-    private String address;
+	private String address;
     private String phone;
     private String email;
 

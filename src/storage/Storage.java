@@ -18,8 +18,7 @@ public class Storage implements Serializable {
     private final List<Customer> customers = new ArrayList<>();
     private final List<String> categories = new ArrayList<>();
 
-    private Storage() {
-    }
+    private Storage() {}
 
     public static Storage getInstance() {
         return instance;

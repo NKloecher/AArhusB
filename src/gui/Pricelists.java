@@ -22,6 +22,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.Permission;
 import model.Pricelist;
 import model.Product;
@@ -47,7 +48,7 @@ public class Pricelists extends GridPane {
             new LabelColumn<>("Produkt", t -> t.getProduct().getName());
         lblC.setPrefWidth(99999.0);
 
-        Column<PricelistElement> pleC = new PrimitiveColumn<>("Pris", Double.class,
+        Column<PricelistElement> pleC = new PrimitiveColumn<>("Pris", PrimitiveColumn.Type.Double,
             PricelistElement::getPrice, controller::updatePrice, (pe, v) -> {
                 if (Pattern.matches("^\\d+(\\.\\d+)?", v)) {
                     return null;

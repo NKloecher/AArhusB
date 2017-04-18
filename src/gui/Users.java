@@ -1,5 +1,8 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.table.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -32,12 +35,12 @@ public class Users extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 		
-		Column<User> nameColumn = new PrimitiveColumn<>("Navn", String.class, User::getName, controller::updateName, (u, n) -> controller.validateName(n));
+		Column<User> nameColumn = new PrimitiveColumn<>("Navn", PrimitiveColumn.Type.String, User::getName, controller::updateName, (u, n) -> controller.validateName(n));
 		nameColumn.setMinWidth(150.0);
 		nameColumn.setMaxWidth(150.0);
 		table.addColumn(nameColumn);
 		
-		Column<User> usernameColumn = new PrimitiveColumn<>("Brugernavn", String.class, User::getUsername, controller::updateUsername, (u, bn) -> controller.validateUsername(bn, u));
+		Column<User> usernameColumn = new PrimitiveColumn<>("Brugernavn", PrimitiveColumn.Type.String, User::getUsername, controller::updateUsername, (u, bn) -> controller.validateUsername(bn, u));
 		usernameColumn.setMinWidth(150.0);
 		usernameColumn.setMaxWidth(150.0);
 		table.addColumn(usernameColumn);
@@ -49,7 +52,6 @@ public class Users extends GridPane {
 		
 		Column<User> passwordColumn = new PasswordColumn<>("Sæt kode", controller::setPassword);
 		passwordColumn.setMinWidth(90.0);
-		passwordColumn.setMaxWidth(90.0);
 		table.addColumn(passwordColumn);
 		
 		Column<User> deleteColumn = new ButtonColumn<>("Delete", controller::deleteUser);
@@ -57,7 +59,13 @@ public class Users extends GridPane {
 		deleteColumn.setMaxWidth(80.0);
 		table.addColumn(deleteColumn);
 		
-		table.setItems(storage.getUsers());
+		List<User> notDeletedUsers = new ArrayList<>();
+		
+		for (User u : storage.getUsers()) {
+			if (!u.isDeleted()) notDeletedUsers.add(u); 
+		}
+		
+		table.setItems(notDeletedUsers);
 		
 		ScrollPane sp = new ScrollPane();
 		sp.setHbarPolicy(ScrollBarPolicy.NEVER);

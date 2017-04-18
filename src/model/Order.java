@@ -2,6 +2,7 @@ package model;
 
 import exceptions.DiscountParseException;
 import exceptions.InvalidPaymentAmount;
+import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -23,46 +24,47 @@ public class Order implements Payable, Serializable {
         this.pricelist = pricelist;
     }
 
-	public ProductOrder addProduct(Product product) {
-		if (product instanceof DepositProduct) {
-			return createRentalProductOrder((DepositProduct)product);
-		}
-		else {
-			return createProductOrder(product);
-		}
-	}
-	public ProductOrder removeProduct(Product product) {
-		for (int i = 0; i < products.size(); i++) {
-			ProductOrder po = products.get(i);
-			
-			if (po.getProduct().equals(product)) {
-				products.remove(po);
-				
-				return po;
-			}
-		}
-			
-		for (int i = 0; i < productsRental.size(); i++) {
-			ProductOrder po = productsRental.get(i);
-			
-			if (po.getProduct().equals(product)) {
-				productsRental.remove(i);
-				
-				return po;
-			}
-		}
-		
-		return null;
-	}
-	
-	public User getUser() {
-		return user;
-	}
-	
-	public Pricelist getPricelist() {
-		return pricelist;
-	}
-    
+    public ProductOrder addProduct(Product product) {
+        if (product instanceof DepositProduct) {
+            return createRentalProductOrder((DepositProduct) product);
+        }
+        else {
+            return createProductOrder(product);
+        }
+    }
+
+    public ProductOrder removeProduct(Product product) {
+        for (int i = 0; i < products.size(); i++) {
+            ProductOrder po = products.get(i);
+
+            if (po.getProduct().equals(product)) {
+                products.remove(po);
+
+                return po;
+            }
+        }
+
+        for (int i = 0; i < productsRental.size(); i++) {
+            ProductOrder po = productsRental.get(i);
+
+            if (po.getProduct().equals(product)) {
+                productsRental.remove(i);
+
+                return po;
+            }
+        }
+
+        return null;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Pricelist getPricelist() {
+        return pricelist;
+    }
+
     public ProductOrder createProductOrder(Product product) {
         ProductOrder productOrder = new ProductOrder(product, this.pricelist);
         products.add(productOrder);
@@ -83,14 +85,14 @@ public class Order implements Payable, Serializable {
     }
 
     public List<ProductOrder> getProductOrders() {
-    	return new ArrayList<>(products);
+        return new ArrayList<>(products);
     }
-    
+
     public List<RentalProductOrder> getRentalProductOrders() {
-    	return new ArrayList<>(productsRental);
+        return new ArrayList<>(productsRental);
     }
-    
-    public List<ProductOrder> getAllProducts(){
+
+    public List<ProductOrder> getAllProducts() {
         List<ProductOrder> allProducts = new ArrayList<>(products);
         allProducts.addAll(productsRental);
         return allProducts;
@@ -101,6 +103,19 @@ public class Order implements Payable, Serializable {
      */
     public boolean hasRentalOrder() {
         return productsRental.size() > 0;
+    }
+
+    @Override
+    public double getPrice() {
+        double price = totalPrice();
+
+        Double deposit = totalDeposit();
+
+        if (deposit != null) {
+            price += deposit;
+        }
+
+        return price;
     }
 
     /**
@@ -151,19 +166,21 @@ public class Order implements Payable, Serializable {
         for (RentalProductOrder productOrder : productsRental) {
             sum += productOrder.getDeposit();
         }
-        
-        if (sum == 0) return null;
-        
+
+        if (sum == 0) {
+            return null;
+        }
+
         return sum;
     }
 
     /**
      * Calculate the amount of clip card paid
      */
-    private int totalClipCardPaid(){
+    private Integer totalClipCardPaid() {
         int sum = 0;
         for (Payment payment : payments) {
-            if (payment.getPaymentType() == PaymentType.CLIP_CARD){
+            if (payment.getPaymentType() == PaymentType.CLIP_CARD) {
                 sum += payment.getAmount();
             }
         }
@@ -174,11 +191,11 @@ public class Order implements Payable, Serializable {
      * Calculate the how much the clip card payments are worth
      * NOTE: It will always try to maximize the value of each clip card
      */
-    private double totalPaymentClipCard(){
+    private double totalPaymentClipCard() {
         double sum = 0;
         int clips = totalClipCardPaid();
 
-        if (clips == 0){
+        if (clips == 0) {
             return 0;
         }
         List<ProductOrder> productOrders = new ArrayList<>(this.products);
@@ -191,11 +208,14 @@ public class Order implements Payable, Serializable {
 
         for (ProductOrder productOrder : productOrders) {
             int orderClips = productOrder.getProduct().getClips() * productOrder.getAmount();
-            if (clips > orderClips){
+            if (clips > orderClips) {
                 clips -= orderClips;
                 sum += productOrder.price();
-            } else {
-                sum += (productOrder.individualPrice() / (double) productOrder.getProduct().getClips()) * clips;
+            }
+            else {
+                sum +=
+                    (productOrder.individualPrice() / (double) productOrder.getProduct().getClips())
+                        * clips;
                 return sum;
             }
         }
@@ -205,10 +225,11 @@ public class Order implements Payable, Serializable {
     /**
      * Calculate the total of all payments, including clip cards
      */
+    @Override
     public double totalPayment() {
         double sum = 0;
         for (Payment payment : payments) {
-            if (payment.getPaymentType() != PaymentType.CLIP_CARD){
+            if (payment.getPaymentType() != PaymentType.CLIP_CARD) {
                 sum += payment.getAmount();
             }
         }
@@ -223,9 +244,9 @@ public class Order implements Payable, Serializable {
     public void pay(Payment payment) {
         payments.add(payment);
     }
-    
+
     public List<Payment> getPayments() {
-    	return new ArrayList<>(payments);
+        return new ArrayList<>(payments);
     }
 
     /**
@@ -285,6 +306,26 @@ public class Order implements Payable, Serializable {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    @Override
+    public Pair<Integer, Double> totalClipCardPrice() {
+        int clips = 0;
+        double priceWithoutClips = 0;
+
+        for (ProductOrder po : getAllProducts()) {
+            try {
+                Integer c = po.getProduct().getClips() * po.getAmount();
+                clips += c;
+            }
+            catch (Exception e) {
+                priceWithoutClips += po.price();
+            }
+        }
+
+        clips -= totalClipCardPaid();
+
+        return new Pair<>(clips, priceWithoutClips);
     }
 
     @Override

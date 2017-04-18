@@ -14,6 +14,7 @@ public class User extends Person implements Serializable {
     private byte[] passwordHash;
     private byte[] salt = new byte[16];
     private Permission permission;
+    private boolean isDeleted = false;
 
     public User(String name, String username, String password, Permission permission) {
     	super(name);
@@ -24,6 +25,13 @@ public class User extends Person implements Serializable {
         setPassword(password);
     }
 
+    public boolean isDeleted() {
+    	return isDeleted;
+    }
+    public void setDeleted() {
+    	isDeleted = true;
+    }
+    
     /**
      * Generates the password hash
      */

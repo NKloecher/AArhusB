@@ -1,6 +1,7 @@
 package model;
 
 import exceptions.DiscountParseException;
+import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -59,7 +60,7 @@ public class Tour implements Payable, Serializable {
 		this.date = date;
 	}
 
-	public double getPrice() {
+	public double totalPrice() {
 		return price;
 	}
 
@@ -86,4 +87,14 @@ public class Tour implements Payable, Serializable {
 		}
 		return sum;
 	}
+
+	@Override
+	public double getPrice() {
+		return 0;
+	}
+
+	@Override
+	public Pair<Integer, Double> totalClipCardPrice() {
+		return null;
+	}	
 }
