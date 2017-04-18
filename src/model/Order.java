@@ -1,7 +1,7 @@
 package model;
 
 import exceptions.DiscountParseException;
-import exceptions.InvaildPaymentAmount;
+import exceptions.InvalidPaymentAmount;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -199,7 +199,7 @@ public class Order implements Payable, Serializable {
                 return sum;
             }
         }
-        throw new InvaildPaymentAmount("");
+        throw new InvalidPaymentAmount("");
     }
 
     /**
@@ -232,7 +232,7 @@ public class Order implements Payable, Serializable {
      * Calculates the current status of an order
      */
     @Override
-    public PaymentStatus paymentStatus() throws DiscountParseException, InvaildPaymentAmount {
+    public PaymentStatus paymentStatus() throws DiscountParseException, InvalidPaymentAmount {
         if (getAllProducts().size() == 0) {
             return PaymentStatus.UNPAID;
         }
@@ -257,7 +257,7 @@ public class Order implements Payable, Serializable {
                 return PaymentStatus.DEPOSITPAID;
             }
             else {
-                throw new InvaildPaymentAmount("The order was overpaid");
+                throw new InvalidPaymentAmount("The order was overpaid");
             }
         }
         else {
@@ -268,7 +268,7 @@ public class Order implements Payable, Serializable {
                 return PaymentStatus.ORDERPAID;
             }
             else {
-                throw new InvaildPaymentAmount("The order was overpaid");
+                throw new InvalidPaymentAmount("The order was overpaid");
             }
         }
 
