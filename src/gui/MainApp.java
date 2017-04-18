@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exceptions.DiscountParseException;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -18,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.Pricelist;
 import service.Service;
 
@@ -26,6 +28,7 @@ public class MainApp extends Application {
     private final Controller controller = new Controller();
     private final BorderPane pane = new BorderPane();
     private final ComboBox<String> cbPricelist = new ComboBox<>();
+
     private Stage owner;
 
     public static void main(String[] args) {
@@ -49,15 +52,16 @@ public class MainApp extends Application {
     }
 
     private void initContent() {
-        StackPane stackPane = new StackPane();
+        HBox hMenu = new HBox(10);
 
-    	HBox hMenu = new HBox(10);
+        StackPane stackPane = new StackPane();
         Button home = new Button("Hjem");
         Label lUserName = new Label("Ikke logget ind");
         Label lUser = new Label("Bruger:");
         Label lPricelist = new Label("   Prislisten:");
         Button logout = new Button("Log ud");
 
+        stackPane.maxWidthProperty().bind(owner.widthProperty());
 
         hMenu.setStyle("-fx-background-color: #135b1f; -fx-padding: 20px;");
         hMenu.setAlignment(Pos.BASELINE_LEFT);
@@ -152,6 +156,7 @@ public class MainApp extends Application {
         }
 
         public void setScreen(Pane pane) {
+            GridPane oldPane = (GridPane) MainApp.this.pane.getCenter();
             List<String> pricelists = new ArrayList<>();
 
             for (Pricelist pl : service.getPricelists()) {
@@ -175,7 +180,38 @@ public class MainApp extends Application {
                 lockPricelist(true);
             }
 
-            MainApp.this.pane.setCenter(pane);
+            // Sliding animation
+            if (oldPane != null) {
+                oldPane.setMinWidth(oldPane.getWidth());
+                pane.setMinWidth(oldPane.getWidth());
+
+                HBox tempPane;
+
+                // Reverse if main menu
+                if (pane instanceof MainMenu || pane instanceof Login){
+                    tempPane = new HBox(pane, oldPane);
+                } else {
+                    tempPane = new HBox(oldPane, pane);
+                }
+
+                TranslateTransition tt = new TranslateTransition(Duration.millis(1000), tempPane);
+
+                // Reverse if main menu
+                if (pane instanceof MainMenu || pane instanceof Login){
+                    tt.setFromX(-oldPane.getWidth());
+                    tt.setToX(0);
+                } else {
+                    tt.setToX(-oldPane.getWidth());
+                }
+
+                MainApp.this.pane.setCenter(tempPane);
+                tt.play();
+                tt.setOnFinished(e -> {
+                    MainApp.this.pane.setCenter(pane);
+                });
+            } else {
+                MainApp.this.pane.setCenter(pane);
+            }
         }
     }
 }
