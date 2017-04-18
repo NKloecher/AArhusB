@@ -49,7 +49,6 @@ public class Users extends GridPane {
 		
 		Column<User> passwordColumn = new PasswordColumn<>("Sæt kode", controller::setPassword);
 		passwordColumn.setMinWidth(90.0);
-		passwordColumn.setMaxWidth(90.0);
 		table.addColumn(passwordColumn);
 		
 		Column<User> deleteColumn = new ButtonColumn<>("Delete", controller::deleteUser);

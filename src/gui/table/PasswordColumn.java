@@ -8,27 +8,14 @@ import javafx.scene.layout.HBox;
 public class PasswordColumn<A> extends Column<A> {
 	private String name;
 	private Setter<A, String> setter;
-	private HBox h = new HBox();
-	private Button button = new Button("Sæt kode");
-	private PasswordField pf = new PasswordField();
-	private A owner;
 
 	public PasswordColumn(String name, Setter<A, String> setter) {
 		super(name);
 		this.setter = setter;
 		this.name = name;
-
-		button.setText(name);
-		button.setMinWidth(90);
-		button.setOnAction(e -> onPressButton());
-
-		pf.setPromptText("Indtast ny kode");
-		pf.textProperty().addListener(e -> onPressPasswordField());
-
-		h.getChildren().add(button);
 	}
 
-	private void onPressPasswordField(){
+	private void onPressPasswordField(PasswordField pf, Button button){
 		if (pf.getText().length() == 0){
 			button.setText("Annuller");
 		} else {
@@ -36,11 +23,13 @@ public class PasswordColumn<A> extends Column<A> {
 		}
 	}
 
-	private void onPressButton(){
+	private void onPressButton(PasswordField pf, Button button, HBox h, A owner){
 		if (h.getChildren().contains(pf)){
 			button.setText(this.name);
 			h.getChildren().remove(pf);
 			this.setter.set(owner, pf.getText());
+			pf.setText("");
+			button.setText("Sæt kode");
 		} else {
 			h.getChildren().add(0, pf);
 			pf.setMaxWidth(300);
@@ -50,7 +39,20 @@ public class PasswordColumn<A> extends Column<A> {
 
 	@Override
 	public Node getNode(A owner) {
-		this.owner = owner;
+		HBox h = new HBox();
+
+		Button button = new Button("Sæt kode");
+		PasswordField pf = new PasswordField();
+
+		button.setText(name);
+		button.setMinWidth(90);
+		button.setOnAction(e -> onPressButton(pf, button, h, owner));
+
+		pf.setPromptText("Indtast ny kode");
+		pf.textProperty().addListener(e -> onPressPasswordField(pf, button));
+
+		h.getChildren().add(button);
+
 		return h;
 	}
 
