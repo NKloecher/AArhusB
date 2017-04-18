@@ -3,13 +3,18 @@ package gui;
 import javax.security.sasl.AuthenticationException;
 
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import service.Service;
+
+import java.io.File;
 
 public class Login extends GridPane {
     private final Service service = Service.getInstance();
@@ -29,13 +34,16 @@ public class Login extends GridPane {
         // automatisk login mens vi udvikler
         tfUsername.setText("test");
         tfPassword.setText("test");
-        controller.login();
 
-        add(new Label("Brugernavn"), 0, 0);
-        add(tfUsername, 1, 0);
+        ImageView img = new ImageView(new Image(new File("images/logo.png").toURI().toString()));
+        GridPane.setHalignment(img, HPos.CENTER);
+        add(img, 0, 0, 2, 1);
 
-        add(new Label("Kodeord"), 0, 1);
-        add(tfPassword, 1, 1);
+        add(new Label("Brugernavn"), 0, 1);
+        add(tfUsername, 1, 1);
+
+        add(new Label("Kodeord"), 0, 2);
+        add(tfPassword, 1, 2);
 
         Button bLogin = new Button("Login");
         bLogin.setOnAction(e -> controller.login());

@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +8,15 @@ import java.util.List;
 import exceptions.DiscountParseException;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.Pricelist;
 import service.Service;
@@ -50,54 +49,86 @@ public class MainApp extends Application {
     }
 
     private void initContent() {
-    	HBox hbMenu = new HBox();
-        hbMenu.setStyle("-fx-background-color: #666; -fx-padding: 20px;");
+        StackPane stackPane = new StackPane();
 
-        hbMenu.setAlignment(Pos.BASELINE_LEFT);
-
+    	HBox hMenu = new HBox(10);
         Button home = new Button("Hjem");
-        
-        hbMenu.getChildren().add(home);
+        Label lUserName = new Label("Ikke logget ind");
+        Label lUser = new Label("Bruger:");
+        Label lPricelist = new Label("   Prislisten:");
+        Button logout = new Button("Log ud");
 
-        Label lUser = new Label();
-        lUser.setStyle("-fx-text-fill: white;");
-        hbMenu.getChildren().add(lUser);
+
+        hMenu.setStyle("-fx-background-color: #135b1f; -fx-padding: 20px;");
+        hMenu.setAlignment(Pos.BASELINE_LEFT);
+        hMenu.setMaxHeight(50);
+//        hMenu.setMaxHeight(80);
+
+        lUserName.setStyle("-fx-text-fill: white; -fx-font-weight: bolder");
+        lUser.setStyle("-fx-text-fill: darkgray;");
+        lPricelist.setStyle("-fx-text-fill: darkgray;");
 
         List<String> pricelists = new ArrayList<>();
-
         for (Pricelist pl : service.getPricelists()) {
             pricelists.add(pl.getName());
         }
-
         cbPricelist.getItems().setAll(pricelists);
         cbPricelist.setOnAction(e -> controller.selectPricelist());
         cbPricelist.getSelectionModel().select(0);
 
-        hbMenu.getChildren().add(cbPricelist);
-
         Login l = new Login(x -> {
-        	MainMenu m = new MainMenu(owner);
-        	home.setOnAction(e -> controller.setScreen(m));
-        	m.setOnSelect(controller::setScreen);
+            MainMenu m = new MainMenu(owner);
+            home.setOnAction(e -> controller.setScreen(m));
+            m.setOnSelect(controller::setScreen);
             controller.setScreen(m);
 
-            lUser.setText(service.getActiveUser().getUsername());
-            this.pane.setTop(hbMenu);
+            lUserName.setText(service.getActiveUser().getUsername());
+            this.pane.setTop(stackPane);
         });
 
-        Region r = new Region();
-        HBox.setHgrow(r, Priority.ALWAYS);
-        hbMenu.getChildren().add(r);
 
-        Button logout = new Button("Log ud");
-        logout.setTranslateX(hbMenu.getWidth());
+        logout.setTranslateX(hMenu.getWidth());
         logout.setOnAction(e -> {
             service.logout();
             controller.setScreen(l);
             this.pane.getChildren().removeIf(n -> (n instanceof HBox));
         });
-        hbMenu.getChildren().add(logout);
-        
+
+        hMenu.getChildren().add(home);
+        hMenu.getChildren().add(lPricelist);
+        hMenu.getChildren().add(cbPricelist);
+
+        Region r = new Region();
+        HBox.setHgrow(r, Priority.ALWAYS);
+        hMenu.getChildren().add(r);
+
+        hMenu.getChildren().add(lUser);
+        hMenu.getChildren().add(lUserName);
+        hMenu.getChildren().add(logout);
+
+        stackPane.getChildren().add(hMenu);
+
+//        VBox imgPane = new VBox();
+//        ImageView img = new ImageView(new Image(new File("images/logo.png").toURI().toString(), 80, 80, true, true));
+//        imgPane.getChildren().add(img);
+//        imgPane.setAlignment(Pos.CENTER);
+//        stackPane.getChildren().add(imgPane);
+
+        VBox imgPane = new VBox();
+        ImageView img = new ImageView(new Image(new File("images/rsz_logo.png").toURI().toString()));
+        imgPane.setPadding(new Insets(5, 0, 5, 0));
+        imgPane.getChildren().add(img);
+        imgPane.setAlignment(Pos.CENTER);
+        stackPane.getChildren().add(imgPane);
+
+        //VBox imgPane = new VBox();
+        //ImageView img = new ImageView(new Image(new File("images/logo.png").toURI().toString()));
+        //imgPane.getChildren().add(img);
+        //imgPane.setPadding(new Insets(0, 0, 0, 0));
+        //imgPane.setAlignment(Pos.CENTER);
+        //stackPane.getChildren().add(imgPane);
+        //stackPane.setPadding(new Insets(-62, 0, 0, 0));
+
         controller.setScreen(l);
     }
 
