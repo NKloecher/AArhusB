@@ -121,7 +121,17 @@ public class ViewCustomerDialog extends Stage {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == btnOK) {
-                service.removeCustomer(c);
+            	try {
+            		service.removeCustomer(c);					
+				} catch (Exception e) {
+					Alert a = new Alert(AlertType.ERROR);
+					a.setTitle("Kan ikke slette kunde");
+					a.setHeaderText("Den kune du er igang med at slette har ordre, så den kan ikke slettes");
+					ButtonType okBtn = new ButtonType("OK");
+					
+					a.getButtonTypes().add(okBtn);
+					a.showAndWait();
+				}
                 close();
             }
 

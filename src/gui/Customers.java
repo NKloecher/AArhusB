@@ -89,8 +89,9 @@ public class Customers extends GridPane {
                     Customer c = lvCustomers.getSelectionModel().getSelectedItem();
                     ViewCustomerDialog vc = new ViewCustomerDialog(c);
                     vc.showAndWait();
+                    
                     lvCustomers.getItems().clear();
-                    lvCustomers.getItems().addAll(storage.getCustomers());
+                    lvCustomers.getItems().setAll(storage.getCustomers());
                     lvCustomers.getItems().sort(null);
                 }
             }

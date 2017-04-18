@@ -279,7 +279,11 @@ public class Service {
         return c;
     }
 
-    public void removeCustomer(Customer c) {
+    public void removeCustomer(Customer c) throws Exception {
+    	for (Order o : storage.getOrders()) {
+    		if (o.getCustomer() != null && o.getCustomer().equals(c)) throw new Exception("Customer has orders");
+    	}
+    	
         storage.removeCustomer(c);
     }
 

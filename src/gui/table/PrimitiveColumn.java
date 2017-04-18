@@ -60,8 +60,17 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 			
 			validity.set(id, error == null);
 			
-			if (error == null) { 
-				setter.set(item, type.parse(text));
+			if (error == null) {
+				B parsedValue;
+				
+				if (text.isEmpty()) {
+					parsedValue = null;
+				}
+				else {
+					parsedValue = type.parse(text);
+				}
+				
+				setter.set(item, parsedValue);
 				
 				if (validationHandler != null) {
 					validationHandler.onValidate(null, true);					
@@ -86,31 +95,12 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 		return true;
 	}
 	
+	@FunctionalInterface
 	public interface Type<C> {
-		public static String String = new String();
-		public static Integer Integer = new Integer();
-		public static Double Double = new Double();
+		static Type<String> String = text -> text;
+		static Type<Integer> Integer = text -> java.lang.Integer.parseInt(text);
+		static Type<Double> Double = text -> java.lang.Double.parseDouble(text);
 		
 		public C parse(java.lang.String text);
-		
-		class String implements Type<java.lang.String> {
-			private String() {}
-			public java.lang.String parse(java.lang.String text) { return text; }
-		}
-		
-		class Integer implements Type<java.lang.Integer> {
-			private Integer() {}
-			public java.lang.Integer parse(java.lang.String text) {
-				if (!text.isEmpty()) return java.lang.Integer.parseInt(text);
-				else return null;
-			}
-		}
-		class Double implements Type<java.lang.Double> {
-			private Double() {}
-			public java.lang.Double parse(java.lang.String text) {
-				if (!text.isEmpty()) return java.lang.Double.parseDouble(text);
-				else return null;
-			}
-		}
 	}
 }
