@@ -62,7 +62,7 @@ public class Tours extends GridPane {
 		endColumn.setPrefWidth(70.);
 		table.addColumn(endColumn);
 
-		final Column<Tour> priceColumn = new PrimitiveColumn<>("Pris", PrimitiveColumn.Type.Double, Tour::getPrice, service::updateTourPrice, (t,v) -> {
+		final Column<Tour> priceColumn = new PrimitiveColumn<>("Pris", PrimitiveColumn.Type.Double, Tour::totalPrice, service::updateTourPrice, (t,v) -> {
 			if (Pattern.matches("^\\d+$", v)) return null;
 			return "Pris skal være et posetivt tal";
 		});
@@ -248,7 +248,7 @@ public class Tours extends GridPane {
 		}
 
 		public void pay(Tour tour) {
-			PayDialog pd = new PayDialog(owner, tour, tour.getPrice(), null);
+			PayDialog pd = new PayDialog(owner, tour, tour.totalPrice(), null);
 
 			pd.showAndWait();
 

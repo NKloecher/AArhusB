@@ -2,6 +2,7 @@ package model;
 
 import exceptions.DiscountParseException;
 import exceptions.InvaildPaymentAmount;
+import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -103,6 +104,17 @@ public class Order implements Payable, Serializable {
         return productsRental.size() > 0;
     }
 
+    @Override
+    public double getPrice() {
+    	double price = totalPrice();
+    	
+    	Double deposit = totalDeposit();
+    	
+    	if (deposit != null) price += deposit;
+    	
+    	return price;
+    }
+    
     /**
      * Calculate the total price
      * NOTE: Doesn't include deposit
@@ -160,7 +172,7 @@ public class Order implements Payable, Serializable {
     /**
      * Calculate the amount of clip card paid
      */
-    private int totalClipCardPaid(){
+    private Integer totalClipCardPaid(){
         int sum = 0;
         for (Payment payment : payments) {
             if (payment.getPaymentType() == PaymentType.CLIP_CARD){
@@ -286,7 +298,26 @@ public class Order implements Payable, Serializable {
     public LocalDate getDate() {
         return date;
     }
-
+    
+    @Override
+	public Pair<Integer, Double> totalClipCardPrice() {
+		int clips = 0;
+		double priceWithoutClips = 0;
+    	
+		for (ProductOrder po : getAllProducts()) {
+			try {
+				Integer c = po.getProduct().getClips() * po.getAmount();
+				clips += c;
+			} catch (Exception e) {
+				priceWithoutClips += po.price();
+			}
+		}
+		
+		clips -= totalClipCardPaid();
+		
+		return new Pair<>(clips, priceWithoutClips);
+	}
+    
     @Override
     public String toString() {
         try {
