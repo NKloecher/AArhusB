@@ -128,6 +128,10 @@ public class MainApp extends Application {
                     service.setSelectedPricelist(pl);
                 }
             }
+
+            if (MainApp.this.pane.getCenter() instanceof Pricelists){
+                setScreen(new Pricelists());
+            }
         }
 
         public void setScreen(Pane pane) {
@@ -149,7 +153,7 @@ public class MainApp extends Application {
                 }
             }
 
-            if (pane instanceof MainMenu) {
+            if (pane instanceof MainMenu || pane instanceof Pricelists) {
                 lockPricelist(false);
             }
             else {

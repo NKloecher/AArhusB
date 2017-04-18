@@ -22,6 +22,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.Permission;
 import model.Pricelist;
 import model.Product;
