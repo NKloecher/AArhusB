@@ -68,7 +68,6 @@ public class Login extends GridPane {
             if (rt.getCurrentTime().equals(Duration.ZERO)) {
                 angle = 0;
             }
-            System.out.println(angle);
             rt.setByAngle(360);
             rt.setFromAngle(angle);
             rt.play();

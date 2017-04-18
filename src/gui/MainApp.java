@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import exceptions.DiscountParseException;
+import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -28,6 +29,9 @@ public class MainApp extends Application {
     private final Controller controller = new Controller();
     private final BorderPane pane = new BorderPane();
     private final ComboBox<String> cbPricelist = new ComboBox<>();
+    private final ImageView img =
+        new ImageView(new Image(new File("images/rsz_logo.png").toURI().toString()));
+    private final RotateTransition rt = new RotateTransition(Duration.millis(1000), img);
 
     private Stage owner;
 
@@ -89,7 +93,6 @@ public class MainApp extends Application {
             this.pane.setTop(stackPane);
         });
 
-
         logout.setTranslateX(hMenu.getWidth());
         logout.setOnAction(e -> {
             service.logout();
@@ -113,7 +116,7 @@ public class MainApp extends Application {
 
         VBox imgPane = new VBox();
         imgPane.setPickOnBounds(false);
-        ImageView img = new ImageView(new Image(new File("images/rsz_logo.png").toURI().toString()));
+        img.setOnMouseClicked(e -> controller.spinThatShit());
         imgPane.setPadding(new Insets(5, 0, 5, 0));
         imgPane.getChildren().add(img);
         imgPane.setAlignment(Pos.CENTER);
@@ -137,6 +140,21 @@ public class MainApp extends Application {
     }
 
     private class Controller {
+
+        public void spinThatShit() {
+            Random ran = new Random();
+
+            double angle = 1000 / rt.getCurrentTime().toMillis() * 360;
+            if (rt.getCurrentTime().equals(Duration.ZERO)) {
+                angle = 0;
+            }
+            rt.setByAngle(360);
+            rt.setFromAngle(angle);
+            rt.setRate(ran.nextDouble());
+            rt.play();
+
+        }
+
         public void lockPricelist(boolean state) {
             cbPricelist.setDisable(state);
         }
@@ -150,7 +168,7 @@ public class MainApp extends Application {
                 }
             }
 
-            if (MainApp.this.pane.getCenter() instanceof Pricelists){
+            if (MainApp.this.pane.getCenter() instanceof Pricelists) {
                 setScreen(new Pricelists());
             }
         }
@@ -188,19 +206,21 @@ public class MainApp extends Application {
                 HBox tempPane;
 
                 // Reverse if main menu
-                if (pane instanceof MainMenu || pane instanceof Login){
+                if (pane instanceof MainMenu || pane instanceof Login) {
                     tempPane = new HBox(pane, oldPane);
-                } else {
+                }
+                else {
                     tempPane = new HBox(oldPane, pane);
                 }
 
                 TranslateTransition tt = new TranslateTransition(Duration.millis(1000), tempPane);
 
                 // Reverse if main menu
-                if (pane instanceof MainMenu || pane instanceof Login){
+                if (pane instanceof MainMenu || pane instanceof Login) {
                     tt.setFromX(-oldPane.getWidth());
                     tt.setToX(0);
-                } else {
+                }
+                else {
                     tt.setToX(-oldPane.getWidth());
                 }
 
@@ -209,7 +229,8 @@ public class MainApp extends Application {
                 tt.setOnFinished(e -> {
                     MainApp.this.pane.setCenter(pane);
                 });
-            } else {
+            }
+            else {
                 MainApp.this.pane.setCenter(pane);
             }
         }
