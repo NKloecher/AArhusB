@@ -90,7 +90,7 @@ public class MainApp extends Application {
         logout.setOnAction(e -> {
             service.logout();
             controller.setScreen(l);
-            this.pane.getChildren().removeIf(n -> (n instanceof HBox));
+            this.pane.getChildren().removeIf(n -> (n instanceof StackPane));
         });
 
         hMenu.getChildren().add(home);
@@ -161,9 +161,7 @@ public class MainApp extends Application {
             cbPricelist.getItems().setAll(pricelists);
 
             pane.setPadding(new Insets(20));
-
             ObservableList<Node> children = MainApp.this.pane.getChildren();
-
             for (int i = 0; i < children.size(); i++) {
                 if (children.get(i) instanceof GridPane) {
                     children.remove(i);

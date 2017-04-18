@@ -2,6 +2,7 @@ package gui;
 
 import javax.security.sasl.AuthenticationException;
 
+import javafx.animation.RotateTransition;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 import service.Service;
 
 import java.io.File;
@@ -23,6 +25,7 @@ public class Login extends GridPane {
     private final TextField tfPassword = new PasswordField();
     private final Label lError = new Label();
     private final Handler<?> loginHandler;
+    private final ImageView img;
 
     public Login(Handler<?> loginHandler) {
         this.loginHandler = loginHandler;
@@ -35,7 +38,7 @@ public class Login extends GridPane {
         tfUsername.setText("test");
         tfPassword.setText("test");
 
-        ImageView img = new ImageView(new Image(new File("images/logo.png").toURI().toString()));
+        img = new ImageView(new Image(new File("images/logo.png").toURI().toString()));
         GridPane.setHalignment(img, HPos.CENTER);
         add(img, 0, 0, 2, 1);
 
@@ -60,16 +63,23 @@ public class Login extends GridPane {
             String username = tfUsername.getText().trim();
             String password = tfPassword.getText().trim();
 
-            try {
-                service.login(username, password);
+            RotateTransition rt = new RotateTransition(Duration.millis(1000), img);
+            rt.setByAngle(360);
+            rt.play();
 
-                if (loginHandler != null) {
-                    loginHandler.exec(null);
+            // Wait for the beautiful animation to end
+            rt.setOnFinished(e -> {
+                try {
+                    service.login(username, password);
+
+                    if (loginHandler != null) {
+                        loginHandler.exec(null);
+                    }
                 }
-            }
-            catch (AuthenticationException e) {
-                lError.setText("Brugernavn eller kodeord er forkert");
-            }
+                catch (AuthenticationException ex) {
+                    lError.setText("Brugernavn eller kodeord er forkert");
+                }
+            });
         }
     }
 }
