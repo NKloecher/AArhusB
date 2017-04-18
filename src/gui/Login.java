@@ -4,7 +4,6 @@ import javax.security.sasl.AuthenticationException;
 
 import javafx.animation.RotateTransition;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,7 +24,9 @@ public class Login extends GridPane {
     private final TextField tfPassword = new PasswordField();
     private final Label lError = new Label();
     private final Handler<?> loginHandler;
-    private final ImageView img;
+    private final ImageView img =
+        new ImageView(new Image(new File("images/logo.png").toURI().toString()));;
+    private final RotateTransition rt = new RotateTransition(Duration.millis(1000), img);
 
     public Login(Handler<?> loginHandler) {
         this.loginHandler = loginHandler;
@@ -38,7 +39,6 @@ public class Login extends GridPane {
         tfUsername.setText("test");
         tfPassword.setText("test");
 
-        img = new ImageView(new Image(new File("images/logo.png").toURI().toString()));
         GridPane.setHalignment(img, HPos.CENTER);
         add(img, 0, 0, 2, 1);
 
@@ -55,16 +55,22 @@ public class Login extends GridPane {
         bLogin.setDefaultButton(true);
 
         lError.setStyle("-fx-text-fill: red");
-        add(lError, 0, 2, 2, 1);
+        add(lError, 0, 3, 2, 1);
     }
 
     class Controller {
+
         public void login() {
             String username = tfUsername.getText().trim();
             String password = tfPassword.getText().trim();
 
-            RotateTransition rt = new RotateTransition(Duration.millis(1000), img);
+            double angle = 1000 / rt.getCurrentTime().toMillis() * 360;
+            if (rt.getCurrentTime().equals(Duration.ZERO)) {
+                angle = 0;
+            }
+            System.out.println(angle);
             rt.setByAngle(360);
+            rt.setFromAngle(angle);
             rt.play();
 
             // Wait for the beautiful animation to end

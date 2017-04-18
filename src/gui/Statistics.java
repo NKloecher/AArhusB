@@ -23,8 +23,8 @@ import model.TimePeriod;
 import model.User;
 
 @FunctionalInterface
-interface DataGetter<Entry extends Map.Entry<?,?>> {
-	public PieChart.Data get(Entry e);
+interface DataGetter<Entry extends Map.Entry<?, ?>> {
+    public PieChart.Data get(Entry e);
 }
 
 public class Statistics extends GridPane {
@@ -98,7 +98,7 @@ public class Statistics extends GridPane {
         add(categoryPieChart, 2, 1);
 
         add(bc, 0, 2, 2, 1);
-        
+
         add(clipCardSales, 0, 3);
         add(clipCardUses, 0, 4);
         add(total, 0, 5);
@@ -107,15 +107,12 @@ public class Statistics extends GridPane {
             "-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-style: solid; -fx-border-raduis: 3");
         caption.setPadding(new Insets(5));
         caption.setTranslateX(-100);
-        caption.setTranslateY(-100);
+        caption.setTranslateY(50);
         add(caption, 0, 0);
     }
 
-	
-    
     class Controller {
-    	
-    	
+
         public void selectTimePeriod() {
             TimePeriod timePeriod = null;
 
@@ -140,35 +137,38 @@ public class Statistics extends GridPane {
 
             statictics.setTimePeriod(timePeriod);
 
-            setPieChartData(pricelistPieChart, statictics.getSalesPrPricelist().entrySet(), entry -> {
-            	double amount = entry.getValue();
-                PieChart.Data d = new PieChart.Data(entry.getKey().getName(), amount);
+            setPieChartData(pricelistPieChart, statictics.getSalesPrPricelist().entrySet(),
+                entry -> {
+                    double amount = entry.getValue();
+                    PieChart.Data d = new PieChart.Data(entry.getKey().getName(), amount);
 
-                return d;
-            });
-            
+                    return d;
+                });
+
             setPieChartData(beerPieChart, statictics.getSalesPrBeer().entrySet(), entry -> {
-            	final double amount = entry.getValue();
+                final double amount = entry.getValue();
                 final PieChart.Data d = new PieChart.Data(entry.getKey(), amount);
 
                 return d;
             });
-            
+
             setPieChartData(categoryPieChart, statictics.getSalesPrCategory().entrySet(), entry -> {
-            	final double amount = entry.getValue();
+                final double amount = entry.getValue();
                 final PieChart.Data d = new PieChart.Data(entry.getKey(), amount);
 
                 return d;
             });
-            
+
             setBarChartData();
 
-            clipCardSales.setText(String.format("Klippekort solgt: %.2fkr.", statictics.getClipCardSales()));
+            clipCardSales
+                .setText(String.format("Klippekort solgt: %.2fkr.", statictics.getClipCardSales()));
             clipCardUses.setText("Klip brugt: " + statictics.getClipCardUses() + " klip");
             total.setText(String.format("I alt: %.2fkr.", statictics.getTotalSales()));
         }
 
-        public <Entry extends Map.Entry<?, ?>> void setPieChartData(PieChart chart, Set<Entry> entrySet, DataGetter<Entry> dataGetter) {
+        public <Entry extends Map.Entry<?, ?>> void setPieChartData(PieChart chart,
+            Set<Entry> entrySet, DataGetter<Entry> dataGetter) {
             final ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
 
             for (Entry entry : entrySet) {
