@@ -18,8 +18,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import model.Order;
 import model.Permission;
+import model.Pricelist;
 import model.Product;
+import model.ProductOrder;
 import service.Service;
 import storage.Storage;
 
@@ -87,19 +90,44 @@ public class Products extends GridPane {
 
         public void deleteProduct(Product product) {
             try {
-                Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Sletning af produkt");
-                alert.setHeaderText("Du er i gang med at slette" + product);
-                alert.setContentText(
-                    "Tryk OK for at slette, vær opmærksom på at slettede produkter ikke kan genoprettes");
+                boolean valid = true;
+                for (Order o : storage.getOrders()) {
+                    for (ProductOrder po : o.getAllProducts()) {
+                        if (po.getProduct().equals(product)) {
+                            valid = false;
+                        }
+                    }
 
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK) {
-                    table.removeItem(product);
-                    service.removeProduct(product);
                 }
+                if (valid) {
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.setTitle("Sletning af produkt");
+                    alert.setHeaderText("Du er i gang med at slette" + product);
+                    alert.setContentText(
+                        "Tryk OK for at slette, vær opmærksom på at slettede produkter ikke kan genoprettes");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK) {
+                        table.removeItem(product);
+                        service.removeProduct(product);
+                        for (Pricelist p : storage.getPricelists()) {
+                            if (p.getProducts().contains(product)) {
+                                service.removeProductFromPricelist(product, p);
+                            }
+                        }
+                    }
+                }
+                else {
+                    Alert newalert = new Alert(AlertType.ERROR);
+                    newalert.setTitle("Ugyldig handling");
+                    newalert.setContentText("Produkt er brugt på ordrer og kan ikke slettes");
+                    newalert.showAndWait();
+                }
+
             }
-            catch (Exception e) {
+            catch (
+
+            Exception e) {
                 e.printStackTrace();
             }
         }
@@ -110,6 +138,7 @@ public class Products extends GridPane {
                 if (!name.isEmpty()) {
                     service.createProduct(name, null, null, null);
                     table.setItems(storage.getProducts());
+                    txfProduct.clear();
                 }
             }
             catch (Exception e) {

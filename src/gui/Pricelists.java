@@ -120,15 +120,25 @@ public class Pricelists extends GridPane {
     class Controller {
 
         public void removePriceList() {
+            String contentText =
+                "Tryk OK for at fjerne denne liste, bemærk at den ikke kan genoprettes";
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Fjernelse af prisliste");
             alert.setHeaderText("Du er i gang med at fjerne " + service.getSelectedPricelist());
-            alert.setContentText(
-                "Tryk OK for at fjerne denne liste, bemærk at den ikke kan genoprettes");
+            alert.setContentText(contentText);
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-                service.removePricelist(service.getSelectedPricelist());
+                if (service.getPricelists().size() == 1) {
+                    Alert error = new Alert(AlertType.ERROR);
+                    contentText = "Denne liste kan ikke fjernes da det er den sidste i databasen";
+                    error.setTitle("Fejl");
+                    error.setContentText(contentText);
+                    error.showAndWait();
+                }
+                else {
+                    service.removePricelist(service.getSelectedPricelist());
+                }
             }
             else {
                 alert.close();
@@ -147,7 +157,6 @@ public class Pricelists extends GridPane {
                     String name = result.get();
                     service.createPricelist(name);
                 }
-//                result.ifPresent(name -> System.out.println(name + " " + service.getPricelists()));
             }
             catch (Exception e) {
                 e.printStackTrace();

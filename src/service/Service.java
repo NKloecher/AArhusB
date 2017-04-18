@@ -127,7 +127,7 @@ public class Service {
     }
 
     public void deleteUser(User user) {
-        storage.deleteUser(user);
+        user.setDeleted();
     }
 
     public void updateUserName(User user, String name) {
@@ -226,8 +226,10 @@ public class Service {
     }
 
     public void removePricelist(Pricelist pricelist) {
-        storage.removePricelist(pricelist);
-        setSelectedPricelist(storage.getPricelists().get(0));
+        if (storage.getPricelists().size() > 1) {
+            storage.removePricelist(pricelist);
+            setSelectedPricelist(storage.getPricelists().get(0));
+        }
     }
 
     public Pricelist createPricelist(String name) {
@@ -296,15 +298,15 @@ public class Service {
     }
 
     public void initStorage() throws DiscountParseException {
-        try {
-            storage = loadStorage();
-            System.out.println("Loaded pricelists" + storage.getPricelists());
-            setSelectedPricelist(storage.getPricelists().get(0));
-            return;
-        }
-        catch (IOException | ClassNotFoundException e) {
-            System.out.println("Could not load storage, generating data from initStorage");
-        }
+//        try {
+//            storage = loadStorage();
+//            System.out.println("Loaded pricelists" + storage.getPricelists());
+//            setSelectedPricelist(storage.getPricelists().get(0));
+//            return;
+//        }
+//        catch (IOException | ClassNotFoundException e) {
+//            System.out.println("Could not load storage, generating data from initStorage");
+//        }
 
         User user = createUser("John", "test", "test", Permission.ADMIN);
         User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
@@ -357,7 +359,8 @@ public class Service {
         createCustomer("Hans Hansen", "Vestervej 38", "35698457", "somewhere@somethere.dk");
         createCustomer("Hans Jensen", "Østervej 38", "35864557", "somehere@somethere.dk");
         createCustomer("Østerli Nielsen", "Søndenvej 38", "8979854", "where@somethere.dk");
-        Customer dos = createCustomer("Person 2.0", "Nordenvej 38", "39875557", "here@somethere.dk");
+        Customer dos =
+            createCustomer("Person 2.0", "Nordenvej 38", "39875557", "here@somethere.dk");
         createCustomer("Niels Sommer", "Åkæret 1", "35634687", "there@somethere.dk");
         Customer uno =
             createCustomer("Jens-Peter Petersen", "Nyborg", "878788457", "somehow@somethere.dk");
@@ -375,7 +378,7 @@ public class Service {
         createRentalProductOrder(order2, depositProductKlosterbryg);
         createPayment(order2, order2.totalPrice() + order2.totalDeposit(), PaymentType.CASH);
         order2.setCustomer(uno);
-        
+
         Order order3 = createOrder(user1, pl1);
         createProductOrder(order3, productFadolKlosterbryg);
         createProductOrder(order3, productFadolSweetGeorgiaBrown);

@@ -1,5 +1,8 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.table.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -56,7 +59,13 @@ public class Users extends GridPane {
 		deleteColumn.setMaxWidth(80.0);
 		table.addColumn(deleteColumn);
 		
-		table.setItems(storage.getUsers());
+		List<User> notDeletedUsers = new ArrayList<>();
+		
+		for (User u : storage.getUsers()) {
+			if (!u.isDeleted()) notDeletedUsers.add(u); 
+		}
+		
+		table.setItems(notDeletedUsers);
 		
 		ScrollPane sp = new ScrollPane();
 		sp.setHbarPolicy(ScrollBarPolicy.NEVER);
