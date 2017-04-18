@@ -62,7 +62,6 @@ public class MainApp extends Application {
         hMenu.setStyle("-fx-background-color: #135b1f; -fx-padding: 20px;");
         hMenu.setAlignment(Pos.BASELINE_LEFT);
         hMenu.setMaxHeight(50);
-//        hMenu.setMaxHeight(80);
 
         lUserName.setStyle("-fx-text-fill: white; -fx-font-weight: bolder");
         lUser.setStyle("-fx-text-fill: darkgray;");
@@ -108,26 +107,12 @@ public class MainApp extends Application {
 
         stackPane.getChildren().add(hMenu);
 
-//        VBox imgPane = new VBox();
-//        ImageView img = new ImageView(new Image(new File("images/logo.png").toURI().toString(), 80, 80, true, true));
-//        imgPane.getChildren().add(img);
-//        imgPane.setAlignment(Pos.CENTER);
-//        stackPane.getChildren().add(imgPane);
-
         VBox imgPane = new VBox();
         ImageView img = new ImageView(new Image(new File("images/rsz_logo.png").toURI().toString()));
         imgPane.setPadding(new Insets(5, 0, 5, 0));
         imgPane.getChildren().add(img);
         imgPane.setAlignment(Pos.CENTER);
         stackPane.getChildren().add(imgPane);
-
-        //VBox imgPane = new VBox();
-        //ImageView img = new ImageView(new Image(new File("images/logo.png").toURI().toString()));
-        //imgPane.getChildren().add(img);
-        //imgPane.setPadding(new Insets(0, 0, 0, 0));
-        //imgPane.setAlignment(Pos.CENTER);
-        //stackPane.getChildren().add(imgPane);
-        //stackPane.setPadding(new Insets(-62, 0, 0, 0));
 
         controller.setScreen(l);
     }
