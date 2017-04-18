@@ -47,4 +47,5 @@ public class Product implements Serializable {
     public String toString() {
         return name;
     }
+
 }

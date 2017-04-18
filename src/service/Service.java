@@ -17,7 +17,6 @@ import model.*;
 import storage.Storage;
 
 public class Service {
-
 	private final static Service instance = new Service();
 	private User activeUser;
 	private Storage storage = Storage.getInstance();
