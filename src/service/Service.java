@@ -127,7 +127,7 @@ public class Service {
     }
 
     public void deleteUser(User user) {
-        storage.deleteUser(user);
+        user.setDeleted();
     }
 
     public void updateUserName(User user, String name) {
