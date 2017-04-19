@@ -55,11 +55,13 @@ public class MainApp extends Application {
         initContent();
     }
 
+    private final Button home = new Button("Hjem");
+
     private void initContent() {
+        owner.setResizable(false);
         HBox hMenu = new HBox(10);
 
         StackPane stackPane = new StackPane();
-        Button home = new Button("Hjem");
         Label lUserName = new Label("Ikke logget ind");
         Label lUser = new Label("Bruger:");
         Label lPricelist = new Label("   Prislisten:");
@@ -174,6 +176,12 @@ public class MainApp extends Application {
         }
 
         public void setScreen(Pane pane) {
+            if (pane instanceof MainMenu) {
+                home.setDisable(true);
+            }
+            else {
+                home.setDisable(false);
+            }
             GridPane oldPane = (GridPane) MainApp.this.pane.getCenter();
             List<String> pricelists = new ArrayList<>();
 

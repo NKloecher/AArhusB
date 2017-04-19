@@ -53,8 +53,9 @@ public class Products extends GridPane {
         table.addColumn(new ListColumn<>("Kategori", Product::getCategory,
             service::updateProductCategory,
             categories.toArray(new String[categories.size()])));
-        table.addColumn(new PrimitiveColumn<>("Klip", PrimitiveColumn.Type.Integer, Product::getClips,
-            service::updateProductClips));
+        table.addColumn(
+            new PrimitiveColumn<>("Klip", PrimitiveColumn.Type.Integer, Product::getClips,
+                service::updateProductClips));
         if (service.getActiveUser().getPermission() == Permission.ADMIN) {
             Column<Product> delete =
                 new ButtonColumn<>("Delete", x -> controller.deleteProduct(x));
@@ -102,7 +103,7 @@ public class Products extends GridPane {
                 if (valid) {
                     Alert alert = new Alert(AlertType.CONFIRMATION);
                     alert.setTitle("Sletning af produkt");
-                    alert.setHeaderText("Du er i gang med at slette" + product);
+                    alert.setHeaderText("Du er i gang med at slette " + product);
                     alert.setContentText(
                         "Tryk OK for at slette, vær opmærksom på at slettede produkter ikke kan genoprettes");
 

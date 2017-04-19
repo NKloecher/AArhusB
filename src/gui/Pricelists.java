@@ -22,7 +22,6 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import model.Permission;
 import model.Pricelist;
 import model.Product;
@@ -45,7 +44,8 @@ public class Pricelists extends GridPane {
         setAlignment(Pos.TOP_CENTER);
 
         LabelColumn<PricelistElement> lblC =
-            new LabelColumn<>("Produkt", t -> t.getProduct().getName());
+            new LabelColumn<>("Produkt",
+                t -> t.getProduct().getName() + ", " + t.getProduct().getCategory());
         lblC.setPrefWidth(99999.0);
 
         Column<PricelistElement> pleC = new PrimitiveColumn<>("Pris", PrimitiveColumn.Type.Double,
@@ -73,47 +73,60 @@ public class Pricelists extends GridPane {
         }
 
         table.setItems(tests);
+//        table.getPane().minHeight(getHeight() / 2);
 
-        GridPane gp = new GridPane();
         ScrollPane sp = new ScrollPane();
         sp.setHbarPolicy(ScrollBarPolicy.NEVER);
         sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
         sp.setStyle("-fx-background-color:transparent;");
-        sp.setContent(gp);
         add(sp, 0, 0);
+        sp.setContent(table.getPane());
+        sp.setPrefSize(9999, 9999);
 
-        table.getPane().maxWidth(300);
-        gp.add(table.getPane(), 0, 0, 2, 1);
+        GridPane gp2 = new GridPane();
+        ScrollPane sp2 = new ScrollPane();
+        sp2.setHbarPolicy(ScrollBarPolicy.NEVER);
+        sp2.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        sp2.setStyle("-fx-background-color:transparent;");
+        sp2.setContent(gp2);
+        add(sp2, 1, 0);
+        sp2.setPrefSize(9999, 9999);
 
         Label newProductLabel = new Label("Tilføj nyt produkt:");
         GridPane.setMargin(newProductLabel, new Insets(10, 0, 10, 0));
         newProductLabel.setStyle("-fx-font-size: 16px");
-        gp.add(newProductLabel, 0, 1, 2, 1);
+        gp2.add(newProductLabel, 0, 0, 2, 1);
 
         productList = new ProductList(service.getProducts());
         productList.maxWidth(300);
-        gp.add(productList, 1, 2, 2, 1);
+        GridPane.setMargin(productList, new Insets(0, 30, 0, 0));
+        gp2.add(productList, 1, 1, 2, 1);
 
         tfNewPrice.setPromptText("Pris");
-        gp.add(tfNewPrice, 1, 3);
+        add(tfNewPrice, 0, 1);
 
         Button addProduct = new Button("Tilføj produkt");
         addProduct.setOnAction(e -> controller.addProducts());
-        gp.add(addProduct, 2, 3);
+        add(addProduct, 1, 1);
 
         lError.setStyle("-fx-text-fill: red");
-        gp.add(lError, 0, 4, 2, 1);
+        add(lError, 0, 3, 2, 1);
 
         Button btnCreatePriceList = new Button("Lav ny prisliste");
         btnCreatePriceList.setOnAction(e -> controller.createPriceList());
-        gp.add(btnCreatePriceList, 0, 5, 2, 1);
+        add(btnCreatePriceList, 0, 2, 2, 1);
 
         Button btnRemovePriceList = new Button("Fjern denne prisliste");
         btnRemovePriceList.setOnAction(e -> controller.removePriceList());
-        gp.add(btnRemovePriceList, 2, 5);
+        add(btnRemovePriceList, 1, 2);
         if (service.getActiveUser().getPermission() != Permission.ADMIN) {
             btnRemovePriceList.setDisable(true);
         }
+
+        sp.setMinHeight(400);
+        sp.setMaxHeight(400);
+        sp2.setMinHeight(400);
+        sp2.setMaxHeight(400);
 
     }
 

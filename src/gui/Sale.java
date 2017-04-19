@@ -11,6 +11,8 @@ import gui.table.Table;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -21,177 +23,196 @@ import model.ProductOrder;
 import service.Service;
 
 public class Sale extends GridPane {
-	private final Stage owner;
-	private final Service service = Service.getInstance();
-	private final Controller controller = new Controller();
-	private final Order order = service.createOrder();
-	private final Label lError = new Label();
-	private final Button pay = new Button("Betal");
-	private final LabelColumn<ProductOrder> priceColumn = new LabelColumn<>("Pris", po -> {
-		try {
-			return String.format(Locale.GERMAN, "%.2f kr.", po.price());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return e.getMessage();
-		}
-	});
-	private final Label lTotal = new Label();
-	private final Button btnCustomer = new Button("Tilføj Kunde");
-	private final Label lblCustomer = new Label();
-	private final Handler<?> orderPaidHanlder;
-	private final Table<ProductOrder> productTable = new Table<>(controller::validate);
-	
-	public Sale(Stage owner, Handler<?> orderPaidHanlder) {
-		setPadding(new Insets(20));
-		setHgap(10);
-		setVgap(10);
+    private final Stage owner;
+    private final Service service = Service.getInstance();
+    private final Controller controller = new Controller();
+    private final Order order = service.createOrder();
+    private final Label lError = new Label();
+    private final Button pay = new Button("Betal");
+    private final LabelColumn<ProductOrder> priceColumn = new LabelColumn<>("Pris", po -> {
+        try {
+            return String.format(Locale.GERMAN, "%.2f kr.", po.price());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    });
+    private final Label lTotal = new Label();
+    private final Button btnCustomer = new Button("Tilføj Kunde");
+    private final Label lblCustomer = new Label();
+    private final Handler<?> orderPaidHanlder;
+    private final Table<ProductOrder> productTable = new Table<>(controller::validate);
 
-		this.owner = owner;
-		this.orderPaidHanlder = orderPaidHanlder;
-		
-		LabelColumn<ProductOrder> nameColumn = new LabelColumn<>("Navn", po -> po.getProduct().getName());
-		nameColumn.setPrefWidth(99999.0);
+    public Sale(Stage owner, Handler<?> orderPaidHanlder) {
+        setPadding(new Insets(20));
+        setHgap(10);
+        setVgap(10);
 
-		Column<ProductOrder> amountColumn = new PrimitiveColumn<>("Antal", PrimitiveColumn.Type.Integer,
-				ProductOrder::getAmount, controller::updateAmount, (po, v) -> {
-					if (Pattern.matches("^\\d+$", v)) {
-						return null;
-					}
-					return "Antal skal være et positivt tal";
-				});
-		amountColumn.setMinWidth(50.0);
+        this.owner = owner;
+        this.orderPaidHanlder = orderPaidHanlder;
 
-		Column<ProductOrder> discountColumn = new PrimitiveColumn<>("Rabat", PrimitiveColumn.Type.String,
-				ProductOrder::getDiscount, controller::updateDiscount);
-		discountColumn.setMinWidth(50.0);
+        LabelColumn<ProductOrder> nameColumn =
+            new LabelColumn<>("Navn", po -> po.getProduct().getName());
+        nameColumn.setPrefWidth(owner.getWidth() / 2);
 
-		LabelColumn<ProductOrder> depositColumn = new LabelColumn<>("Pant", po -> {
-			if (po.getProduct() instanceof DepositProduct) {
-				return String.format(Locale.GERMAN, "%.2f kr.", ((DepositProduct) po.getProduct()).getDeposit());
-			} else {
-				return "";
-			}
-		});
+        Column<ProductOrder> amountColumn =
+            new PrimitiveColumn<>("Antal", PrimitiveColumn.Type.Integer,
+                ProductOrder::getAmount, controller::updateAmount, (po, v) -> {
+                    if (Pattern.matches("^\\d+$", v)) {
+                        return null;
+                    }
+                    return "Antal skal være et positivt tal";
+                });
+        amountColumn.setMinWidth(50.0);
 
-		depositColumn.setMinWidth(80.0);
+        Column<ProductOrder> discountColumn =
+            new PrimitiveColumn<>("Rabat", PrimitiveColumn.Type.String,
+                ProductOrder::getDiscount, controller::updateDiscount);
+        discountColumn.setMinWidth(50.0);
 
-		priceColumn.setMinWidth(80.0);
+        LabelColumn<ProductOrder> depositColumn = new LabelColumn<>("Pant", po -> {
+            if (po.getProduct() instanceof DepositProduct) {
+                return String.format(Locale.GERMAN, "%.2f kr.",
+                    ((DepositProduct) po.getProduct()).getDeposit());
+            }
+            else {
+                return "";
+            }
+        });
 
-		productTable.addColumn(nameColumn);
-		productTable.addColumn(amountColumn);
-		productTable.addColumn(discountColumn);
-		productTable.addColumn(depositColumn);
-		productTable.addColumn(priceColumn);
-		productTable.setItems(order.getAllProducts());
+        depositColumn.setMinWidth(80.0);
 
-		ProductList pl = new ProductList(service.getSelectedPricelist().getProducts());
-		pl.setSelectHandler(p -> {
-			ProductOrder po = order.addProduct(p);
-			productTable.addItem(po);
+        priceColumn.setMinWidth(80.0);
 
-			controller.updateRow();
-		});
+        productTable.addColumn(nameColumn);
+        productTable.addColumn(amountColumn);
+        productTable.addColumn(discountColumn);
+        productTable.addColumn(depositColumn);
+        productTable.addColumn(priceColumn);
+        productTable.setItems(order.getAllProducts());
 
-		pl.setDeselectHandler(p -> {
-			ProductOrder po = order.removeProduct(p);
+        ProductList pl = new ProductList(service.getSelectedPricelist().getProducts());
+        pl.setSelectHandler(p -> {
+            ProductOrder po = order.addProduct(p);
+            productTable.addItem(po);
 
-			productTable.removeItem(po);
+            controller.updateRow();
+        });
 
-			controller.updateRow();
-		});
+        pl.setDeselectHandler(p -> {
+            ProductOrder po = order.removeProduct(p);
 
-		lError.setStyle("-fx-text-fill: red");
-		add(lError, 0, 1);
+            productTable.removeItem(po);
 
-		add(pl, 0, 0);
-		add(productTable.getPane(), 1, 0);
+            controller.updateRow();
+        });
 
-		HBox buttons = new HBox();
-		buttons.getChildren().addAll(lTotal, btnCustomer, lblCustomer);
-		buttons.setSpacing(20);
-		add(buttons, 1, 1);
-		btnCustomer.prefWidth(100);
-		btnCustomer.setOnAction(e -> controller.addCustomer());
+        lError.setStyle("-fx-text-fill: red");
+        add(lError, 0, 1);
 
-		controller.updateTotal();
+        ScrollPane sp = new ScrollPane();
+        sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        sp.setHbarPolicy(ScrollBarPolicy.NEVER);
+        sp.setMinWidth(650); //650
+        sp.setContent(pl);
 
-		pay.setDefaultButton(true);
-		pay.setMinWidth(80);
-		pay.setOnAction(e -> controller.showPayDialog());
-		add(pay, 3, 1);
-	}
+//		add(pl, 0, 0);11111
+        add(sp, 0, 0);
+        add(productTable.getPane(), 1, 0);
 
-	class Controller {
-		public void validate(String error, boolean isValid) {
-			pay.setDisable(!isValid);
+        HBox buttons = new HBox();
+        buttons.getChildren().addAll(lTotal, btnCustomer, lblCustomer);
+        buttons.setSpacing(20);
+        add(buttons, 1, 1);
+        btnCustomer.prefWidth(100);
+        btnCustomer.setOnAction(e -> controller.addCustomer());
 
-			if (!order.getRentalProductOrders().isEmpty() && order.getCustomer() == null) {
-				pay.setDisable(true);
-			}
+        controller.updateTotal();
 
-			lError.setText(error);
-		}
-		public void addCustomer() {
-			try {
-				AddCustomerDialog ad = new AddCustomerDialog(order);
-				ad.showAndWait();
-				lblCustomer.setText(order.getCustomer().getName());
-				validate("", productTable.isValid());
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-		}
+        pay.setDefaultButton(true);
+        pay.setMinWidth(80);
+        pay.setOnAction(e -> controller.showPayDialog());
+        add(pay, 3, 1);
+    }
 
-		public void showPayDialog() {
-			try {
-				PayDialog pd = new PayDialog(owner, order, order.totalPrice(), order.totalDeposit());
+    class Controller {
+        public void validate(String error, boolean isValid) {
+            pay.setDisable(!isValid);
 
-				pd.showAndWait();
+            if (!order.getRentalProductOrders().isEmpty() && order.getCustomer() == null) {
+                pay.setDisable(true);
+            }
 
-				PaymentStatus status = order.paymentStatus();
+            lError.setText(error);
+        }
 
-				boolean depositOrPriceIsPaid = status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
-				if (depositOrPriceIsPaid) {
-					orderPaidHanlder.exec(null);
-				}
-			} catch (DiscountParseException e) {
-				e.printStackTrace();
-			}
-		}
+        public void addCustomer() {
+            try {
+                AddCustomerDialog ad = new AddCustomerDialog(order);
+                ad.showAndWait();
+                lblCustomer.setText(order.getCustomer().getName());
+                validate("", productTable.isValid());
+            }
+            catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
 
-		public void updateRow() {
-			validate("", productTable.isValid());
-			updateTotal();
-		}
+        public void showPayDialog() {
+            try {
+                PayDialog pd =
+                    new PayDialog(owner, order, order.totalPrice(), order.totalDeposit());
 
-		public void updateTotal() {
-			String text = String.format(Locale.GERMAN, "Total %.2f kr.", order.totalPrice());
+                pd.showAndWait();
 
-			if (order.totalPayment() != 0) {
-				text += String.format(Locale.GERMAN, " Mangler at betale: %.2f kr.",
-						order.totalPrice() - order.totalPayment());
-			}
+                PaymentStatus status = order.paymentStatus();
 
-			lTotal.setText(text);
-		}
+                boolean depositOrPriceIsPaid =
+                    status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
+                if (depositOrPriceIsPaid) {
+                    orderPaidHanlder.exec(null);
+                }
+            }
+            catch (DiscountParseException e) {
+                e.printStackTrace();
+            }
+        }
 
-		public void updateDiscount(ProductOrder po, String value) {
-			try {
-				po.setDiscount(value);
+        public void updateRow() {
+            validate("", productTable.isValid());
+            updateTotal();
+        }
 
-				lError.setText("");
+        public void updateTotal() {
+            String text = String.format(Locale.GERMAN, "Total %.2f kr.", order.totalPrice());
 
-				priceColumn.updateCell(po);
-				controller.updateTotal();
-			} catch (DiscountParseException e) {
-				lError.setText("ugyldig rabat på \"" + po.getProduct().getName() + "\"");
-			}
-		}
+            if (order.totalPayment() != 0) {
+                text += String.format(Locale.GERMAN, " Mangler at betale: %.2f kr.",
+                    order.totalPrice() - order.totalPayment());
+            }
 
-		public void updateAmount(ProductOrder po, int amount) {
-			service.updateProductOrderAmount(po, amount);
-			priceColumn.updateCell(po);
-			controller.updateTotal();
-		}
-	}
+            lTotal.setText(text);
+        }
+
+        public void updateDiscount(ProductOrder po, String value) {
+            try {
+                po.setDiscount(value);
+
+                lError.setText("");
+
+                priceColumn.updateCell(po);
+                controller.updateTotal();
+            }
+            catch (DiscountParseException e) {
+                lError.setText("ugyldig rabat på \"" + po.getProduct().getName() + "\"");
+            }
+        }
+
+        public void updateAmount(ProductOrder po, int amount) {
+            service.updateProductOrderAmount(po, amount);
+            priceColumn.updateCell(po);
+            controller.updateTotal();
+        }
+    }
 }
