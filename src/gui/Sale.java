@@ -117,9 +117,8 @@ public class Sale extends GridPane {
         sp.setMinWidth(650); //650
         sp.setContent(pl);
 
-//		add(pl, 0, 0);11111
-        add(sp, 0, 0);
-        add(productTable.getPane(), 1, 0);
+        add(pl, 0, 0);
+        add(productTable.getPane(), 1, 0, 2, 1);
 
         HBox buttons = new HBox();
         buttons.getChildren().addAll(lTotal, btnCustomer, lblCustomer);
