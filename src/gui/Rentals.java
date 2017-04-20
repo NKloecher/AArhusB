@@ -39,6 +39,7 @@ public class Rentals extends GridPane {
 		this.rentalPaidHandler = rentalPaidHandler;
 
 		lwRentals.getItems().addAll(service.getRentals());
+		System.out.println(service.getRentals());
 		lwRentals.getSelectionModel().selectedItemProperty().addListener(e -> controller.selectRental());
 		add(lwRentals, 0, 0);
 
@@ -60,6 +61,12 @@ public class Rentals extends GridPane {
 
 	class Controller {
 		public void pay() {
+			Order o = lwRentals.getSelectionModel().getSelectedItem();
+
+			for (RentalProductOrder po : o.getRentalProductOrders()) {
+				po.setNotReturned(po.getAmount() - po.getUnused() - po.getReturned());
+			}
+
 			PayDialog pd = new PayDialog(owner, selectedRental, total + selectedRental.totalPayment(), null);
 
 			pd.showAndWait();
@@ -78,10 +85,6 @@ public class Rentals extends GridPane {
 
 		public void selectRental() {
 			Order o = lwRentals.getSelectionModel().getSelectedItem();
-
-			for (RentalProductOrder po : o.getRentalProductOrders()) {
-				po.setNotReturned(po.getAmount());
-			}
 
 			selectedRental = o;
 
