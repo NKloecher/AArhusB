@@ -46,13 +46,7 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(pane);
 
-        /* dialogs dosent work optimally on mac */
-        if (System.getProperty("os.name").equals("Mac OS X")) {
-        	stage.setMaximized(true);
-        }
-        else {
-        	stage.setFullScreen(true);	
-        }
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
 
