@@ -18,7 +18,8 @@ public class Storage implements Serializable {
     private final List<Customer> customers = new ArrayList<>();
     private final List<String> categories = new ArrayList<>();
 
-    private Storage() {}
+    private Storage() {
+    }
 
     public static Storage getInstance() {
         return instance;
@@ -49,6 +50,10 @@ public class Storage implements Serializable {
 
     public List<String> getCategories() {
         return new ArrayList<>(categories);
+    }
+
+    public void removeCategory(String s) {
+        categories.remove(s);
     }
 
     public List<Tour> getTours() {

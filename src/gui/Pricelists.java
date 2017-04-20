@@ -22,6 +22,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import model.Permission;
 import model.Pricelist;
 import model.Product;
@@ -37,6 +38,7 @@ public class Pricelists extends GridPane {
     private final Label lError = new Label();
     private final Table<PricelistElement> table =
         new Table<>((error, isValid) -> lError.setText(error));
+    private final TextField txfCategory = new TextField();
 
     public Pricelists() {
         setHgap(10);
@@ -73,7 +75,7 @@ public class Pricelists extends GridPane {
         }
 
         table.setItems(tests);
-//        table.getPane().minHeight(getHeight() / 2);
+        table.getPane().setPrefSize(999, 999);
 
         ScrollPane sp = new ScrollPane();
         sp.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -81,16 +83,10 @@ public class Pricelists extends GridPane {
         sp.setStyle("-fx-background-color:transparent;");
         add(sp, 0, 0);
         sp.setContent(table.getPane());
-        sp.setPrefSize(9999, 9999);
+        sp.setPrefSize(999, 999);
 
         GridPane gp2 = new GridPane();
-        ScrollPane sp2 = new ScrollPane();
-        sp2.setHbarPolicy(ScrollBarPolicy.NEVER);
-        sp2.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        sp2.setStyle("-fx-background-color:transparent;");
-        sp2.setContent(gp2);
-        add(sp2, 1, 0);
-        sp2.setPrefSize(9999, 9999);
+        add(gp2, 1, 0);
 
         Label newProductLabel = new Label("Tilføj nyt produkt:");
         GridPane.setMargin(newProductLabel, new Insets(10, 0, 10, 0));
@@ -102,31 +98,36 @@ public class Pricelists extends GridPane {
         GridPane.setMargin(productList, new Insets(0, 30, 0, 0));
         gp2.add(productList, 1, 1, 2, 1);
 
-        tfNewPrice.setPromptText("Pris");
-        add(tfNewPrice, 0, 1);
+        tfNewPrice.setPromptText("Pris på valgte produkter");
+        txfCategory.setPromptText("Kategori");
 
         Button addProduct = new Button("Tilføj produkt");
         addProduct.setOnAction(e -> controller.addProducts());
-        add(addProduct, 1, 1);
 
         lError.setStyle("-fx-text-fill: red");
         add(lError, 0, 3, 2, 1);
 
         Button btnCreatePriceList = new Button("Lav ny prisliste");
         btnCreatePriceList.setOnAction(e -> controller.createPriceList());
-        add(btnCreatePriceList, 0, 2, 2, 1);
 
         Button btnRemovePriceList = new Button("Fjern denne prisliste");
         btnRemovePriceList.setOnAction(e -> controller.removePriceList());
-        add(btnRemovePriceList, 1, 2);
         if (service.getActiveUser().getPermission() != Permission.ADMIN) {
             btnRemovePriceList.setDisable(true);
         }
+        HBox hbox = new HBox();
+        hbox.getChildren().addAll(tfNewPrice, addProduct);
+        hbox.setSpacing(10);
+        hbox.setMinWidth(400);
+        hbox.setMaxWidth(400);
+        add(hbox, 1, 1);
 
-        sp.setMinHeight(400);
-        sp.setMaxHeight(400);
-        sp2.setMinHeight(400);
-        sp2.setMaxHeight(400);
+        HBox hbox2 = new HBox();
+        hbox2.getChildren().addAll(btnCreatePriceList, btnRemovePriceList);
+        hbox2.setSpacing(10);
+        hbox2.setMinWidth(400);
+        hbox2.setMaxWidth(400);
+        add(hbox2, 0, 1);
 
     }
 

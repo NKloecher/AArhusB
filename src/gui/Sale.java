@@ -117,6 +117,7 @@ public class Sale extends GridPane {
         sp.setMinWidth(650); //650
         sp.setContent(pl);
 
+//        add(sp, 0, 0);
         add(pl, 0, 0);
         add(productTable.getPane(), 1, 0, 2, 1);
 

@@ -28,26 +28,44 @@ public class MainApp {
 
         System.out.println("Hvilken funktion vil du vælge?");
         System.out.println("1: Opret Produkt");
-        System.out.println("2: Dagligt salg");
-        System.out.println("3: Dagligt salg opdelt på kategori");
+        System.out.println("2: Opret Kategori");
+        System.out.println("3: Dagligt salg");
+        System.out.println("4: Dagligt salg opdelt på kategori");
 
         try (Scanner scanner = new Scanner(System.in)) {
             int operation = scanner.nextInt();
-            if (operation == 1) {
+            switch (operation) {
+            case 1:
                 createProduct();
-            }
-            if (operation == 2) {
+                break;
+            case 2:
+                createCategory();
+                break;
+            case 3:
                 dailySales();
-            }
-            if (operation == 3) {
+                break;
+            case 4:
                 dailySalesByCategory();
-            }
-            else {
+                break;
+            default:
                 System.out.println("Ikke gyldig funktion, kør program igen");
+                break;
             }
         }
         catch (InputMismatchException e) {
             System.out.println("Ikke gyldig funktion, kør program igen");
+        }
+    }
+
+    private static void createCategory() throws SQLException {
+        String category = "";
+        System.out.println("Skriv navnet på den nye kategori");
+        try (Scanner scanner = new Scanner(System.in)) {
+            category = scanner.next();
+            PreparedStatement s;
+            s = conn.prepareStatement("insert into category values(?)");
+            s.setString(1, category);
+            s.executeUpdate();
         }
     }
 
@@ -94,7 +112,16 @@ public class MainApp {
                     System.out.println("Indtast et tal, por favor");
                 }
             }
-            System.out.println("Skriv categorien på produktet - skal allerede være oprettet");
+            PreparedStatement c;
+            c = conn.prepareStatement("select name from category");
+            ResultSet rss = c.executeQuery();
+            String categories = "";
+            while (rss.next()) {
+                categories += rss.getString("name") + ", ";
+            }
+            categories = categories.substring(0, categories.length() - 2);
+            System.out.println("Skriv categorien på produktet");
+            System.out.println("Gyldige kategorier er " + categories);
             while (category == null) {
                 category = scanner.next();
                 PreparedStatement s;
@@ -105,6 +132,7 @@ public class MainApp {
                 if (!rs.getBoolean("exists")) {
                     category = null;
                     System.out.println("Kategorien findes ikke, prøv igen");
+                    System.out.println("Gyldige kategorier er " + categories);
                 }
             }
         }

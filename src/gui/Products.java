@@ -14,6 +14,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
@@ -34,6 +36,8 @@ public class Products extends GridPane {
     private final Table<Product> table = new Table<>(null);
     private final TextField txfCategory = new TextField();
     private final TextField txfProduct = new TextField();
+    private final ComboBox<String> cbxCategory = new ComboBox<>();
+    private final Label lblError = new Label();
 
     public Products() {
         setHgap(10);
@@ -42,7 +46,7 @@ public class Products extends GridPane {
 
         ScrollPane sp = new ScrollPane();
         sp.setHbarPolicy(ScrollBarPolicy.NEVER);
-        sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
         sp.setContent(table.getPane());
 
         List<String> categories = new ArrayList<>();
@@ -71,23 +75,40 @@ public class Products extends GridPane {
         add(btnCreateCategory, 1, 1);
         btnCreateCategory.setOnAction(e -> controller.createCategoryAction());
 
+        cbxCategory.getItems().setAll(storage.getCategories());
+        cbxCategory.setPromptText("Kategori");
+        add(cbxCategory, 2, 1);
+
+        Button btnRemoveCategory = new Button("Fjern Kategori");
+        btnRemoveCategory.setOnAction(e -> controller.removeCategory());
+        add(btnRemoveCategory, 3, 1);
+
         add(txfProduct, 0, 2);
 
         Button btnCreateProduct = new Button("Lav nyt Produkt");
         add(btnCreateProduct, 1, 2);
         btnCreateProduct.setOnAction(e -> controller.createProduct());
 
+        add(lblError, 0, 3);
+
     }
 
     private class Controller {
 
-//        public Button adminPrivileges() {
-//            Button b = new Button("Delete");
-//            if (service.getActiveUser().getPermission() != Permission.ADMIN) {
-//                b.setDisable(true);
-//            }
-//            return b;
-//        }
+        public void removeCategory() {
+            String category = cbxCategory.getSelectionModel().getSelectedItem();
+            for (Product p : storage.getProducts()) {
+                if (p.getCategory().equals(category)) {
+                    lblError.setText(
+                        "Kategorien kan ikke slettes da kategorien er brugt af mindst ét produkt");
+                    lblError.setStyle("-fx-text-fill: red");
+                }
+                else {
+                    storage.removeCategory(category);
+                    cbxCategory.getItems().setAll(storage.getCategories());
+                }
+            }
+        }
 
         public void deleteProduct(Product product) {
             try {

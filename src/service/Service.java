@@ -407,15 +407,15 @@ public class Service {
     }
 
     public void initStorage() throws DiscountParseException {
-//        try {
-//            storage = loadStorage();
-//            System.out.println("Loaded pricelists" + storage.getPricelists());
-//            setSelectedPricelist(storage.getPricelists().get(0));
-//            return;
-//        }
-//        catch (IOException | ClassNotFoundException e) {
-//            System.out.println("Could not load storage, generating data from initStorage");
-//        }
+        try {
+            storage = loadStorage();
+            System.out.println("Loaded pricelists" + storage.getPricelists());
+            setSelectedPricelist(storage.getPricelists().get(0));
+            return;
+        }
+        catch (IOException | ClassNotFoundException e) {
+            System.out.println("Could not load storage, generating data from initStorage");
+        }
 
         User user = createUser("John", "test", "test", Permission.ADMIN);
         User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
@@ -435,12 +435,12 @@ public class Service {
         addCategory("anlæg");
         addCategory("glas");
         addCategory("sampakninger");
-        addCategory("rundvisning");
 
         Product productKlippekort = createProduct("Klippekort, 4 klip", 4, "andet", null);
         addProductToPricelist(productKlippekort, pl1, 100);
         addProductToPricelist(productKlippekort, pl2, 100);
 
+        // FLASKE ØL
         Product productFlaskeKlosterbryg = createProduct("Klosterbryg", 2, "flaske", null);
         addProductToPricelist(productFlaskeKlosterbryg, pl1, 50);
         addProductToPricelist(productFlaskeKlosterbryg, pl2, 36);
@@ -486,6 +486,7 @@ public class Service {
         addProductToPricelist(productBlackMonster, pl1, 50);
         addProductToPricelist(productBlackMonster, pl2, 50);
 
+        //FADØL
         Product productFadolKlosterbryg = createProduct("Klosterbryg", 2, "fadøl", null);
         addProductToPricelist(productFadolKlosterbryg, pl1, 30);
         Product productFadolJazzClassic = createProduct("Jazz Classic", 2, "fadøl", null);
@@ -521,6 +522,7 @@ public class Service {
         Product productFadolWater = createProduct("Vand", 1, "fadøl", null);
         addProductToPricelist(productFadolWater, pl1, 10);
 
+        //SPIRITUS
         Product productSpiritOfAarhus = createProduct("Spirit of Aarhus", null, "spiritus", null);
         addProductToPricelist(productSpiritOfAarhus, pl1, 300);
         addProductToPricelist(productSpiritOfAarhus, pl2, 300);
@@ -535,6 +537,7 @@ public class Service {
         addProductToPricelist(productLiquorOfAarhus, pl1, 175);
         addProductToPricelist(productLiquorOfAarhus, pl2, 175);
 
+        //FUSTAGE
         DepositProduct depositProductKlosterbryg =
             createDepositProduct("Klosterbryg, 20 liter", null, "fustage", null,
                 200);
@@ -575,6 +578,18 @@ public class Service {
             createDepositProduct("Imperial Stout, 20 liter", null, "fustage",
                 null, 200);
         addProductToPricelist(depositProductImperialStout, pl2, 775);
+
+        //KULSYRE
+        DepositProduct productCO2kg6 = createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
+        addProductToPricelist(productCO2kg6, pl1, 400);
+        addProductToPricelist(productCO2kg6, pl2, 400);
+        DepositProduct productCO2kg4 = createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
+        addProductToPricelist(productCO2kg4, pl1, 266);
+        addProductToPricelist(productCO2kg4, pl2, 266);
+        DepositProduct productCO2kg10 =
+            createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
+        addProductToPricelist(productCO2kg10, pl1, 666);
+        addProductToPricelist(productCO2kg10, pl2, 666);
 
         createTour(5, LocalDateTime.now(), 1000, Duration.of(1, ChronoUnit.HOURS));
         // Customers
