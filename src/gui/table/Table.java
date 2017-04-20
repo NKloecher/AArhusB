@@ -1,15 +1,14 @@
 package gui.table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 public class Table<A> {
 	private GridPane pane = new GridPane();
@@ -52,7 +51,7 @@ public class Table<A> {
 		this.items.add(item);
 
 		int row = this.items.size();
-
+		
 		for (int col = 0; col < columns.size(); col++) {
 			Column<A> column = columns.get(col);
 			Node node = column.getNode(item);
@@ -71,11 +70,11 @@ public class Table<A> {
 		assert item != null;
 		assert items.contains(item);
 
-		int i = items.indexOf(item);
-
 		this.items.remove(item);
-
-		pane.getChildren().remove(i + columns.size() - 1);
+		
+		pane.getChildren().remove(columns.size()-1, pane.getChildren().size());
+		
+		setItems(new ArrayList<>(this.items));
 	}
 
 	/**
