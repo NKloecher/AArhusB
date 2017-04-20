@@ -46,7 +46,13 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(pane);
 
-        stage.setMaximized(true);
+        /* dialogs dosent work optimally on mac */
+        if (System.getProperty("os.name").equals("Mac OS X")) {
+        	stage.setMaximized(true);
+        }
+        else {
+        	stage.setFullScreen(true);	
+        }
         stage.setScene(scene);
         stage.show();
 
@@ -154,7 +160,6 @@ public class MainApp extends Application {
             rt.setFromAngle(angle);
             rt.setRate(ran.nextDouble());
             rt.play();
-
         }
 
         public void lockPricelist(boolean state) {
