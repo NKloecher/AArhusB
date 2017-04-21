@@ -1,10 +1,8 @@
 package gui.table;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
