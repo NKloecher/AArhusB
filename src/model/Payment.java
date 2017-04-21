@@ -24,7 +24,11 @@ public class Payment implements Serializable {
     public PaymentType getPaymentType() {
         return paymentType;
     }
-    
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
     @Override
     public String toString() { 
     	return date.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)) + " " + paymentType + " " + String.format(Locale.GERMAN, "%.2fkr.", amount);

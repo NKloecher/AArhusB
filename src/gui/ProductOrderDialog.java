@@ -1,5 +1,7 @@
 package gui;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Locale;
 
 import exceptions.DiscountParseException;
@@ -36,10 +38,18 @@ public class ProductOrderDialog extends Stage {
         pane.setPadding(new Insets(10));
         pane.setAlignment(Pos.TOP_CENTER);
 
-        pane.add(new Label("Produkt"), 0, 0);
-        pane.add(new Label("Antal"), 1, 0);
-        pane.add(new Label("Pris"), 2, 0);
-        pane.add(new Label("Rabat"), 3, 0);
+		Label produktLabel = new Label("Produkt");
+		produktLabel.setStyle("-fx-font-weight: bolder");
+		pane.add(produktLabel, 0, 0);
+		Label antalLabel = new Label("Antal");
+		antalLabel.setStyle("-fx-font-weight: bolder");
+		pane.add(antalLabel, 1, 0);
+		Label prisLabel = new Label("Pris");
+		prisLabel.setStyle("-fx-font-weight: bolder");
+		pane.add(prisLabel, 2, 0);
+		Label rabatLabel = new Label("Rabat");
+		rabatLabel.setStyle("-fx-font-weight: bolder");
+		pane.add(rabatLabel, 3, 0);
         
         for (int i = 0; i < order.getAllProducts().size(); i++) {
         	ProductOrder po = order.getAllProducts().get(i);
@@ -55,12 +65,23 @@ public class ProductOrderDialog extends Stage {
         	
         	pane.add(new Label(rabat), 3, i+1);
         }
-        
-        pane.add(new Label("Payments"), 0, order.getAllProducts().size() + 1);
-        
+
+		Label betalingerLabel = new Label("Betalinger");
+		betalingerLabel.setStyle("-fx-font-weight: bolder");
+		pane.add(betalingerLabel, 0, order.getAllProducts().size() + 1);
+		Label antalLabel1 = new Label("Antal");
+		antalLabel1.setStyle("-fx-font-weight: bolder");
+		pane.add(antalLabel1, 2, order.getAllProducts().size() + 1);
+		Label typeLabel = new Label("Type");
+		typeLabel.setStyle("-fx-font-weight: bolder");
+		pane.add(typeLabel, 3, order.getAllProducts().size() + 1);
+
         for (int i = 0; i < order.getPayments().size(); i++) {
-        	pane.add(new Label(order.getPayments().get(i).toString()), 0, i + order.getAllProducts().size() + 2);
+        	pane.add(new Label(order.getPayments().get(i).getDate().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)) ), 0, i + order.getAllProducts().size() + 2);
+        	pane.add(new Label(Double.toString(order.getPayments().get(i).getAmount())), 2, i + order.getAllProducts().size() + 2);
+        	pane.add(new Label(order.getPayments().get(i).getPaymentType().toString()), 3, i + order.getAllProducts().size() + 2);
         }
+
     }
 
 }
