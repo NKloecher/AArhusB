@@ -2,6 +2,7 @@ package gui;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -91,7 +92,7 @@ public class ProductList extends BorderPane {
             pane.setVgap(10);
             pane.setAlignment(Pos.TOP_CENTER);
 
-            products.sort(Comparator.comparing(Product::getName));
+            products.sort(null);
 
             for (int i = 0; i < products.size(); i++) {
                 final Product p = products.get(i);
