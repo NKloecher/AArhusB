@@ -7,15 +7,16 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Customer;
 import storage.Storage;
 
 public class ExistingCustomers extends Stage {
 
-    public ExistingCustomers() {
+    public ExistingCustomers(Window owner) {
         initModality(Modality.APPLICATION_MODAL);
         setResizable(false);
-
+        initOwner(owner);
         setTitle("Tilføj Kunde");
         GridPane pane = new GridPane();
         initContent(pane);

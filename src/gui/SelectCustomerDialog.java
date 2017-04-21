@@ -53,7 +53,7 @@ public class SelectCustomerDialog extends Stage {
     	}
     	
     	public void createCustomer() {
-    		CreateCustomerDialog ccd = new CreateCustomerDialog();
+    		CreateCustomerDialog ccd = new CreateCustomerDialog(getOwner());
     		
     		ccd.showAndWait();
     		

@@ -11,8 +11,9 @@ import model.Order;
 public class AddCustomerDialog extends Stage {
     private Order order;
 
-    public AddCustomerDialog(Order order) {
+    public AddCustomerDialog(Stage owner, Order order) {
         this.order = order;
+        initOwner(owner);
         initModality(Modality.APPLICATION_MODAL);
         setResizable(false);
 
@@ -26,7 +27,7 @@ public class AddCustomerDialog extends Stage {
     }
 
     private final Button btnNewCustomer = new Button("Ny Kunde");
-    private final Button btnOldCustomer = new Button("Eksiterende Kunde");
+    private final Button btnOldCustomer = new Button("Eksisterende Kunde");
     private final Button btnCancel = new Button("Fortryd");
     private final Controller controller = new Controller();
 
@@ -47,7 +48,7 @@ public class AddCustomerDialog extends Stage {
     private class Controller {
         public void newCustomer() {
             try {
-                CreateCustomerDialog cc = new CreateCustomerDialog();
+                CreateCustomerDialog cc = new CreateCustomerDialog(getOwner());
                 cc.showAndWait();
                 if (cc.getNewCustomer() != null) {
                     order.setCustomer(cc.getNewCustomer());
@@ -61,7 +62,7 @@ public class AddCustomerDialog extends Stage {
 
         public void oldCustomer() {
             try {
-                ExistingCustomers ec = new ExistingCustomers();
+                ExistingCustomers ec = new ExistingCustomers(getOwner());
                 ec.showAndWait();
                 if (ec.getCustomer() != null) {
                     order.setCustomer(ec.getCustomer());

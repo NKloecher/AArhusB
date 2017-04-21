@@ -9,15 +9,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Customer;
 import service.Service;
 
 public class CreateCustomerDialog extends Stage {
 
-    public CreateCustomerDialog() {
+    public CreateCustomerDialog(Window owner) {
         initModality(Modality.APPLICATION_MODAL);
         setResizable(false);
-
+        initOwner(owner);
         setTitle("Tilføj Kunde");
         GridPane pane = new GridPane();
         initContent(pane);

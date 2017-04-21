@@ -150,7 +150,7 @@ public class Sale extends GridPane {
 
         public void addCustomer() {
             try {
-                AddCustomerDialog ad = new AddCustomerDialog(order);
+                AddCustomerDialog ad = new AddCustomerDialog(owner, order);
                 ad.showAndWait();
                 lblCustomer.setText(order.getCustomer().getName());
                 validate("", productTable.isValid());
