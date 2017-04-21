@@ -3,53 +3,67 @@ package model;
 import exceptions.DiscountParseException;
 
 import java.io.Serializable;
+import java.text.ParseException;
 
 public class Discount implements Serializable {
-    private String discount;
+    private double discountAmount;
+    private DiscountType discountType;
 
     public String getValue() {
-        return discount;
+        if (discountType == null){
+            return null;
+        } else if (discountType == DiscountType.SUBTRACT){
+            return "-" + Double.toString(discountAmount);
+        } else if (discountType == DiscountType.PERCENT){
+            return Double.toString(discountAmount) + "%";
+        } else {
+            return Double.toString(discountAmount);
+        }
     }
 
+    public void setDiscount(double discountAmount, DiscountType discountType){
+        this.discountType = discountType;
+        this.discountAmount = discountAmount;
+    }
+
+    // Old setDiscount used by gui code
     public void setDiscount(String discount) throws DiscountParseException {
         if (discount == null || discount.isEmpty()) {
-            this.discount = null;
-        }
-        else if (discount.matches("^[\\d,]+%|-[\\d,]+|[\\d,]+$")) {
-            this.discount = discount;
-        }
-        else {
-            throw new DiscountParseException("Ugyldig rabat " + discount);
+            setDiscount(0, null);
+        } else if (discount.startsWith("-")) {
+            setDiscount(Double.parseDouble(discount.substring(1, discount.length())), DiscountType.SUBTRACT);
+        } else if (discount.endsWith("%")) {
+            setDiscount(Double.parseDouble(discount.substring(0, discount.length() - 1)) / 100, DiscountType.PERCENT);
+        } else {
+            try {
+                setDiscount(Double.parseDouble(discount), DiscountType.NEW);
+            } catch (NumberFormatException ex){
+                throw new DiscountParseException("Ugyldig rabat " + discount);
+            }
         }
 
     }
 
     public double getPrice(double total) throws DiscountParseException {
-        if (discount == null) {
+        if (discountType == null) {
             return total;
         }
 
-        double newTotal;
-        double discountAmount;
-        if (discount.startsWith("-")) {
-
-            discountAmount = Double.parseDouble(discount.substring(1, discount.length()));
+        if (discountType == DiscountType.SUBTRACT) {
             if (discountAmount > total) {
                 throw new DiscountParseException(
                     discountAmount + " rabat er h\u00F8jere end " + total);
             }
-            newTotal = total - discountAmount;
+            return total - discountAmount;
         }
-        else if (discount.endsWith("%")) {
-            discountAmount = Double.parseDouble(discount.substring(0, discount.length() - 1)) / 100;
+        else if (discountType == DiscountType.PERCENT) {
             if (discountAmount > 1) {
                 throw new DiscountParseException(discountAmount * 100 + "% er mere end 100% rabat");
             }
-            newTotal = total * (1 - discountAmount);
+            return total * (1 - discountAmount);
         }
         else {
-            newTotal = Double.parseDouble(discount);
+            return discountAmount;
         }
-        return newTotal;
     }
 }
