@@ -50,7 +50,7 @@ public class PayDialog extends Stage {
 		initModality(Modality.APPLICATION_MODAL);
 		setResizable(false);
 		
-		setTitle("Add Person");
+		setTitle("Betal");
 		initContent(pane);
 		
 		Scene scene = new Scene(pane);
