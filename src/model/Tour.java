@@ -16,22 +16,14 @@ public class Tour implements Payable, Serializable {
     private LocalDateTime date;
     private double price;
     private Duration duration;
-    private User user;
+    //private User user; //Bliver ikke brugt, da vi ikke nåede den del af statistikken
 
     public Tour(int persons, LocalDateTime date, double price, Duration duration, User user) {
         this.persons = persons;
         this.date = date;
         this.price = price;
         this.duration = duration;
-        this.user = user;
-    }
-
-    /**
-     * Adds a payment
-     */
-    @Override
-    public void pay(Payment payment) {
-        payments.add(payment);
+//        this.user = user;
     }
 
     /**
@@ -100,15 +92,13 @@ public class Tour implements Payable, Serializable {
     }
 
     @Override
-    public boolean tryPay(Payment payment) {
-        pay(payment);
+    public void pay(Payment payment) {
+        payments.add(payment);
         try {
             paymentStatus();
-            return true;
         }
         catch (InvalidPaymentAmount e) {
             payments.remove(payment);
-            return false;
         }
     }
 }

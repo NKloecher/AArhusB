@@ -21,7 +21,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.Payable;
-import model.Payment;
 import model.PaymentStatus;
 import model.PaymentType;
 import service.Service;
@@ -234,36 +233,43 @@ public class PayDialog extends Stage {
                 paymentRemaning = payable.getPrice() - payable.totalPayment();
             }
 
-            Payment payment = service.createPayment(payable, amount, paymentType);
-            if (payment == null && paymentType == PaymentType.CLIP_CARD) {
-                lError.setText("Kan ikke overbetale med klippekort");
-            }
+            try {
+                service.createPayment(payable, amount, paymentType);
+                if (paymentRemaning - amount == 0) {
+                    endButtonIsAdded = true;
+                    Button end = new Button("Ok");
+                    end.setOnAction(e -> close());
+                    hbTop.getChildren().add(end);
+                    lError.setText("");
+                    setTotal();
+                }
 
-            if (!endButtonIsAdded) {
-                PaymentStatus status = PaymentStatus.UNPAID;
-                try {
+            }
+            catch (InvalidPaymentAmount exception) {
+                if (paymentType == PaymentType.CLIP_CARD) {
+                    lError.setText("Kan ikke overbetale med klippekort");
+                }
+
+                if (!endButtonIsAdded) {
+                    PaymentStatus status = PaymentStatus.UNPAID;
                     status = payable.paymentStatus();
-                    if (payment == null && paymentType != PaymentType.CLIP_CARD) {
+                    if (paymentType != PaymentType.CLIP_CARD) {
                         overpaidAmount += paymentRemaning - amount;
                         service.createPayment(payable, amount - (amount - paymentRemaning),
                             paymentType);
                         status = PaymentStatus.ORDERPAID;
                     }
 
+                    if (status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID) {
+                        endButtonIsAdded = true;
+                        Button end = new Button("Ok");
+                        end.setOnAction(e -> close());
+                        hbTop.getChildren().add(end);
+                        lError.setText("");
+                    }
                 }
-                catch (InvalidPaymentAmount e) {
-                    e.printStackTrace();
-                }
-
-                if (status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID) {
-                    endButtonIsAdded = true;
-                    Button end = new Button("Ok");
-                    end.setOnAction(e -> close());
-                    hbTop.getChildren().add(end);
-                    lError.setText("");
-                }
+                setTotal();
             }
-            setTotal();
         }
     }
 }

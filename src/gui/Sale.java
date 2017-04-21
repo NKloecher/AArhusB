@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import exceptions.DiscountParseException;
+import gui.table.ButtonColumn;
 import gui.table.Column;
 import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
@@ -82,6 +83,10 @@ public class Sale extends GridPane {
             }
         });
 
+        ButtonColumn<ProductOrder> btnGiftProductsColumn =
+            new ButtonColumn<>("Gave", e -> controller.addGifts(e));
+        btnGiftProductsColumn.setMinWidth(55.0);
+
         depositColumn.setMinWidth(80.0);
 
         priceColumn.setMinWidth(80.0);
@@ -91,6 +96,8 @@ public class Sale extends GridPane {
         productTable.addColumn(discountColumn);
         productTable.addColumn(depositColumn);
         productTable.addColumn(priceColumn);
+        productTable.addColumn(btnGiftProductsColumn);
+
         productTable.setItems(order.getAllProducts());
 
         ProductList pl = new ProductList(service.getSelectedPricelist().getProducts());
@@ -118,7 +125,6 @@ public class Sale extends GridPane {
         sp.setMinWidth(650); //650
         sp.setContent(pl);
 
-//        add(sp, 0, 0);
         add(pl, 0, 0);
         add(productTable.getPane(), 1, 0, 2, 1);
 
@@ -138,6 +144,18 @@ public class Sale extends GridPane {
     }
 
     class Controller {
+
+        public void addGifts(ProductOrder o) {
+            if (!o.getProduct().getCategory().equals("sampakninger")) {
+                lError.setText("Kan kun tilføje gaver til gaveæsker etc.");
+            }
+            else {
+                GiftBasketDialog gb = new GiftBasketDialog(owner, order);
+                gb.showAndWait();
+
+            }
+        }
+
         public void validate(String error, boolean isValid) {
             pay.setDisable(!isValid);
 
@@ -156,11 +174,31 @@ public class Sale extends GridPane {
                 validate("", productTable.isValid());
             }
             catch (Exception e) {
-                // TODO: handle exception
+                e.printStackTrace();
             }
         }
 
         public void showPayDialog() {
+            boolean gift = false;
+            for (ProductOrder po : order.getAllProducts()) {
+                if (po.getProduct().getCategory().equals("sampakninger")) {
+                    gift = true;
+                }
+            }
+            if (gift) {
+                System.out.println(order.getAllProducts().get(1).getProduct());
+                System.out.println(order.getAllProducts().get(1).getGift());
+                for (ProductOrder po : order.getAllProducts()) {
+                    if (po.getGift()) {
+                        gift = true;
+                        lError.setText("");
+                        break;
+                    }
+                    else {
+                        lError.setText("En gaveæske skal have produkter tilføjet");
+                    }
+                }
+            }
             try {
                 PayDialog pd =
                     new PayDialog(owner, order, order.totalPrice(), order.totalDeposit());
