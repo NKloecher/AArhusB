@@ -1,6 +1,7 @@
 package model;
 
 import exceptions.DiscountParseException;
+import exceptions.InvalidPaymentAmount;
 import javafx.util.Pair;
 
 import java.io.Serializable;
@@ -25,76 +26,89 @@ public class Tour implements Payable, Serializable {
         this.user = user;
     }
 
-	/**
-	 * Adds a payment
-	 */
-	@Override
+    /**
+     * Adds a payment
+     */
+    @Override
     public void pay(Payment payment) {
-		payments.add(payment);
+        payments.add(payment);
     }
 
-	/**
-	 * Calculates the current payment status
-	 */
-	@Override
-	public PaymentStatus paymentStatus() throws DiscountParseException {
-		if (totalPayment() >= price){
-			return PaymentStatus.ORDERPAID;
-		}
-		return PaymentStatus.UNPAID;
-	}
+    /**
+     * Calculates the current payment status
+     */
+    @Override
+    public PaymentStatus paymentStatus() throws DiscountParseException {
+        if (totalPayment() >= price) {
+            return PaymentStatus.ORDERPAID;
+        }
+        return PaymentStatus.UNPAID;
+    }
 
-	public int getPersons() {
-		return persons;
-	}
+    public int getPersons() {
+        return persons;
+    }
 
-	public void setPersons(int persons) {
-		this.persons = persons;
-	}
+    public void setPersons(int persons) {
+        this.persons = persons;
+    }
 
-	public LocalDateTime getDate() {
-		return date;
-	}
+    public LocalDateTime getDate() {
+        return date;
+    }
 
-	public void setDate(LocalDateTime date) {
-		this.date = date;
-	}
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
 
-	public double totalPrice() {
-		return price;
-	}
+    public double totalPrice() {
+        return price;
+    }
 
-	public void setPrice(double price) {
-		this.price = price;
-	}
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
-	public Duration getDuration() {
-		return duration;
-	}
+    public Duration getDuration() {
+        return duration;
+    }
 
-	public void setDuration(Duration duration) {
-		this.duration = duration;
-	}
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
 
-	/**
-	 * Calculate the total payment
-	 */
-	@Override
-	public double totalPayment() {
-		double sum = 0;
-		for (Payment payment : payments) {
-			sum += payment.getAmount();
-		}
-		return sum;
-	}
+    /**
+     * Calculate the total payment
+     */
+    @Override
+    public double totalPayment() {
+        double sum = 0;
+        for (Payment payment : payments) {
+            sum += payment.getAmount();
+        }
+        return sum;
+    }
 
-	@Override
-	public double getPrice() {
-		return 0;
-	}
+    @Override
+    public double getPrice() {
+        return 0;
+    }
 
-	@Override
-	public Pair<Integer, Double> totalClipCardPrice() {
-		return null;
-	}	
+    @Override
+    public Pair<Integer, Double> totalClipCardPrice() {
+        return null;
+    }
+
+    @Override
+    public boolean tryPay(Payment payment) {
+        pay(payment);
+        try {
+            paymentStatus();
+            return true;
+        }
+        catch (InvalidPaymentAmount e) {
+            payments.remove(payment);
+            return false;
+        }
+    }
 }

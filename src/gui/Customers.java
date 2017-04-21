@@ -27,8 +27,11 @@ public class Customers extends GridPane {
     private final Button btnAddCustomer = new Button("Tilføj Kunde");
     private final Button btnViewCustomer = new Button("Vis Kundeinformation");
     private final Button btnViewOrder = new Button("Vis Ordre");
+    private Stage owner;
 
-    public Customers() {
+    public Customers(Stage owner) {
+        this.owner = owner;
+
         setVgap(10);
         setHgap(10);
         setAlignment(Pos.TOP_CENTER);
@@ -114,7 +117,7 @@ public class Customers extends GridPane {
 
         public void createCustomerDialogAction() {
             try {
-                CreateCustomerDialog cd = new CreateCustomerDialog();
+                CreateCustomerDialog cd = new CreateCustomerDialog(owner);
                 cd.showAndWait();
                 updateCustomers(cd.getNewCustomer());
             }

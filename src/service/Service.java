@@ -328,9 +328,13 @@ public class Service {
         assert paymentType != null;
 
         Payment payment = new Payment(paymentType, amount);
-        payable.pay(payment);
-        storage.addPayment(payment);
-        return payment;
+        if (payable.tryPay(payment)) {
+            storage.addPayment(payment);
+            return payment;
+        }
+        else {
+            return null;
+        }
     }
 
     public void removeProductFromPricelist(Product product, Pricelist pricelist) {

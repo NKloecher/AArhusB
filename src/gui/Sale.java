@@ -55,7 +55,8 @@ public class Sale extends GridPane {
         this.orderPaidHanlder = orderPaidHanlder;
 
         LabelColumn<ProductOrder> nameColumn =
-            new LabelColumn<>("Navn", po -> po.getProduct().getName());
+            new LabelColumn<>("Navn",
+                po -> po.getProduct().getName() + ", " + po.getProduct().getCategory());
         nameColumn.setPrefWidth(owner.getWidth() / 2);
 
         Column<ProductOrder> amountColumn =
@@ -153,7 +154,7 @@ public class Sale extends GridPane {
 
         public void addCustomer() {
             try {
-                AddCustomerDialog ad = new AddCustomerDialog(order);
+                AddCustomerDialog ad = new AddCustomerDialog(owner, order);
                 ad.showAndWait();
                 lblCustomer.setText(order.getCustomer().getName());
                 validate("", productTable.isValid());
