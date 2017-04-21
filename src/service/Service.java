@@ -38,6 +38,10 @@ public class Service {
         product.setClips(clips);
     }
 
+    public void updateOrderDiscount(Order order, String discount) {
+    	order.setDiscount(discount);
+    }
+    
     public void updateProductCategory(Product product, String category) {
         assert product != null;
         assert category != null && !category.isEmpty();

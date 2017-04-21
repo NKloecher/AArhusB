@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Product implements Serializable {
+public class Product implements Serializable, Comparable<Product> {
     private String name;
     private Integer clips;
     private String category;
@@ -47,5 +47,13 @@ public class Product implements Serializable {
     public String toString() {
         return name;
     }
+
+	@Override
+	public int compareTo(Product o) {
+		int nameCompare = getName().compareTo(o.getName());
+    	
+    	if (nameCompare == 0) return getCategory().compareTo(o.getCategory());
+    	else return nameCompare;
+	}
 
 }
