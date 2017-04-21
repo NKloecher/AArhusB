@@ -222,6 +222,19 @@ public class Order implements Payable, Serializable {
         throw new InvalidPaymentAmount("");
     }
 
+    @Override
+    public boolean tryPay(Payment payment) {
+        pay(payment);
+        try {
+            paymentStatus();
+            return true;
+        }
+        catch (InvalidPaymentAmount e) {
+            payments.remove(payment);
+            return false;
+        }
+    }
+
     /**
      * Calculate the total of all payments, including clip cards
      */

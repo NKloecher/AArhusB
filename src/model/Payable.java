@@ -7,6 +7,8 @@ import javafx.util.Pair;
 public interface Payable {
     void pay(Payment payment);
 
+    boolean tryPay(Payment payment);
+
     PaymentStatus paymentStatus() throws DiscountParseException, InvalidPaymentAmount;
 
     double totalPayment();
