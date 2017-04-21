@@ -51,7 +51,7 @@ public class MainMenu extends GridPane {
 
         Button customers = getBigButton("Kunder");
         add(customers, 0, 7);
-        customers.setOnAction(e -> controller.select(new Customers()));
+        customers.setOnAction(e -> controller.select(new Customers(owner)));
         
         if (service.getActiveUser().getPermission() != Permission.ADMIN) {
         	products.setDisable(true);
