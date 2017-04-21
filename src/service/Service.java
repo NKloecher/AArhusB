@@ -294,7 +294,6 @@ public class Service {
         String image,
         double deposit) {
         assert name != null;
-        assert category != null;
 
         DepositProduct depositProduct = new DepositProduct(name, clips, category, image, deposit);
         storage.addProduct(depositProduct);
@@ -377,9 +376,6 @@ public class Service {
 
     public Customer createCustomer(String name, String address, String phone, String email) {
         assert name != null && !name.isEmpty();
-        assert address != null && !address.isEmpty();
-        assert phone != null && !phone.isEmpty();
-        assert email != null && !email.isEmpty();
 
         Customer c = new Customer(name, address, phone, email);
         storage.addCustomer(c);
@@ -590,6 +586,65 @@ public class Service {
             createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
         addProductToPricelist(productCO2kg10, pl1, 666);
         addProductToPricelist(productCO2kg10, pl2, 666);
+
+        //MALT
+        Product productMalt = createProduct("Malt, 25kg", null, "malt", null);
+        addProductToPricelist(productMalt, pl2, 300);
+
+        //BEKLÆDNING
+        Product productTShirt = createProduct("T-Shirt", null, "beklædning", null);
+        addProductToPricelist(productTShirt, pl1, 70);
+        addProductToPricelist(productTShirt, pl2, 70);
+        Product productPolo = createProduct("Polo", null, "beklædning", null);
+        addProductToPricelist(productPolo, pl1, 100);
+        addProductToPricelist(productPolo, pl2, 100);
+        Product productCap = createProduct("Cap", null, "beklædning", null);
+        addProductToPricelist(productCap, pl1, 30);
+        addProductToPricelist(productCap, pl2, 30);
+
+        //ANLÆG
+        DepositProduct product1Valve = createDepositProduct("Anlæg 1-hane", null, "anlæg", null, 0);
+        addProductToPricelist(product1Valve, pl2, 250);
+        DepositProduct product2Valve =
+            createDepositProduct("Anlæg 2-haner", null, "anlæg", null, 0);
+        addProductToPricelist(product2Valve, pl2, 400);
+        DepositProduct productBar = createDepositProduct("Kulsyre", null, "kulsyre", null, 0);
+        addProductToPricelist(productBar, pl2, 500);
+        Product productDelivery = createProduct("Levering", null, "anlæg", null);
+        addProductToPricelist(productDelivery, pl2, 500);
+        Product productKrus = createProduct("Krus", null, "anlæg", null);
+        addProductToPricelist(productKrus, pl2, 60);
+
+        //GLAS
+        Product productGlass = createProduct("Glas", null, "glas", null);
+        addProductToPricelist(productGlass, pl2, 15);
+
+        //SAMPAKNINGER
+        Product productGiftbag2Beer2Glass =
+            createProduct("Gaveæske 2 øl, 2 glas", null, "sampakninger", null);
+        addProductToPricelist(productGiftbag2Beer2Glass, pl1, 100);
+        addProductToPricelist(productGiftbag2Beer2Glass, pl2, 100);
+        Product productGiftbag4Beer = createProduct("Gaveæske 4 øl", null, "sampakninger", null);
+        addProductToPricelist(productGiftbag4Beer, pl1, 130);
+        addProductToPricelist(productGiftbag4Beer, pl2, 130);
+        Product productGiftbag6Beer = createProduct("Trækasse 6 øl", null, "sampakninger", null);
+        addProductToPricelist(productGiftbag6Beer, pl1, 240);
+        addProductToPricelist(productGiftbag6Beer, pl2, 240);
+        Product productGiftbag6Beer2Glass =
+            createProduct("Gavekurv 6 øl, 2 glas", null, "sampakninger", null);
+        addProductToPricelist(productGiftbag6Beer2Glass, pl1, 250);
+        addProductToPricelist(productGiftbag6Beer2Glass, pl2, 250);
+        Product productGiftbag6Beer6Glass =
+            createProduct("Trækasse 6 øl, 6 glas", null, "sampakninger", null);
+        addProductToPricelist(productGiftbag6Beer6Glass, pl1, 290);
+        addProductToPricelist(productGiftbag6Beer6Glass, pl2, 290);
+        Product productGiftbag12BeerWood =
+            createProduct("Trækasse 12 øl", null, "sampakninger", null);
+        addProductToPricelist(productGiftbag12BeerWood, pl1, 390);
+        addProductToPricelist(productGiftbag12BeerWood, pl2, 390);
+        Product productGiftbag12Beer = createProduct("Papkasse 12 øl", null, "sampakninger", null);
+        addProductToPricelist(productGiftbag12Beer, pl1, 360);
+        addProductToPricelist(productGiftbag12Beer, pl2, 360);
 
         createTour(5, LocalDateTime.now(), 1000, Duration.of(1, ChronoUnit.HOURS));
         // Customers
