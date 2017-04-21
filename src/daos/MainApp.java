@@ -85,7 +85,7 @@ public class MainApp {
             }
         }
         PreparedStatement s;
-        s = conn.prepareStatement("exec dailySalesByCategory @date=?");
+        s = conn.prepareStatement("exec daily_sales_by_category @date=?");
         s.setString(1, dateString);
         ResultSet rs = s.executeQuery();
         while (rs.next()) {
@@ -125,7 +125,7 @@ public class MainApp {
             while (category == null) {
                 category = scanner.next();
                 PreparedStatement s;
-                s = conn.prepareStatement("exec testCategory @name=?");
+                s = conn.prepareStatement("exec test_category @name=?");
                 s.setString(1, category);
                 ResultSet rs = s.executeQuery();
                 rs.next();
@@ -161,7 +161,7 @@ public class MainApp {
             }
         }
         PreparedStatement s;
-        s = conn.prepareStatement("exec dailySales @date=?");
+        s = conn.prepareStatement("exec daily_sales @date=?");
         s.setString(1, dateString);
         ResultSet rs = s.executeQuery();
         rs.next();
