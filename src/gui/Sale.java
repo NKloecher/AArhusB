@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -43,6 +44,7 @@ public class Sale extends GridPane {
     private final Label lblCustomer = new Label();
     private final Handler<?> orderPaidHanlder;
     private final Table<ProductOrder> productTable = new Table<>(controller::validate);
+    private final TextField discount = new TextField();
 
     public Sale(Stage owner, Handler<?> orderPaidHanlder) {
         setPadding(new Insets(20));
@@ -117,12 +119,14 @@ public class Sale extends GridPane {
         sp.setMinWidth(650); //650
         sp.setContent(pl);
 
-//        add(sp, 0, 0);
         add(pl, 0, 0);
         add(productTable.getPane(), 1, 0, 2, 1);
-
+        
+        discount.setPromptText("Rabat");
+        discount.setOnAction(e -> controller.updateOrderDiscount());
+        
         HBox buttons = new HBox();
-        buttons.getChildren().addAll(lTotal, btnCustomer, lblCustomer);
+        buttons.getChildren().addAll(lTotal, btnCustomer, lblCustomer, discount);
         buttons.setSpacing(20);
         add(buttons, 1, 1);
         btnCustomer.prefWidth(100);
@@ -214,5 +218,11 @@ public class Sale extends GridPane {
             priceColumn.updateCell(po);
             controller.updateTotal();
         }
+        
+        public void updateOrderDiscount() {
+    		service.updateOrderDiscount(order, discount.getText());
+    	}
     }
+
+	
 }
