@@ -42,7 +42,6 @@ public class Rentals extends GridPane {
 		this.rentalPaidHandler = rentalPaidHandler;
 
 		lwRentals.getItems().addAll(service.getRentals());
-		System.out.println(service.getRentals());
 		lwRentals.getSelectionModel().selectedItemProperty().addListener(e -> controller.selectRental());
 		add(lwRentals, 0, 0);
 

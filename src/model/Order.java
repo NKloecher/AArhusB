@@ -27,6 +27,11 @@ public class Order implements Payable, Serializable {
         this.pricelist = pricelist;
     }
 
+    /**
+     * Calls the appropriate create method.
+     * @see #createProductOrder(Product)
+     * @see #createRentalProductOrder(DepositProduct)
+     */
     public ProductOrder addProduct(Product product) {
     	assert product != null;
     	
@@ -38,6 +43,9 @@ public class Order implements Payable, Serializable {
         }
     }
 
+    /**
+     * Removes a product from the appropriate list
+     */
     public ProductOrder removeProduct(Product product) {
     	assert product != null;
     	
@@ -72,6 +80,9 @@ public class Order implements Payable, Serializable {
         return pricelist;
     }
 
+    /**
+     *  Creates a ProductOrder with a product
+     */
     public ProductOrder createProductOrder(Product product) {
     	assert product != null;
     	
@@ -80,6 +91,9 @@ public class Order implements Payable, Serializable {
         return productOrder;
     }
 
+    /**
+     * Creates a RentalProductOrder with a deposit product
+     */
     public RentalProductOrder createRentalProductOrder(DepositProduct product) {
     	assert product != null;
     	
@@ -265,14 +279,6 @@ public class Order implements Payable, Serializable {
         sum += totalPaymentClipCard();
         return sum;
     }
-
-    /**
-     * Add a payment to the order
-     */
-//    @Override
-//    public void pay(Payment payment) {
-//        payments.add(payment);
-//    }
 
     public List<Payment> getPayments() {
         return new ArrayList<>(payments);
