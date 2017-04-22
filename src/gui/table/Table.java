@@ -54,7 +54,9 @@ public class Table<A> {
             Column<A> column = columns.get(col);
             Node node = column.getNode(item);
 
-            pane.add(node, col, row);
+            if (node != null) {
+            	pane.add(node, col, row);            	
+            }
         }
     }
 

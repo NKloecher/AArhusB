@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,6 +35,7 @@ public class ProductList extends BorderPane {
     private final ComboBox<String> cbCategories = new ComboBox<>();
     private final List<Product> selectedProducts = new ArrayList<>();
     private final List<Product> allProducts;
+    private GridPane pane = new GridPane();
     private Handler<Product> selectHandler;
     private Handler<Product> deselectHandler;
 
@@ -45,14 +48,14 @@ public class ProductList extends BorderPane {
         final HBox hbQuery = new HBox();
         hbQuery.setStyle("-fx-padding: 0 0 16px 0;");
 
-        tfSearch.setOnKeyTyped(e -> controller.findProduct());
+        tfSearch.setOnKeyTyped(e -> controller.findProducts());
         tfSearch.setPrefWidth(540);
         hbQuery.getChildren().add(tfSearch);
 
         final List<String> categories = storage.getCategories();
         categories.add(0, "All");
         cbCategories.getItems().setAll(categories);
-        cbCategories.valueProperty().addListener(e -> controller.findProduct());
+        cbCategories.valueProperty().addListener(e -> controller.findProducts());
         cbCategories.getSelectionModel().select(0);
         cbCategories.setPrefWidth(100);
         hbQuery.getChildren().add(cbCategories);
@@ -73,19 +76,27 @@ public class ProductList extends BorderPane {
     public List<Product> getSelectedProducts() {
         return new ArrayList<>(selectedProducts);
     }
-
+    
+    public void select(Product p) {
+    	controller.select(p);
+    }
+    
+    public void deselect(Product p) {
+    	controller.deselect(p);
+    }
+    
     class Controller {
-        public void findProduct() {
+        public void findProducts() {
             final String selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
             final String query = tfSearch.getText();
-
-            final List<Product> matchingProducts =
-                service.getMatchingProducts(query, selectedCategory, allProducts);
+            final List<Product> matchingProducts = service.getMatchingProducts(query, selectedCategory, allProducts);
+            
             showProducts(matchingProducts);
         }
 
         public void showProducts(List<Product> products) {
-            final GridPane pane = new GridPane();
+            pane = new GridPane();
+        	
             final int productSize = 150;
 
             pane.setHgap(10);
@@ -122,32 +133,17 @@ public class ProductList extends BorderPane {
                     node = label;
                 }
 
-                node.setStyle(
-                    "-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+                node.setUserData(p);
+                node.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
                 GridPane.setHalignment(node, HPos.CENTER);
-
+                
                 node.setOnMouseClicked(e -> {
                     if (selectedProducts.contains(p)) {
-                        selectedProducts.remove(p);
-
-                        if (deselectHandler != null) {
-                            deselectHandler.exec(p);
-                        }
-
-                        node.setStyle(
-                            "-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+                        deselect(p);
                     }
                     else {
-                        selectedProducts.add(p);
-
-                        if (selectHandler != null) {
-                            selectHandler.exec(p);
-                        }
-
-                        node.setStyle(
-                            "-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
+                        select(p);
                     }
-
                 });
 
                 pane.add(node, i % 4, i / 4);
@@ -159,6 +155,40 @@ public class ProductList extends BorderPane {
             GridPane.setMargin(pane, new Insets(20));
 
             setCenter(sp);
+        }
+        
+        public Node findNode(Product p) {
+        	for (Node node : pane.getChildren()) {
+        		if (node.getUserData().equals(p)) {
+        			return node;
+        		}
+        	}
+        	
+        	throw new RuntimeException("the product was not found in the list");
+        }
+        
+        public void select(Product p) {
+        	Node node = findNode(p);
+        	
+        	selectedProducts.add(p);
+
+            if (selectHandler != null) {
+                selectHandler.exec(p);
+            }
+
+            node.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
+        }
+        
+        public void deselect(Product p) {
+        	Node node = findNode(p);
+        	
+        	selectedProducts.remove(p);
+
+            if (deselectHandler != null) {
+                deselectHandler.exec(p);
+            }
+
+            node.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
         }
     }
 }

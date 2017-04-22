@@ -81,6 +81,11 @@ public class GiftBasketDialog extends Stage {
             }
         }
         ProductList pl = new ProductList(products);
+        
+        for (ProductOrder po : newProducts) {
+        	pl.select(po.getProduct());
+        }
+        
         pl.setSelectHandler(p -> {
             ProductOrder po = order.addProduct(p);
             po.setGiftStatus();

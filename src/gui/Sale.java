@@ -10,6 +10,7 @@ import gui.table.LabelColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -86,7 +87,19 @@ public class Sale extends GridPane {
         });
 
         ButtonColumn<ProductOrder> btnGiftProductsColumn =
-            new ButtonColumn<>("Gave", e -> controller.addGifts(e));
+            new ButtonColumn<ProductOrder>("Gave", e -> controller.addGifts(e)) {
+        		@Override
+        		public Node getNode(ProductOrder po) {
+        			Node node = super.getNode(po);
+        			
+        			if (po.getProduct().getCategory().equals("sampakninger")) {
+        				return node;
+        			}
+        			else {
+        				return null;
+        			}
+        		}
+            };
         btnGiftProductsColumn.setMinWidth(55.0);
 
         depositColumn.setMinWidth(80.0);
