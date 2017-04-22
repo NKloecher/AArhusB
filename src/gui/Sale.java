@@ -190,9 +190,6 @@ public class Sale extends GridPane {
                     gift = true;
                 }
             }
-            if (gift) {
-                System.out.println(order.getAllProducts().get(1).getProduct());
-                System.out.println(order.getAllProducts().get(1).getGift());
                 for (ProductOrder po : order.getAllProducts()) {
                     if (po.getGift()) {
                         gift = true;

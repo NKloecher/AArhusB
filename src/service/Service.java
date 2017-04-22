@@ -411,7 +411,7 @@ public class Service {
     public void initStorage() throws DiscountParseException {
         try {
             storage = loadStorage();
-            System.out.println("Loaded pricelists" + storage.getPricelists());
+            System.out.println("Loaded data from storage");
             setSelectedPricelist(storage.getPricelists().get(0));
             return;
         }
