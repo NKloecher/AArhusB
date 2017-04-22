@@ -161,7 +161,7 @@ public class MainApp {
         s.setString(1, dateString);
         ResultSet rs = s.executeQuery();
         rs.next();
-        System.out.println("Dagligt salg: " + rs.getFloat(1));
+        System.out.println("Dagligt salg: " + rs.getFloat(1) + " kr.");
 
     }
 }

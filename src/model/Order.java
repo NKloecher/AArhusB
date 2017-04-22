@@ -125,7 +125,9 @@ public class Order implements Payable, Serializable {
     public double totalPrice() throws DiscountParseException {
         double sum = 0;
         for (ProductOrder productOrder : getAllProducts()) {
-            sum += productOrder.price();
+            if (!productOrder.getGift()) {
+                sum += productOrder.price();
+            }
         }
 
         if (discount != null) {
@@ -191,7 +193,7 @@ public class Order implements Payable, Serializable {
      * Calculate the how much the clip card payments are worth
      * NOTE: It will always try to maximize the value of each clip card
      */
-    private double totalPaymentClipCard() {
+    public double totalPaymentClipCard() {
         double sum = 0;
         int clips = totalClipCardPaid();
 
@@ -223,15 +225,14 @@ public class Order implements Payable, Serializable {
     }
 
     @Override
-    public boolean tryPay(Payment payment) {
-        pay(payment);
+    public void pay(Payment payment) {
+        payments.add(payment);
         try {
             paymentStatus();
-            return true;
         }
         catch (InvalidPaymentAmount e) {
             payments.remove(payment);
-            return false;
+            throw new InvalidPaymentAmount(e.getMessage());
         }
     }
 
@@ -253,10 +254,10 @@ public class Order implements Payable, Serializable {
     /**
      * Add a payment to the order
      */
-    @Override
-    public void pay(Payment payment) {
-        payments.add(payment);
-    }
+//    @Override
+//    public void pay(Payment payment) {
+//        payments.add(payment);
+//    }
 
     public List<Payment> getPayments() {
         return new ArrayList<>(payments);

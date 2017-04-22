@@ -9,10 +9,19 @@ public class ProductOrder implements Serializable {
     private int amount = 1;
     private Product product;
     private double price;
+    private boolean giftStatus = false; //Bruges til klassificering af gaveobjekter
 
     public ProductOrder(Product product, Pricelist pricelist) {
         this.product = product;
         this.price = pricelist.getPrice(product);
+    }
+
+    public void setGiftStatus() {
+        this.giftStatus = true;
+    }
+
+    public boolean getGift() {
+        return giftStatus;
     }
 
     /**
@@ -26,18 +35,26 @@ public class ProductOrder implements Serializable {
      * Returns the price of the product order with the discount applied
      */
     public double price() throws DiscountParseException {
-    	double p = price * amount;
-    	
-    	if (discount != null) p = discount.getPrice(p);
-    	
+        if (getGift()) {
+            return 0;
+        }
+        double p = price * amount;
+
+        if (discount != null) {
+            p = discount.getPrice(p);
+        }
+
         return p;
     }
 
     public String getDiscount() {
-    	if (discount == null) return "";
-    	
-    	return discount.getValue();
+        if (discount == null) {
+            return "";
+        }
+
+        return discount.getValue();
     }
+
     public void setDiscount(String str) throws DiscountParseException {
         if (discount == null) {
             discount = new Discount();
@@ -52,6 +69,7 @@ public class ProductOrder implements Serializable {
     public int getAmount() {
         return amount;
     }
+
     public void setAmount(int amount) {
         this.amount = amount;
     }

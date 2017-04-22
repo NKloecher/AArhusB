@@ -23,6 +23,8 @@ public class OrderTest {
     Product simpleProduct;
     DepositProduct simpleDepositProduct;
     Product simpleBeer;
+    Product simpleSoda;
+    Product simpleGift;
 
     public OrderTest() {
         user = new User("test", "test", "test", Permission.NORMAL);
@@ -36,6 +38,12 @@ public class OrderTest {
 
         simpleBeer = new Product("Simple Beer", 2, "test", null);
         pricelist.addProduct(simpleBeer, 50);
+
+        simpleSoda = new Product("Simple Soda", 1, "fadoel", null);
+        pricelist.addProduct(simpleSoda, 15);
+
+        simpleGift = new Product("Simple Gift", null, "sampakninger", null);
+        pricelist.addProduct(simpleGift, 100);
 
     }
 
@@ -99,6 +107,16 @@ public class OrderTest {
         order.setDiscount("40%");
 
         assertEquals(120, order.totalPrice(), 0.01);
+    }
+
+    @Test
+    public void orderTotalPriceGiftbag() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleGift);
+        ProductOrder po = order.addProduct(simpleProduct);
+        po.setGiftStatus();
+
+        assertEquals(100, order.totalPrice(), 0.01);
     }
 
     @Test
@@ -274,7 +292,7 @@ public class OrderTest {
         assertEquals(25, order.totalPayment(), 0.01);
     }
 
-    @Test
+    @Test(expected = InvalidPaymentAmount.class)
     public void orderTotalPayment150Cash() {
         Order order = new Order(user, pricelist);
         ProductOrder po = order.addProduct(simpleBeer);
@@ -282,8 +300,6 @@ public class OrderTest {
 
         Payment payment = new Payment(PaymentType.CASH, 150);
         order.pay(payment);
-
-        assertEquals(150, order.totalPayment(), 0.01);
     }
 
     @Test(expected = InvalidPaymentAmount.class)
@@ -296,6 +312,86 @@ public class OrderTest {
         order.pay(payment);
 
         assertEquals(100, order.totalPayment(), 0.01);
+    }
+
+    @Test
+    public void totalPaymentClipCard1Beer2Clip() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleBeer);
+
+        Payment payment = new Payment(PaymentType.CLIP_CARD, 2);
+        order.pay(payment);
+
+        assertEquals(50, order.totalPaymentClipCard(), 0.01);
+    }
+
+    @Test
+    public void totalPaymentClipCard1Beer1Clip1() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleBeer);
+
+        Payment payment = new Payment(PaymentType.CLIP_CARD, 1);
+        order.pay(payment);
+
+        assertEquals(25, order.totalPaymentClipCard(), 0.01);
+    }
+
+    @Test
+    public void totalPaymentClipCard1Soda1Clip() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleSoda);
+
+        Payment payment = new Payment(PaymentType.CLIP_CARD, 1);
+        order.pay(payment);
+
+        assertEquals(15, order.totalPaymentClipCard(), 0.01);
+    }
+
+    @Test
+    public void totalPaymentClipCard1Beer1Soda2Clips() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleBeer);
+        order.addProduct(simpleSoda);
+
+        Payment payment = new Payment(PaymentType.CLIP_CARD, 2);
+        order.pay(payment);
+
+        assertEquals(50, order.totalPaymentClipCard(), 0.01);
+    }
+
+    @Test
+    public void totalPaymentClipCard1Beer1Soda2ClipsOrdering() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleSoda);
+        order.addProduct(simpleBeer);
+
+        Payment payment = new Payment(PaymentType.CLIP_CARD, 2);
+        order.pay(payment);
+
+        assertEquals(50, order.totalPaymentClipCard(), 0.01);
+    }
+
+    @Test
+    public void totalPaymentClipCard1Beer1Soda1Clips() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleBeer);
+        order.addProduct(simpleSoda);
+
+        Payment payment = new Payment(PaymentType.CLIP_CARD, 1);
+        order.pay(payment);
+
+        assertEquals(25, order.totalPaymentClipCard(), 0.01);
+    }
+
+    @Test(expected = InvalidPaymentAmount.class)
+    public void totalPaymentClipCard1Beer3Clips() {
+        Order order = new Order(user, pricelist);
+        order.addProduct(simpleBeer);
+
+        Payment payment = new Payment(PaymentType.CLIP_CARD, 3);
+        order.pay(payment);
+        assertEquals(-1, order.totalPaymentClipCard(), 0.01);
+
     }
 
 }
