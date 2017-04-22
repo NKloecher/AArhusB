@@ -12,6 +12,8 @@ public class Payment implements Serializable {
     private LocalDateTime date;
 
     public Payment(PaymentType paymentType, double amount) {
+    	assert paymentType != null;
+    	
         this.paymentType = paymentType;
         this.amount = amount;
         this.date = LocalDateTime.now();

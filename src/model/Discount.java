@@ -3,7 +3,6 @@ package model;
 import exceptions.DiscountParseException;
 
 import java.io.Serializable;
-import java.text.ParseException;
 
 public class Discount implements Serializable {
     private double discountAmount;
@@ -21,13 +20,21 @@ public class Discount implements Serializable {
         }
     }
 
-    public void setDiscount(double discountAmount, DiscountType discountType){
+    public void setDiscount(double discountAmount, DiscountType discountType) {
+    	assert discountAmount >= 0;
+    	assert discountType != null;
+    	
         this.discountType = discountType;
         this.discountAmount = discountAmount;
     }
 
-    // Old setDiscount used by gui code
+    /**
+     * helper method using string format
+     * @param discount must be a number and can end with a procent sign
+     */
     public void setDiscount(String discount) throws DiscountParseException {
+    	assert discount.matches("(-?\\d+)|(\\d+%?)") && !discount.isEmpty();
+    	
         if (discount == null || discount.isEmpty()) {
             setDiscount(0, null);
         } else if (discount.startsWith("-")) {
@@ -45,6 +52,8 @@ public class Discount implements Serializable {
     }
 
     public double getPrice(double total) throws DiscountParseException {
+    	assert total >= 0;
+    	
         if (discountType == null) {
             return total;
         }

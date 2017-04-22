@@ -8,7 +8,8 @@ public class Customer extends Person implements Comparable<Customer>, Serializab
     private String email;
 
     public Customer(String name, String address, String phone, String email) {
-        super(name);
+    	super(name);
+        
         this.address = address;
         this.phone = phone;
         this.email = email;

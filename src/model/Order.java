@@ -20,11 +20,16 @@ public class Order implements Payable, Serializable {
     private LocalDate date = LocalDate.now();
 
     public Order(User user, Pricelist pricelist) {
+    	assert user != null;
+    	assert pricelist != null;
+    			
         this.user = user;
         this.pricelist = pricelist;
     }
 
     public ProductOrder addProduct(Product product) {
+    	assert product != null;
+    	
         if (product instanceof DepositProduct) {
             return createRentalProductOrder((DepositProduct) product);
         }
@@ -34,6 +39,8 @@ public class Order implements Payable, Serializable {
     }
 
     public ProductOrder removeProduct(Product product) {
+    	assert product != null;
+    	
         for (int i = 0; i < products.size(); i++) {
             ProductOrder po = products.get(i);
 
@@ -66,18 +73,24 @@ public class Order implements Payable, Serializable {
     }
 
     public ProductOrder createProductOrder(Product product) {
+    	assert product != null;
+    	
         ProductOrder productOrder = new ProductOrder(product, this.pricelist);
         products.add(productOrder);
         return productOrder;
     }
 
     public RentalProductOrder createRentalProductOrder(DepositProduct product) {
+    	assert product != null;
+    	
         RentalProductOrder rentalProductOrder = new RentalProductOrder(product, this.pricelist);
         productsRental.add(rentalProductOrder);
         return rentalProductOrder;
     }
 
     public void setDiscount(String str) throws DiscountParseException {
+    	assert str != null;
+    	
         if (discount == null) {
             discount = new Discount();
         }
@@ -226,6 +239,8 @@ public class Order implements Payable, Serializable {
 
     @Override
     public void pay(Payment payment) {
+    	assert payment != null;
+    	
         payments.add(payment);
         try {
             paymentStatus();
