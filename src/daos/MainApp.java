@@ -11,7 +11,6 @@ import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 public class MainApp {
     private static Connection conn = null;
@@ -69,7 +68,7 @@ public class MainApp {
 	            s.executeUpdate();
             }
         }
-        catch (SQLServerException e) {
+        catch (Exception e) {
         	if (e.getMessage().startsWith("Violation of PRIMARY KEY constraint")) {
         		System.out.println("kategorien findes allerede prøv igen");
         		createCategory();

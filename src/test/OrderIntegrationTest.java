@@ -17,13 +17,13 @@ public class OrderIntegrationTest {
 		user = new User("test", "test", "test", Permission.NORMAL);
 		pl = new Pricelist("Pricelist");
 		product100kr4clip = new Product("100kr, 4clip", 4, "test", null);
-		pl.addProduct(product100kr4clip, 100);
+		pl.setPrice(product100kr4clip, 100);
 		product100kr3clip = new Product("100kr, 3clip", 3, "test", null);
-		pl.addProduct(product100kr3clip, 100);
+		pl.setPrice(product100kr3clip, 100);
 		product50kr0clip = new Product("50kr, 0clip", null, "test", null);
-		pl.addProduct(product50kr0clip, 50);
+		pl.setPrice(product50kr0clip, 50);
 		depositProduct500kr100rent = new DepositProduct("500kr, 100rent", null, "test", null, 100);
-		pl.addProduct(depositProduct500kr100rent, 500);
+		pl.setPrice(depositProduct500kr100rent, 500);
 	}
 
 	@Test
