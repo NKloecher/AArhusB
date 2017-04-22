@@ -62,8 +62,7 @@ public class MainApp {
         System.out.println("Skriv navnet på den nye kategori");
         try (Scanner scanner = new Scanner(System.in)) {
             category = scanner.next();
-            PreparedStatement s;
-            s = conn.prepareStatement("insert into category values(?)");
+            PreparedStatement s = conn.prepareStatement("insert into category values(?)");
             s.setString(1, category);
             s.executeUpdate();
         }
@@ -136,13 +135,11 @@ public class MainApp {
                 }
             }
         }
-        PreparedStatement s;
-        s = conn.prepareStatement("insert into product values(?,?,?)");
+        PreparedStatement s = conn.prepareStatement("insert into product values(?,?,?)");
         s.setString(1, name);
         s.setInt(2, clips);
         s.setString(3, category);
         s.executeUpdate();
-
     }
 
     public static void dailySales() throws SQLException {
@@ -160,12 +157,11 @@ public class MainApp {
                 }
             }
         }
-        PreparedStatement s;
-        s = conn.prepareStatement("exec daily_sales @date=?");
+        PreparedStatement s = conn.prepareStatement("exec daily_sales @date=?");
         s.setString(1, dateString);
         ResultSet rs = s.executeQuery();
         rs.next();
-        System.out.println(rs.getFloat(1));
+        System.out.println("Dagligt salg: " + rs.getFloat(1));
 
     }
 }
