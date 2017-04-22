@@ -19,6 +19,12 @@ public class Tour implements Payable, Serializable {
     //private User user; //Bliver ikke brugt, da vi ikke nåede den del af statistikken
 
     public Tour(int persons, LocalDateTime date, double price, Duration duration, User user) {
+    	assert persons > 0;
+    	assert date != null;
+    	assert price >= 0;
+    	assert duration != null;
+    	assert user != null;
+    	
         this.persons = persons;
         this.date = date;
         this.price = price;
@@ -42,6 +48,8 @@ public class Tour implements Payable, Serializable {
     }
 
     public void setPersons(int persons) {
+    	assert persons > 0;
+    	
         this.persons = persons;
     }
 
@@ -50,6 +58,8 @@ public class Tour implements Payable, Serializable {
     }
 
     public void setDate(LocalDateTime date) {
+    	assert date != null;
+    	
         this.date = date;
     }
 
@@ -58,6 +68,8 @@ public class Tour implements Payable, Serializable {
     }
 
     public void setPrice(double price) {
+    	assert price >= 0;
+    	
         this.price = price;
     }
 
@@ -66,6 +78,8 @@ public class Tour implements Payable, Serializable {
     }
 
     public void setDuration(Duration duration) {
+    	assert duration != null;
+    	
         this.duration = duration;
     }
 
@@ -93,6 +107,8 @@ public class Tour implements Payable, Serializable {
 
     @Override
     public void pay(Payment payment) {
+    	assert payment != null;
+    	
         payments.add(payment);
         try {
             paymentStatus();

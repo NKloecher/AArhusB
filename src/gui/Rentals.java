@@ -24,7 +24,10 @@ public class Rentals extends GridPane {
 	private final ListView<Order> lwRentals = new ListView<>();
 	private final Label lTotal = new Label();
 	private final Label lError = new Label();
+	private final Button pay = new Button("Betal");
 	private final Table<ProductOrder> table = new Table<>((error, isValid) -> {
+		pay.setDisable(!isValid);
+		
 		controller.setTotal();
 		
 		lError.setText(error);
@@ -53,7 +56,6 @@ public class Rentals extends GridPane {
 		add(lError, 0, 1);
 		add(lTotal, 1, 1);
 
-		Button pay = new Button("Betal");
 		pay.setDefaultButton(true);
 		pay.setOnAction(e -> controller.pay());
 		add(pay, 2, 1);
@@ -109,13 +111,15 @@ public class Rentals extends GridPane {
 		public String validateUnused(ProductOrder po, String value) {
 			if (!(po instanceof RentalProductOrder)) return null;
 			if (Pattern.matches("^\\d+$", value)) {
-				RentalProductOrder rpo = (RentalProductOrder)po;
-				int sum = Integer.parseInt(value) + rpo.getReturned();
+				int v = Integer.parseInt(value);
+				int sum = v + ((RentalProductOrder)po).getReturned();
 				
-				if (sum > rpo.getAmount()) {
+				((RentalProductOrder)po).setUnused(v);
+				
+				if (sum > po.getAmount()) {
 					return "Det kan ikke være flere ubrugte og returnerede end der er udlejet";
 				}
-				if (sum < rpo.getAmount()) {
+				if (sum < po.getAmount()) {
 					return "Der ikke nok ubrugte eller returnerede";
 				}
 				else {
@@ -145,13 +149,15 @@ public class Rentals extends GridPane {
 		public String validateReturned(ProductOrder po, String value) {
 			if (!(po instanceof RentalProductOrder)) return null;
 			if (Pattern.matches("^\\d+$", value)) {
-				RentalProductOrder rpo = (RentalProductOrder)po;
-				int sum = Integer.parseInt(value) + rpo.getUnused();
+				int v = Integer.parseInt(value);
+				int sum = v + ((RentalProductOrder)po).getUnused();
 				
-				if (sum > rpo.getAmount()) {
+				((RentalProductOrder)po).setReturned(v);
+				
+				if (sum > po.getAmount()) {
 					return "Det kan ikke være flere ubrugte og retunerede end der er udlejet";
 				}
-				else if (sum < rpo.getAmount()) {
+				else if (sum < po.getAmount()) {
 					return "Det er ikke nok afleverede eller returnerede";
 				}
 				else {

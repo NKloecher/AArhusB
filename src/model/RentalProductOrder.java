@@ -38,14 +38,20 @@ public class RentalProductOrder extends ProductOrder implements Serializable {
     }
 
     public void setUnused(int unused) {
+    	assert unused >= 0;
+    	
         this.unused = unused;
     }
 
     public void setReturned(int returned) {
+    	assert returned >= 0;
+    	
         this.returned = returned;
     }
 
     public void setNotReturned(int notReturned) {
+    	assert notReturned >= 0;
+    	
         this.notReturned = notReturned;
     }
 

@@ -19,6 +19,9 @@ public class User extends Person implements Serializable {
     public User(String name, String username, String password, Permission permission) {
     	super(name);
     	
+    	assert username != null;
+    	assert permission != null;
+    	
         this.username = username;
         this.permission = permission;
         
@@ -36,6 +39,8 @@ public class User extends Person implements Serializable {
      * Generates the password hash
      */
     public byte[] getHash(String password){
+    	assert password != null;
+    	
         try{
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
             SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -53,6 +58,8 @@ public class User extends Person implements Serializable {
      * Check if the input matches the stored hash
      */
     public boolean checkPassword(String password){
+    	assert password != null;
+    	
         return Arrays.equals(passwordHash, this.getHash(password));
     }
     
@@ -60,6 +67,8 @@ public class User extends Person implements Serializable {
     	return permission;
     }
     public void setPermission(Permission permission) {
+    	assert permission != null;
+    	
     	this.permission = permission;
     }
     
@@ -67,6 +76,8 @@ public class User extends Person implements Serializable {
     	return username;
     }
     public void setUsername(String username) {
+    	assert username != null;
+    	
     	this.username = username;
     }
 
@@ -74,6 +85,8 @@ public class User extends Person implements Serializable {
      * Hashes a new password
      */
     public void setPassword(String password) {
+    	assert password != null;
+    	
         new Random().nextBytes(salt);
         passwordHash = this.getHash(password);
     }

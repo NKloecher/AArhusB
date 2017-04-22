@@ -127,6 +127,8 @@ public class Statistics {
 	}
 	
 	public void setTimePeriod(TimePeriod timePeriod) {
+		assert timePeriod != null;
+		
 		orders = service.getOrdersInPeriod(timePeriod);
 	}
 }

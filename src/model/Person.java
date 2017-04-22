@@ -6,6 +6,8 @@ public class Person implements Serializable {
     protected String name;
 
 	public Person(String name) {
+		assert name != null && !name.isEmpty();
+		
 		this.name = name;
 	}
 
@@ -14,6 +16,8 @@ public class Person implements Serializable {
 	}
 	
 	public void setName(String name) {
+		assert name != null;
+		
 		this.name = name;
 	}
 }

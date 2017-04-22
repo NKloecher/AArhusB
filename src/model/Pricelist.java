@@ -10,6 +10,8 @@ public class Pricelist implements Serializable {
     private Map<Product, Double> products = new HashMap<>();
 
     public Pricelist(String name) {
+    	assert name != null & !name.isEmpty();
+    	
         this.name = name;
     }
 
@@ -18,6 +20,10 @@ public class Pricelist implements Serializable {
     }
 
     public void addProduct(Product product, double price) {
+    	assert product != null;
+    	assert !products.containsKey(product);
+    	assert price >= 0;
+    	
         products.put(product, price);
     }
 
@@ -29,6 +35,9 @@ public class Pricelist implements Serializable {
     }
 
     public void setPrice(Product product, double price) {
+    	assert product != null;
+    	assert price >= 0;
+    	
         products.put(product, price);
     }
 
@@ -37,6 +46,8 @@ public class Pricelist implements Serializable {
     }
 
     public void removeProduct(Product product) {
+    	assert products.containsKey(product);
+    	
         products.remove(product);
     }
 

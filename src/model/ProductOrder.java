@@ -12,6 +12,9 @@ public class ProductOrder implements Serializable {
     private boolean giftStatus = false; //Bruges til klassificering af gaveobjekter
 
     public ProductOrder(Product product, Pricelist pricelist) {
+    	assert product != null;
+    	assert pricelist != null;
+    	
         this.product = product;
         this.price = pricelist.getPrice(product);
     }
@@ -56,9 +59,12 @@ public class ProductOrder implements Serializable {
     }
 
     public void setDiscount(String str) throws DiscountParseException {
+    	assert str != null && !str.isEmpty();
+    	
         if (discount == null) {
             discount = new Discount();
         }
+        
         discount.setDiscount(str);
     }
 
@@ -71,6 +77,8 @@ public class ProductOrder implements Serializable {
     }
 
     public void setAmount(int amount) {
+    	assert amount >= 0;
+    	
         this.amount = amount;
     }
 

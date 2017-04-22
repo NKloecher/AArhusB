@@ -9,6 +9,8 @@ public class Product implements Serializable, Comparable<Product> {
     private String image;
 
     public Product(String name, Integer clips, String category, String image) {
+    	assert name != null && !name.isEmpty();
+    	
         this.name = name;
         this.clips = clips;
         this.category = category;
@@ -28,6 +30,8 @@ public class Product implements Serializable, Comparable<Product> {
     }
 
     public void setName(String name) {
+    	assert name != null && !name.isEmpty();
+    	
         this.name = name;
     }
 
