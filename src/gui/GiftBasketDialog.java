@@ -106,6 +106,7 @@ public class GiftBasketDialog extends Stage {
         Button btnOK = new Button("OK");
         btnOK.setOnAction(e -> close());
         pane.add(btnOK, 1, 1);
+        btnOK.setDefaultButton(true);
 
     }
 
