@@ -142,7 +142,7 @@ public class MainApp {
         s.setInt(2, clips);
         s.setString(3, category);
         s.executeUpdate();
-
+        System.out.printf("[%s, %s klip, %s] er oprettet som produkt", name, clips, category);
     }
 
     public static void dailySales() throws SQLException {
