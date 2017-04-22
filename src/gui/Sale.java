@@ -40,6 +40,7 @@ public class Sale extends GridPane {
             e.printStackTrace();
             return e.getMessage();
         }
+        
     });
     private final Label lTotal = new Label();
     private final Button btnCustomer = new Button("Tilføj Kunde");

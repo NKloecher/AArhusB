@@ -103,8 +103,7 @@ public class Rentals extends GridPane {
 		}
 		public void updateUnused(ProductOrder po, int value) {
 			if (po instanceof RentalProductOrder) {
-				// TODO service
-				((RentalProductOrder) po).setUnused(value);
+				service.updateProductOrderUnused((RentalProductOrder)po, value);
 			}
 		}
 		public String validateUnused(ProductOrder po, String value) {
@@ -140,8 +139,7 @@ public class Rentals extends GridPane {
 		public void updateReturned(ProductOrder po, int value) {
 			if (po instanceof RentalProductOrder) {
 				RentalProductOrder rpo = (RentalProductOrder) po;
-				// TODO service
-				rpo.setReturned(value);
+				service.updateProductOrderReturned(rpo, value);
 				rpo.setNotReturned(po.getAmount() - value);
 			}
 		}
@@ -151,7 +149,7 @@ public class Rentals extends GridPane {
 				int v = Integer.parseInt(value);
 				int sum = v + ((RentalProductOrder)po).getUnused();
 				
-				((RentalProductOrder)po).setReturned(v);
+				service.updateProductOrderReturned((RentalProductOrder)po, v);
 				
 				if (sum > po.getAmount()) {
 					return "Det kan ikke være flere ubrugte og retunerede end der er udlejet";
