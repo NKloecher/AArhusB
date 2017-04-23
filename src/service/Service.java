@@ -17,110 +17,161 @@ import model.*;
 import storage.Storage;
 
 public class Service {
-	private final static Service instance = new Service();
-	private User activeUser;
-	private Storage storage = Storage.getInstance();
-	private Pricelist selectedPricelist;
+    private final static Service instance = new Service();
+    private User activeUser;
+    private Storage storage = Storage.getInstance();
+    private Pricelist selectedPricelist;
 
-	private Service() {
-	}
+    private Service() {
+    }
 
-	public void updateProductName(Product product, String name) {
-		assert product != null;
-		assert name != null && !name.isEmpty();
+    public void updateProductName(Product product, String name) {
+        assert product != null;
+        assert name != null && !name.isEmpty();
 
-		product.setName(name);
-	}
+        product.setName(name);
+    }
 
-	public void updateProductClips(Product product, Integer clips) {
-		assert product != null;
+    public void updateProductClips(Product product, Integer clips) {
+        assert product != null;
 
-		product.setClips(clips);
-	}
+        product.setClips(clips);
+    }
 
-	public void updateOrderDiscount(Order order, String discount) {
-		order.setDiscount(discount);
-	}
+    public void updateOrderDiscount(Order order, String discount) {
+    	order.setDiscount(discount);
+    }
+    
+    public void updateProductCategory(Product product, String category) {
+        assert product != null;
+        assert category != null && !category.isEmpty();
 
-	public void updateProductCategory(Product product, String category) {
-		assert product != null;
-		assert category != null && !category.isEmpty();
+        product.setCategory(category);
+    }
 
-		product.setCategory(category);
-	}
+    /**
+     * returns all orders that are not returned or paid
+     */
+    public List<Order> getRentals() {
+        List<Order> rentals = new ArrayList<>();
 
-	/**
-	 * returns all orders that are not returned or paid
-	 */
-	public List<Order> getRentals() {
-		List<Order> rentals = new ArrayList<>();
+        for (Order o : storage.getOrders()) {
+            PaymentStatus s = o.paymentStatus();
 
-		for (Order o : storage.getOrders()) {
-			PaymentStatus s = o.paymentStatus();
+            if (s == PaymentStatus.DEPOSITPAID) {
+                rentals.add(o);
+            }
+        }
 
-			if (s == PaymentStatus.DEPOSITPAID) {
-				rentals.add(o);
-			}
-		}
+        return rentals;
+    }
 
-		return rentals;
-	}
+    /**
+     * returns all product where the query is contained in the name and the
+     * products category equals category parameter if category is "All" every
+     * category will be selected
+     */
+    public List<Product> getMatchingProducts(String query, String category,
+        List<Product> products) {
+//        assert query != null && !query.isEmpty();
+        assert category != null && !category.isEmpty();
+        assert products != null;
 
-	/**
-	 * returns all product where the query is contained in the name and the
-	 * products category equals category parameter if category is "All" every
-	 * category will be selected
-	 */
-	public List<Product> getMatchingProducts(String query, String category, List<Product> products) {
-		// assert query != null && !query.isEmpty();
-		assert category != null && !category.isEmpty();
-		assert products != null;
+        List<Product> selected = new ArrayList<>();
 
-		List<Product> selected = new ArrayList<>();
+        for (Product p : products) {
+            if (p.getName().toLowerCase().contains(query.toLowerCase())
+                && (category.equals("All") || p.getCategory().equals(category))) {
+                selected.add(p);
+            }
+        }
 
-		for (Product p : products) {
-			if (p.getName().toLowerCase().contains(query.toLowerCase())
-					&& (category.equals("All") || p.getCategory().equals(category))) {
-				selected.add(p);
-			}
-		}
+        return selected;
+    }
 
-		return selected;
-	}
+    /**
+     * sets serivce.user if username and password is correct if username or
+     * password is not correct it throws an error
+     */
+    public void login(String username, String password) throws AuthenticationException {
+        assert username != null && !username.isEmpty();
+        assert password != null && !password.isEmpty();
 
-	/**
-	 * sets serivce.user if username and password is correct if username or
-	 * password is not correct it throws an error
-	 */
-	public void login(String username, String password) throws AuthenticationException {
-		assert username != null && !username.isEmpty();
-		assert password != null && !password.isEmpty();
+        for (User u : storage.getUsers()) {
+            if (u.getUsername().equals(username)) {
+                if (u.checkPassword(password)) {
+                    activeUser = u;
+                    return;
+                }
+            }
+        }
 
-		for (User u : storage.getUsers()) {
-			if (u.getUsername().equals(username)) {
-				if (u.checkPassword(password)) {
-					activeUser = u;
-					return;
-				}
-			}
-		}
+        throw new AuthenticationException("wrong username or password");
+    }
 
-		throw new AuthenticationException("wrong username or password");
-	}
+    /**
+     * sets activeUser to null
+     */
+    public void logout() {
+        assert activeUser != null;
+        activeUser = null;
+    }
 
-	/**
-	 * sets activeUser to null
-	 */
-	public void logout() {
-		assert activeUser != null;
-		activeUser = null;
-	}
+    public void setSelectedPricelist(Pricelist pricelist) {
+        assert pricelist != null;
 
-	public void setSelectedPricelist(Pricelist pricelist) {
-		assert pricelist != null;
+        selectedPricelist = pricelist;
+    }
 
-		selectedPricelist = pricelist;
-	}
+    public Pricelist getSelectedPricelist() {
+        return selectedPricelist;
+    }
+
+    public void setProductToPricelist(Product product, Pricelist pricelist, double price) {
+        assert pricelist != null;
+        assert product != null;
+
+        pricelist.setPrice(product, price);
+    }
+
+    /**
+     * is null if no user is logged in
+     */
+    public User getActiveUser() {
+        return activeUser;
+    }
+
+    public void addCategory(String category) {
+        assert category != null && !category.isEmpty();
+
+        storage.addCategory(category);
+    }
+
+    public User createUser(String name, String username, String password, Permission permission) {
+        assert name != null && !name.isEmpty();
+        assert username != null && !username.isEmpty();
+        assert password != null && !password.isEmpty();
+        assert permission != null;
+
+        User u = new User(name, username, password, permission);
+
+        storage.addUser(u);
+
+        return u;
+    }
+
+    public void updateUserPassword(User user, String password) {
+        assert user != null;
+        assert password != null && !password.isEmpty();
+
+        user.setPassword(password);
+    }
+
+    public void deleteUser(User user) {
+        assert user != null;
+
+        user.setDeleted();
+    }
 
 	public Pricelist getSelectedPricelist() {
 		return selectedPricelist;
@@ -338,365 +389,374 @@ public class Service {
 		payable.pay(payment);
 		storage.addPayment(payment);
 		return payment;
+    }
 
-	}
+    public List<Product> getProducts() {
+        return storage.getProducts();
+    }
 
-	public void removeProductFromPricelist(Product product, Pricelist pricelist) {
-		assert product != null;
-		assert pricelist != null;
+    public Order createOrder() {
+        return createOrder(activeUser, selectedPricelist);
+    }
 
-		pricelist.removeProduct(product);
-	}
+    public Order createOrder(User user, Pricelist pricelist) {
+        assert user != null;
+        assert pricelist != null;
 
-	public void addProductToPricelist(Product product, Pricelist pricelist, double price) {
-		assert product != null;
-		assert pricelist != null;
+        Order order = new Order(user, pricelist);
+        storage.addOrder(order);
+        return order;
+    }
 
-		pricelist.addProduct(product, price);
-	}
+    public ProductOrder createProductOrder(Order order, Product product) {
+        assert order != null;
+        assert product != null;
 
-	public List<Product> getProducts() {
-		return storage.getProducts();
-	}
+        return order.createProductOrder(product);
+    }
 
-	public Order createOrder() {
-		return createOrder(activeUser, selectedPricelist);
-	}
+    public RentalProductOrder createRentalProductOrder(Order order, DepositProduct product) {
+        assert order != null;
+        assert product != null;
 
-	public Order createOrder(User user, Pricelist pricelist) {
-		assert user != null;
-		assert pricelist != null;
+        return order.createRentalProductOrder(product);
+    }
 
-		Order order = new Order(user, pricelist);
-		storage.addOrder(order);
-		return order;
-	}
+    public Customer createCustomer(String name, String address, String phone, String email) {
+        assert name != null && !name.isEmpty();
 
-	public ProductOrder createProductOrder(Order order, Product product) {
-		assert order != null;
-		assert product != null;
+        Customer c = new Customer(name, address, phone, email);
+        storage.addCustomer(c);
+        return c;
+    }
 
-		return order.createProductOrder(product);
-	}
+    public void removeCustomer(Customer c) throws Exception {
+        assert c != null;
 
-	public RentalProductOrder createRentalProductOrder(Order order, DepositProduct product) {
-		assert order != null;
-		assert product != null;
+        for (Order o : storage.getOrders()) {
+            if (o.getCustomer() != null && o.getCustomer().equals(c)) {
+                throw new Exception("Customer has orders");
+            }
+        }
 
-		return order.createRentalProductOrder(product);
-	}
+        storage.removeCustomer(c);
+    }
 
-	public Customer createCustomer(String name, String address, String phone, String email) {
-		assert name != null && !name.isEmpty();
+    public Storage loadStorage() throws IOException, ClassNotFoundException {
+        return Storage.loadStorage();
+    }
 
-		Customer c = new Customer(name, address, phone, email);
-		storage.addCustomer(c);
-		return c;
-	}
+    public void saveStorage() throws IOException {
+        Storage.saveStorage();
+    }
 
-	public void removeCustomer(Customer c) throws Exception {
-		assert c != null;
+    public void initStorage() throws DiscountParseException {
+        try {
+            storage = loadStorage();
+            System.out.println("Loaded data from storage");
+            setSelectedPricelist(storage.getPricelists().get(0));
+            return;
+        }
+        catch (IOException | ClassNotFoundException e) {
+            System.out.println("Could not load storage, generating data from initStorage");
+        }
 
-		for (Order o : storage.getOrders()) {
-			if (o.getCustomer() != null && o.getCustomer().equals(c)) {
-				throw new Exception("Customer has orders");
-			}
-		}
+        User user = createUser("John", "test", "test", Permission.ADMIN);
+        User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
 
-		storage.removeCustomer(c);
-	}
+        Pricelist pl1 = createPricelist("Fredagsbar");
+        setSelectedPricelist(pl1);
+        Pricelist pl2 = createPricelist("Butik");
 
-	public Storage loadStorage() throws IOException, ClassNotFoundException {
-		return Storage.loadStorage();
-	}
+        addCategory("flaske");
+        addCategory("fadøl");
+        addCategory("fustage");
+        addCategory("andet");
+        addCategory("spiritus");
+        addCategory("kulsyre");
+        addCategory("malt");
+        addCategory("beklædning");
+        addCategory("anlæg");
+        addCategory("glas");
+        addCategory("sampakninger");
 
-	public void saveStorage() throws IOException {
-		Storage.saveStorage();
-	}
+        Product productKlippekort = createProduct("Klippekort, 4 klip", 4, "andet", null);
+        setProductToPricelist(productKlippekort, pl1, 100);
+        setProductToPricelist(productKlippekort, pl2, 100);
 
-	public void initStorage() throws DiscountParseException {
-		try {
-			storage = loadStorage();
-			System.out.println("Loaded data from storage");
-			setSelectedPricelist(storage.getPricelists().get(0));
-			return;
-		} catch (IOException | ClassNotFoundException e) {
-			System.out.println("Could not load storage, generating data from initStorage");
-		}
+        // FLASKE ØL
+        Product productFlaskeKlosterbryg = createProduct("Klosterbryg", 2, "flaske", null);
+        setProductToPricelist(productFlaskeKlosterbryg, pl1, 50);
+        setProductToPricelist(productFlaskeKlosterbryg, pl2, 36);
+        Product productFlaskeSweetGeorgiaBrown =
+            createProduct("Sweet Georgia Brown", 2, "flaske", null);
+        setProductToPricelist(productFlaskeSweetGeorgiaBrown, pl1, 50);
+        setProductToPricelist(productFlaskeSweetGeorgiaBrown, pl2, 36);
+        Product productFlaskeExtraPilsner =
+            createProduct("Extra Pilsner", 2, "flaske", "extra-pilsner.png");
+        setProductToPricelist(productFlaskeExtraPilsner, pl1, 50);
+        setProductToPricelist(productFlaskeExtraPilsner, pl2, 36);
+        Product productCelebration = createProduct("Celebration", 2, "flaske", null);
+        setProductToPricelist(productCelebration, pl1, 50);
+        setProductToPricelist(productCelebration, pl2, 36);
+        Product productBlondie = createProduct("Blondie", 2, "flaske", null);
+        setProductToPricelist(productBlondie, pl1, 50);
+        setProductToPricelist(productBlondie, pl2, 36);
+        Product productForaarsbryg = createProduct("Forårsbryg", 2, "flaske", null);
+        setProductToPricelist(productForaarsbryg, pl1, 50);
+        setProductToPricelist(productForaarsbryg, pl2, 36);
+        Product productIndiaPaleAle = createProduct("India Pale Ale", 2, "flaske", null);
+        setProductToPricelist(productIndiaPaleAle, pl1, 50);
+        setProductToPricelist(productIndiaPaleAle, pl2, 36);
+        Product productJulebryg = createProduct("Julebryg", 2, "flaske", null);
+        setProductToPricelist(productJulebryg, pl1, 50);
+        setProductToPricelist(productJulebryg, pl2, 36);
+        Product productJuletoenden = createProduct("Juletønden", 2, "flaske", null);
+        setProductToPricelist(productJuletoenden, pl1, 50);
+        setProductToPricelist(productJuletoenden, pl2, 36);
+        Product productOldStrongAle = createProduct("Old Strong Ale", 2, "flaske", null);
+        setProductToPricelist(productOldStrongAle, pl1, 50);
+        setProductToPricelist(productOldStrongAle, pl2, 36);
+        Product productFregattenJylland = createProduct("Fregatten Jylland", 2, "flaske", null);
+        setProductToPricelist(productFregattenJylland, pl1, 50);
+        setProductToPricelist(productFregattenJylland, pl2, 36);
+        Product productImperialStout = createProduct("Imperial Stout", 2, "flaske", null);
+        setProductToPricelist(productImperialStout, pl1, 50);
+        setProductToPricelist(productImperialStout, pl2, 36);
+        Product productTribute = createProduct("Tribute", 2, "flaske", null);
+        setProductToPricelist(productTribute, pl1, 50);
+        setProductToPricelist(productTribute, pl2, 36);
+        Product productBlackMonster = createProduct("Black Monster", 2, "flaske", null);
+        setProductToPricelist(productBlackMonster, pl1, 50);
+        setProductToPricelist(productBlackMonster, pl2, 50);
 
-		User user = createUser("John", "test", "test", Permission.ADMIN);
-		User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
+        //FADØL
+        Product productFadolKlosterbryg = createProduct("Klosterbryg", 2, "fadøl", null);
+        setProductToPricelist(productFadolKlosterbryg, pl1, 30);
+        Product productFadolJazzClassic = createProduct("Jazz Classic", 2, "fadøl", null);
+        setProductToPricelist(productFadolJazzClassic, pl1, 30);
+        Product productFadolExtraPilsner = createProduct("Extra Pilsner", 2, "fadøl", null);
+        setProductToPricelist(productFadolExtraPilsner, pl1, 30);
+        Product productFadolCelebration = createProduct("Celebration", 2, "fadøl", null);
+        setProductToPricelist(productFadolCelebration, pl1, 30);
+        Product productFadolBlondie = createProduct("Blondie", 2, "fadøl", null);
+        setProductToPricelist(productFadolBlondie, pl1, 30);
+        Product productFadolForaarsbryg = createProduct("Forårsbryg", 2, "fadøl", null);
+        setProductToPricelist(productFadolForaarsbryg, pl1, 30);
+        Product productFadolIndiaPaleAle = createProduct("India Pale Ale", 2, "fadøl", null);
+        setProductToPricelist(productFadolIndiaPaleAle, pl1, 30);
+        Product productFadolJulebryg = createProduct("Julebryg", 2, "fadøl", null);
+        setProductToPricelist(productFadolJulebryg, pl1, 30);
+        Product productFadolImperialStout = createProduct("Imperial Stout", 2, "fadøl", null);
+        setProductToPricelist(productFadolImperialStout, pl1, 30);
+        Product productFadolSpecial = createProduct("Special", 2, "fadøl", null);
+        setProductToPricelist(productFadolSpecial, pl1, 30);
+        Product productFadolAeblebrus = createProduct("Æblebrus", 1, "fadøl", null);
+        setProductToPricelist(productFadolAeblebrus, pl1, 15);
+        Product productFadolChips = createProduct("Chips", 1, "fadøl", null);
+        setProductToPricelist(productFadolChips, pl1, 10);
+        Product productFadolPeanuts = createProduct("Peanuts", 1, "fadøl", null);
+        setProductToPricelist(productFadolPeanuts, pl1, 10);
+        Product productFadolCola = createProduct("Cola", 1, "fadøl", null);
+        setProductToPricelist(productFadolCola, pl1, 15);
+        Product productFadolNikoline = createProduct("Nikoline", 1, "fadøl", null);
+        setProductToPricelist(productFadolNikoline, pl1, 15);
+        Product productFadol7Up = createProduct("7-Up", 1, "fadøl", null);
+        setProductToPricelist(productFadol7Up, pl1, 15);
+        Product productFadolWater = createProduct("Vand", 1, "fadøl", null);
+        setProductToPricelist(productFadolWater, pl1, 10);
 
-		Pricelist pl1 = createPricelist("Fredagsbar");
-		setSelectedPricelist(pl1);
-		Pricelist pl2 = createPricelist("Butik");
+        //SPIRITUS
+        Product productSpiritOfAarhus = createProduct("Spirit of Aarhus", null, "spiritus", null);
+        setProductToPricelist(productSpiritOfAarhus, pl1, 300);
+        setProductToPricelist(productSpiritOfAarhus, pl2, 300);
+        Product productSoAStick =
+            createProduct("Spirit of Aarhus with stick", null, "spiritus", null);
+        setProductToPricelist(productSoAStick, pl1, 350);
+        setProductToPricelist(productSoAStick, pl2, 350);
+        Product productWhisky = createProduct("Whisky", null, "spiritus", null);
+        setProductToPricelist(productWhisky, pl1, 500);
+        setProductToPricelist(productWhisky, pl2, 500);
+        Product productLiquorOfAarhus = createProduct("Liquor of Aarhus", null, "spiritus", null);
+        setProductToPricelist(productLiquorOfAarhus, pl1, 175);
+        setProductToPricelist(productLiquorOfAarhus, pl2, 175);
 
-		addCategory("flaske");
-		addCategory("fadøl");
-		addCategory("fustage");
-		addCategory("andet");
-		addCategory("spiritus");
-		addCategory("kulsyre");
-		addCategory("malt");
-		addCategory("beklædning");
-		addCategory("anlæg");
-		addCategory("glas");
-		addCategory("sampakninger");
+        //FUSTAGE
+        DepositProduct depositProductKlosterbryg =
+            createDepositProduct("Klosterbryg, 20 liter", null, "fustage", null,
+                200);
+        setProductToPricelist(depositProductKlosterbryg, pl2, 775);
+        DepositProduct depositProductKlosterbryg25 =
+            createDepositProduct("Klosterbryg, 25 liter", null, "fustage", null,
+                200);
+        setProductToPricelist(depositProductKlosterbryg25, pl2, 968.75);
+        DepositProduct depositProductJazzClassic =
+            createDepositProduct("Jazz Classic, 25 liter", null, "fustage", null,
+                200);
+        setProductToPricelist(depositProductJazzClassic, pl2, 625);
+        DepositProduct depositProductExtraPilsner =
+            createDepositProduct("Extra Pilsner, 25 liter", null, "fustage",
+                null, 200);
+        setProductToPricelist(depositProductExtraPilsner, pl2, 575);
+        DepositProduct depositProductCelebration =
+            createDepositProduct("Celebration, 20 liter", null, "fustage",
+                null, 200);
+        setProductToPricelist(depositProductCelebration, pl2, 775);
+        DepositProduct depositProductBlondie =
+            createDepositProduct("Blondie, 25 liter", null, "fustage",
+                null, 200);
+        setProductToPricelist(depositProductBlondie, pl2, 700);
+        DepositProduct depositProductForaarsbryg =
+            createDepositProduct("Forrsårsbryg, 20 liter", null, "fustage",
+                null, 200);
+        setProductToPricelist(depositProductForaarsbryg, pl2, 775);
+        DepositProduct depositProductIndiaPaleAle =
+            createDepositProduct("India Pale Ale, 20 liter", null, "fustage",
+                null, 200);
+        setProductToPricelist(depositProductIndiaPaleAle, pl2, 775);
+        DepositProduct depositProductJulebryg =
+            createDepositProduct("Julebryg, 20 liter", null, "fustage",
+                null, 200);
+        setProductToPricelist(depositProductJulebryg, pl2, 775);
+        DepositProduct depositProductImperialStout =
+            createDepositProduct("Imperial Stout, 20 liter", null, "fustage",
+                null, 200);
+        setProductToPricelist(depositProductImperialStout, pl2, 775);
 
-		Product productKlippekort = createProduct("Klippekort, 4 klip", 4, "andet", null);
-		addProductToPricelist(productKlippekort, pl1, 100);
-		addProductToPricelist(productKlippekort, pl2, 100);
+        //KULSYRE
+        DepositProduct productCO2kg6 = createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
+        setProductToPricelist(productCO2kg6, pl1, 400);
+        setProductToPricelist(productCO2kg6, pl2, 400);
+        DepositProduct productCO2kg4 = createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
+        setProductToPricelist(productCO2kg4, pl1, 266);
+        setProductToPricelist(productCO2kg4, pl2, 266);
+        DepositProduct productCO2kg10 =
+            createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
+        setProductToPricelist(productCO2kg10, pl1, 666);
+        setProductToPricelist(productCO2kg10, pl2, 666);
 
-		// FLASKE ØL
-		Product productFlaskeKlosterbryg = createProduct("Klosterbryg", 2, "flaske", null);
-		addProductToPricelist(productFlaskeKlosterbryg, pl1, 50);
-		addProductToPricelist(productFlaskeKlosterbryg, pl2, 36);
-		Product productFlaskeSweetGeorgiaBrown = createProduct("Sweet Georgia Brown", 2, "flaske", null);
-		addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl1, 50);
-		addProductToPricelist(productFlaskeSweetGeorgiaBrown, pl2, 36);
-		Product productFlaskeExtraPilsner = createProduct("Extra Pilsner", 2, "flaske", "extra-pilsner.png");
-		addProductToPricelist(productFlaskeExtraPilsner, pl1, 50);
-		addProductToPricelist(productFlaskeExtraPilsner, pl2, 36);
-		Product productCelebration = createProduct("Celebration", 2, "flaske", null);
-		addProductToPricelist(productCelebration, pl1, 50);
-		addProductToPricelist(productCelebration, pl2, 36);
-		Product productBlondie = createProduct("Blondie", 2, "flaske", null);
-		addProductToPricelist(productBlondie, pl1, 50);
-		addProductToPricelist(productBlondie, pl2, 36);
-		Product productForaarsbryg = createProduct("Forårsbryg", 2, "flaske", null);
-		addProductToPricelist(productForaarsbryg, pl1, 50);
-		addProductToPricelist(productForaarsbryg, pl2, 36);
-		Product productIndiaPaleAle = createProduct("India Pale Ale", 2, "flaske", null);
-		addProductToPricelist(productIndiaPaleAle, pl1, 50);
-		addProductToPricelist(productIndiaPaleAle, pl2, 36);
-		Product productJulebryg = createProduct("Julebryg", 2, "flaske", null);
-		addProductToPricelist(productJulebryg, pl1, 50);
-		addProductToPricelist(productJulebryg, pl2, 36);
-		Product productJuletoenden = createProduct("Juletønden", 2, "flaske", null);
-		addProductToPricelist(productJuletoenden, pl1, 50);
-		addProductToPricelist(productJuletoenden, pl2, 36);
-		Product productOldStrongAle = createProduct("Old Strong Ale", 2, "flaske", null);
-		addProductToPricelist(productOldStrongAle, pl1, 50);
-		addProductToPricelist(productOldStrongAle, pl2, 36);
-		Product productFregattenJylland = createProduct("Fregatten Jylland", 2, "flaske", null);
-		addProductToPricelist(productFregattenJylland, pl1, 50);
-		addProductToPricelist(productFregattenJylland, pl2, 36);
-		Product productImperialStout = createProduct("Imperial Stout", 2, "flaske", null);
-		addProductToPricelist(productImperialStout, pl1, 50);
-		addProductToPricelist(productImperialStout, pl2, 36);
-		Product productTribute = createProduct("Tribute", 2, "flaske", null);
-		addProductToPricelist(productTribute, pl1, 50);
-		addProductToPricelist(productTribute, pl2, 36);
-		Product productBlackMonster = createProduct("Black Monster", 2, "flaske", null);
-		addProductToPricelist(productBlackMonster, pl1, 50);
-		addProductToPricelist(productBlackMonster, pl2, 50);
+        //MALT
+        Product productMalt = createProduct("Malt, 25kg", null, "malt", null);
+        setProductToPricelist(productMalt, pl2, 300);
 
-		// FADØL
-		Product productFadolKlosterbryg = createProduct("Klosterbryg", 2, "fadøl", null);
-		addProductToPricelist(productFadolKlosterbryg, pl1, 30);
-		Product productFadolJazzClassic = createProduct("Jazz Classic", 2, "fadøl", null);
-		addProductToPricelist(productFadolJazzClassic, pl1, 30);
-		Product productFadolExtraPilsner = createProduct("Extra Pilsner", 2, "fadøl", null);
-		addProductToPricelist(productFadolExtraPilsner, pl1, 30);
-		Product productFadolCelebration = createProduct("Celebration", 2, "fadøl", null);
-		addProductToPricelist(productFadolCelebration, pl1, 30);
-		Product productFadolBlondie = createProduct("Blondie", 2, "fadøl", null);
-		addProductToPricelist(productFadolBlondie, pl1, 30);
-		Product productFadolForaarsbryg = createProduct("Forårsbryg", 2, "fadøl", null);
-		addProductToPricelist(productFadolForaarsbryg, pl1, 30);
-		Product productFadolIndiaPaleAle = createProduct("India Pale Ale", 2, "fadøl", null);
-		addProductToPricelist(productFadolIndiaPaleAle, pl1, 30);
-		Product productFadolJulebryg = createProduct("Julebryg", 2, "fadøl", null);
-		addProductToPricelist(productFadolJulebryg, pl1, 30);
-		Product productFadolImperialStout = createProduct("Imperial Stout", 2, "fadøl", null);
-		addProductToPricelist(productFadolImperialStout, pl1, 30);
-		Product productFadolSpecial = createProduct("Special", 2, "fadøl", null);
-		addProductToPricelist(productFadolSpecial, pl1, 30);
-		Product productFadolAeblebrus = createProduct("Æblebrus", 1, "fadøl", null);
-		addProductToPricelist(productFadolAeblebrus, pl1, 15);
-		Product productFadolChips = createProduct("Chips", 1, "fadøl", null);
-		addProductToPricelist(productFadolChips, pl1, 10);
-		Product productFadolPeanuts = createProduct("Peanuts", 1, "fadøl", null);
-		addProductToPricelist(productFadolPeanuts, pl1, 10);
-		Product productFadolCola = createProduct("Cola", 1, "fadøl", null);
-		addProductToPricelist(productFadolCola, pl1, 15);
-		Product productFadolNikoline = createProduct("Nikoline", 1, "fadøl", null);
-		addProductToPricelist(productFadolNikoline, pl1, 15);
-		Product productFadol7Up = createProduct("7-Up", 1, "fadøl", null);
-		addProductToPricelist(productFadol7Up, pl1, 15);
-		Product productFadolWater = createProduct("Vand", 1, "fadøl", null);
-		addProductToPricelist(productFadolWater, pl1, 10);
+        //BEKLÆDNING
+        Product productTShirt = createProduct("T-Shirt", null, "beklædning", null);
+        setProductToPricelist(productTShirt, pl1, 70);
+        setProductToPricelist(productTShirt, pl2, 70);
+        Product productPolo = createProduct("Polo", null, "beklædning", null);
+        setProductToPricelist(productPolo, pl1, 100);
+        setProductToPricelist(productPolo, pl2, 100);
+        Product productCap = createProduct("Cap", null, "beklædning", null);
+        setProductToPricelist(productCap, pl1, 30);
+        setProductToPricelist(productCap, pl2, 30);
 
-		// SPIRITUS
-		Product productSpiritOfAarhus = createProduct("Spirit of Aarhus", null, "spiritus", null);
-		addProductToPricelist(productSpiritOfAarhus, pl1, 300);
-		addProductToPricelist(productSpiritOfAarhus, pl2, 300);
-		Product productSoAStick = createProduct("Spirit of Aarhus with stick", null, "spiritus", null);
-		addProductToPricelist(productSoAStick, pl1, 350);
-		addProductToPricelist(productSoAStick, pl2, 350);
-		Product productWhisky = createProduct("Whisky", null, "spiritus", null);
-		addProductToPricelist(productWhisky, pl1, 500);
-		addProductToPricelist(productWhisky, pl2, 500);
-		Product productLiquorOfAarhus = createProduct("Liquor of Aarhus", null, "spiritus", null);
-		addProductToPricelist(productLiquorOfAarhus, pl1, 175);
-		addProductToPricelist(productLiquorOfAarhus, pl2, 175);
+        //ANLÆG
+        DepositProduct product1Valve = createDepositProduct("Anlæg 1-hane", null, "anlæg", null, 0);
+        setProductToPricelist(product1Valve, pl2, 250);
+        DepositProduct product2Valve =
+            createDepositProduct("Anlæg 2-haner", null, "anlæg", null, 0);
+        setProductToPricelist(product2Valve, pl2, 400);
+        DepositProduct productBar = createDepositProduct("Kulsyre", null, "kulsyre", null, 0);
+        setProductToPricelist(productBar, pl2, 500);
+        Product productDelivery = createProduct("Levering", null, "anlæg", null);
+        setProductToPricelist(productDelivery, pl2, 500);
+        Product productKrus = createProduct("Krus", null, "anlæg", null);
+        setProductToPricelist(productKrus, pl2, 60);
 
-		// FUSTAGE
-		DepositProduct depositProductKlosterbryg = createDepositProduct("Klosterbryg, 20 liter", null, "fustage", null,
-				200);
-		addProductToPricelist(depositProductKlosterbryg, pl2, 775);
-		DepositProduct depositProductKlosterbryg25 = createDepositProduct("Klosterbryg, 25 liter", null, "fustage",
-				null, 200);
-		addProductToPricelist(depositProductKlosterbryg25, pl2, 968.75);
-		DepositProduct depositProductJazzClassic = createDepositProduct("Jazz Classic, 25 liter", null, "fustage", null,
-				200);
-		addProductToPricelist(depositProductJazzClassic, pl2, 625);
-		DepositProduct depositProductExtraPilsner = createDepositProduct("Extra Pilsner, 25 liter", null, "fustage",
-				null, 200);
-		addProductToPricelist(depositProductExtraPilsner, pl2, 575);
-		DepositProduct depositProductCelebration = createDepositProduct("Celebration, 20 liter", null, "fustage", null,
-				200);
-		addProductToPricelist(depositProductCelebration, pl2, 775);
-		DepositProduct depositProductBlondie = createDepositProduct("Blondie, 25 liter", null, "fustage", null, 200);
-		addProductToPricelist(depositProductBlondie, pl2, 700);
-		DepositProduct depositProductForaarsbryg = createDepositProduct("Forrsårsbryg, 20 liter", null, "fustage", null,
-				200);
-		addProductToPricelist(depositProductForaarsbryg, pl2, 775);
-		DepositProduct depositProductIndiaPaleAle = createDepositProduct("India Pale Ale, 20 liter", null, "fustage",
-				null, 200);
-		addProductToPricelist(depositProductIndiaPaleAle, pl2, 775);
-		DepositProduct depositProductJulebryg = createDepositProduct("Julebryg, 20 liter", null, "fustage", null, 200);
-		addProductToPricelist(depositProductJulebryg, pl2, 775);
-		DepositProduct depositProductImperialStout = createDepositProduct("Imperial Stout, 20 liter", null, "fustage",
-				null, 200);
-		addProductToPricelist(depositProductImperialStout, pl2, 775);
+        //GLAS
+        Product productGlass = createProduct("Glas", null, "glas", null);
+        setProductToPricelist(productGlass, pl2, 15);
 
-		// KULSYRE
-		DepositProduct productCO2kg6 = createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
-		addProductToPricelist(productCO2kg6, pl1, 400);
-		addProductToPricelist(productCO2kg6, pl2, 400);
-		DepositProduct productCO2kg4 = createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
-		addProductToPricelist(productCO2kg4, pl1, 266);
-		addProductToPricelist(productCO2kg4, pl2, 266);
-		DepositProduct productCO2kg10 = createDepositProduct("Kulsyre", null, "kulsyre", null, 1000);
-		addProductToPricelist(productCO2kg10, pl1, 666);
-		addProductToPricelist(productCO2kg10, pl2, 666);
+        //SAMPAKNINGER
+        Product productGiftbag2Beer2Glass =
+            createProduct("Gaveæske 2 øl, 2 glas", null, "sampakninger", null);
+        setProductToPricelist(productGiftbag2Beer2Glass, pl1, 100);
+        setProductToPricelist(productGiftbag2Beer2Glass, pl2, 100);
+        Product productGiftbag4Beer = createProduct("Gaveæske 4 øl", null, "sampakninger", null);
+        setProductToPricelist(productGiftbag4Beer, pl1, 130);
+        setProductToPricelist(productGiftbag4Beer, pl2, 130);
+        Product productGiftbag6Beer = createProduct("Trækasse 6 øl", null, "sampakninger", null);
+        setProductToPricelist(productGiftbag6Beer, pl1, 240);
+        setProductToPricelist(productGiftbag6Beer, pl2, 240);
+        Product productGiftbag6Beer2Glass =
+            createProduct("Gavekurv 6 øl, 2 glas", null, "sampakninger", null);
+        setProductToPricelist(productGiftbag6Beer2Glass, pl1, 250);
+        setProductToPricelist(productGiftbag6Beer2Glass, pl2, 250);
+        Product productGiftbag6Beer6Glass =
+            createProduct("Trækasse 6 øl, 6 glas", null, "sampakninger", null);
+        setProductToPricelist(productGiftbag6Beer6Glass, pl1, 290);
+        setProductToPricelist(productGiftbag6Beer6Glass, pl2, 290);
+        Product productGiftbag12BeerWood =
+            createProduct("Trækasse 12 øl", null, "sampakninger", null);
+        setProductToPricelist(productGiftbag12BeerWood, pl1, 390);
+        setProductToPricelist(productGiftbag12BeerWood, pl2, 390);
+        Product productGiftbag12Beer = createProduct("Papkasse 12 øl", null, "sampakninger", null);
+        setProductToPricelist(productGiftbag12Beer, pl1, 360);
+        setProductToPricelist(productGiftbag12Beer, pl2, 360);
 
-		// MALT
-		Product productMalt = createProduct("Malt, 25kg", null, "malt", null);
-		addProductToPricelist(productMalt, pl2, 300);
+        createTour(5, LocalDateTime.now(), 1000, Duration.of(1, ChronoUnit.HOURS));
+        // Customers
+        createCustomer("Hans Hansen", "Vestervej 38", "35698457", "somewhere@somethere.dk");
+        createCustomer("Hans Jensen", "Østervej 38", "35864557", "somehere@somethere.dk");
+        createCustomer("Østerli Nielsen", "Søndenvej 38", "8979854", "where@somethere.dk");
+        Customer dos =
+            createCustomer("Person 2.0", "Nordenvej 38", "39875557", "here@somethere.dk");
+        createCustomer("Niels Sommer", "Åkæret 1", "35634687", "there@somethere.dk");
+        Customer uno =
+            createCustomer("Jens-Peter Petersen", "Nyborg", "878788457", "somehow@somethere.dk");
 
-		// BEKLÆDNING
-		Product productTShirt = createProduct("T-Shirt", null, "beklædning", null);
-		addProductToPricelist(productTShirt, pl1, 70);
-		addProductToPricelist(productTShirt, pl2, 70);
-		Product productPolo = createProduct("Polo", null, "beklædning", null);
-		addProductToPricelist(productPolo, pl1, 100);
-		addProductToPricelist(productPolo, pl2, 100);
-		Product productCap = createProduct("Cap", null, "beklædning", null);
-		addProductToPricelist(productCap, pl1, 30);
-		addProductToPricelist(productCap, pl2, 30);
+        // Order
+        Order order1 = createOrder(user, pl1);
+        ProductOrder po1 = createProductOrder(order1, productFadolNikoline);
+        createProductOrder(order1, productFadolCelebration);
+        ProductOrder po2 = createProductOrder(order1, productFlaskeExtraPilsner);
+        po1.setAmount(5);
+        po2.setDiscount("-10");
+        order1.setCustomer(uno);
 
-		// ANLÆG
-		DepositProduct product1Valve = createDepositProduct("Anlæg 1-hane", null, "anlæg", null, 0);
-		addProductToPricelist(product1Valve, pl2, 250);
-		DepositProduct product2Valve = createDepositProduct("Anlæg 2-haner", null, "anlæg", null, 0);
-		addProductToPricelist(product2Valve, pl2, 400);
-		DepositProduct productBar = createDepositProduct("Kulsyre", null, "kulsyre", null, 0);
-		addProductToPricelist(productBar, pl2, 500);
-		Product productDelivery = createProduct("Levering", null, "anlæg", null);
-		addProductToPricelist(productDelivery, pl2, 500);
-		Product productKrus = createProduct("Krus", null, "anlæg", null);
-		addProductToPricelist(productKrus, pl2, 60);
+        Order order2 = createOrder(user, pl2);
+        createRentalProductOrder(order2, depositProductKlosterbryg);
+        createPayment(order2, order2.totalPrice() + order2.totalDeposit(), PaymentType.CASH);
+        order2.setCustomer(uno);
 
-		// GLAS
-		Product productGlass = createProduct("Glas", null, "glas", null);
-		addProductToPricelist(productGlass, pl2, 15);
+        Order order3 = createOrder(user1, pl1);
+        createProductOrder(order3, productFadolNikoline);
+        createProductOrder(order3, productFadolCelebration);
+        ProductOrder po4 = createProductOrder(order3, productFlaskeExtraPilsner);
+        po4.setAmount(5);
+        order3.setCustomer(dos);
 
-		// SAMPAKNINGER
-		Product productGiftbag2Beer2Glass = createProduct("Gaveæske 2 øl, 2 glas", null, "sampakninger", null);
-		addProductToPricelist(productGiftbag2Beer2Glass, pl1, 100);
-		addProductToPricelist(productGiftbag2Beer2Glass, pl2, 100);
-		Product productGiftbag4Beer = createProduct("Gaveæske 4 øl", null, "sampakninger", null);
-		addProductToPricelist(productGiftbag4Beer, pl1, 130);
-		addProductToPricelist(productGiftbag4Beer, pl2, 130);
-		Product productGiftbag6Beer = createProduct("Trækasse 6 øl", null, "sampakninger", null);
-		addProductToPricelist(productGiftbag6Beer, pl1, 240);
-		addProductToPricelist(productGiftbag6Beer, pl2, 240);
-		Product productGiftbag6Beer2Glass = createProduct("Gavekurv 6 øl, 2 glas", null, "sampakninger", null);
-		addProductToPricelist(productGiftbag6Beer2Glass, pl1, 250);
-		addProductToPricelist(productGiftbag6Beer2Glass, pl2, 250);
-		Product productGiftbag6Beer6Glass = createProduct("Trækasse 6 øl, 6 glas", null, "sampakninger", null);
-		addProductToPricelist(productGiftbag6Beer6Glass, pl1, 290);
-		addProductToPricelist(productGiftbag6Beer6Glass, pl2, 290);
-		Product productGiftbag12BeerWood = createProduct("Trækasse 12 øl", null, "sampakninger", null);
-		addProductToPricelist(productGiftbag12BeerWood, pl1, 390);
-		addProductToPricelist(productGiftbag12BeerWood, pl2, 390);
-		Product productGiftbag12Beer = createProduct("Papkasse 12 øl", null, "sampakninger", null);
-		addProductToPricelist(productGiftbag12Beer, pl1, 360);
-		addProductToPricelist(productGiftbag12Beer, pl2, 360);
+    }
 
-		createTour(5, LocalDateTime.now(), 1000, Duration.of(1, ChronoUnit.HOURS));
-		// Customers
-		createCustomer("Hans Hansen", "Vestervej 38", "35698457", "somewhere@somethere.dk");
-		createCustomer("Hans Jensen", "Østervej 38", "35864557", "somehere@somethere.dk");
-		createCustomer("Østerli Nielsen", "Søndenvej 38", "8979854", "where@somethere.dk");
-		Customer dos = createCustomer("Person 2.0", "Nordenvej 38", "39875557", "here@somethere.dk");
-		createCustomer("Niels Sommer", "Åkæret 1", "35634687", "there@somethere.dk");
-		Customer uno = createCustomer("Jens-Peter Petersen", "Nyborg", "878788457", "somehow@somethere.dk");
+    public List<Order> getOrdersInPeriod(TimePeriod timePeriod) {
+        List<Order> selected = new ArrayList<Order>();
+        LocalDate fromDate = LocalDate.now();
 
-		// Order
-		Order order1 = createOrder(user, pl1);
-		ProductOrder po1 = createProductOrder(order1, productFadolNikoline);
-		createProductOrder(order1, productFadolCelebration);
-		ProductOrder po2 = createProductOrder(order1, productFlaskeExtraPilsner);
-		po1.setAmount(5);
-		po2.setDiscount("-10");
-		order1.setCustomer(uno);
+        switch (timePeriod) {
+        case DAY:
+            fromDate = fromDate.minus(1, ChronoUnit.DAYS);
+        case WEEK:
+            fromDate = fromDate.minus(1, ChronoUnit.WEEKS);
+        case MONTH:
+            fromDate = fromDate.minus(1, ChronoUnit.MONTHS);
+        case YEAR:
+            fromDate = fromDate.minus(1, ChronoUnit.YEARS);
+        case FOREVER:
+            fromDate = LocalDate.ofYearDay(1970, 1);
+        default:
+            break;
+        }
 
-		Order order2 = createOrder(user, pl2);
-		createRentalProductOrder(order2, depositProductKlosterbryg);
-		createPayment(order2, order2.totalPrice() + order2.totalDeposit(), PaymentType.CASH);
-		order2.setCustomer(uno);
+        for (Order o : storage.getOrders()) {
+            if (o.getDate().isAfter(fromDate)) {
+                selected.add(o);
+            }
+        }
 
-		Order order3 = createOrder(user1, pl1);
-		createProductOrder(order3, productFadolNikoline);
-		createProductOrder(order3, productFadolCelebration);
-		ProductOrder po4 = createProductOrder(order3, productFlaskeExtraPilsner);
-		po4.setAmount(5);
-		order3.setCustomer(dos);
+        return selected;
+    }
 
-	}
-
-	public List<Order> getOrdersInPeriod(TimePeriod timePeriod) {
-		List<Order> selected = new ArrayList<Order>();
-		LocalDate fromDate = LocalDate.now();
-
-		switch (timePeriod) {
-		case DAY:
-			fromDate = fromDate.minus(1, ChronoUnit.DAYS);
-		case WEEK:
-			fromDate = fromDate.minus(1, ChronoUnit.WEEKS);
-		case MONTH:
-			fromDate = fromDate.minus(1, ChronoUnit.MONTHS);
-		case YEAR:
-			fromDate = fromDate.minus(1, ChronoUnit.YEARS);
-		case FOREVER:
-			fromDate = LocalDate.ofYearDay(1970, 1);
-		default:
-			break;
-		}
-
-		for (Order o : storage.getOrders()) {
-			if (o.getDate().isAfter(fromDate)) {
-				selected.add(o);
-			}
-		}
-
-		return selected;
-	}
-
-	public static Service getInstance() {
-		return instance;
-	}
+    public static Service getInstance() {
+        return instance;
+    }
 }

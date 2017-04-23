@@ -19,14 +19,6 @@ public class Pricelist implements Serializable {
         return name;
     }
 
-    public void addProduct(Product product, double price) {
-    	assert product != null;
-    	assert !products.containsKey(product);
-    	assert price >= 0;
-    	
-        products.put(product, price);
-    }
-
     /**
      * Returns the price of a product
      */

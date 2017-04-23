@@ -204,6 +204,7 @@ public class Sale extends GridPane {
                     gift = true;
                 }
             }
+            if (gift) {
                 for (ProductOrder po : order.getAllProducts()) {
                     if (po.getGift()) {
                         gift = true;

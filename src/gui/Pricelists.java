@@ -194,7 +194,7 @@ public class Pricelists extends GridPane {
                     return;
                 }
                 else {
-                    service.addProductToPricelist(product, selectedPricelist, price);
+                    service.setProductToPricelist(product, selectedPricelist, price);
                     table.addItem(new PricelistElement(product, price));
                 }
             }
@@ -208,7 +208,7 @@ public class Pricelists extends GridPane {
         }
 
         public void updatePrice(PricelistElement t, Double price) {
-            service.setPricelistPrice(service.getSelectedPricelist(), t.getProduct(), price);
+            service.setProductToPricelist(t.getProduct(), service.getSelectedPricelist(), price);
         }
 
     }

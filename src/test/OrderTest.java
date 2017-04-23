@@ -31,19 +31,19 @@ public class OrderTest {
         pricelist = new Pricelist("test");
 
         simpleProduct = new Product("Simple Product", null, "test", null);
-        pricelist.addProduct(simpleProduct, 100);
+        pricelist.setPrice(simpleProduct, 100);
 
         simpleDepositProduct = new DepositProduct("Simple Deposit Product", null, "test", null, 10);
-        pricelist.addProduct(simpleDepositProduct, 100);
+        pricelist.setPrice(simpleDepositProduct, 100);
 
         simpleBeer = new Product("Simple Beer", 2, "test", null);
-        pricelist.addProduct(simpleBeer, 50);
+        pricelist.setPrice(simpleBeer, 50);
 
         simpleSoda = new Product("Simple Soda", 1, "fadoel", null);
-        pricelist.addProduct(simpleSoda, 15);
+        pricelist.setPrice(simpleSoda, 15);
 
         simpleGift = new Product("Simple Gift", null, "sampakninger", null);
-        pricelist.addProduct(simpleGift, 100);
+        pricelist.setPrice(simpleGift, 100);
 
     }
 
@@ -186,7 +186,7 @@ public class OrderTest {
         Order order = new Order(user, pricelist);
         order.addProduct(simpleDepositProduct);
         DepositProduct dp = new DepositProduct("Test desposit", null, "test", null, 20);
-        pricelist.addProduct(dp, 100);
+        pricelist.setPrice(dp, 100);
         order.addProduct(dp);
 
         assertEquals(30, order.totalDeposit(), 0.01);
