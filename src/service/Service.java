@@ -123,54 +123,11 @@ public class Service {
         selectedPricelist = pricelist;
     }
 
-    public Pricelist getSelectedPricelist() {
-        return selectedPricelist;
-    }
-
     public void setProductToPricelist(Product product, Pricelist pricelist, double price) {
         assert pricelist != null;
         assert product != null;
 
         pricelist.setPrice(product, price);
-    }
-
-    /**
-     * is null if no user is logged in
-     */
-    public User getActiveUser() {
-        return activeUser;
-    }
-
-    public void addCategory(String category) {
-        assert category != null && !category.isEmpty();
-
-        storage.addCategory(category);
-    }
-
-    public User createUser(String name, String username, String password, Permission permission) {
-        assert name != null && !name.isEmpty();
-        assert username != null && !username.isEmpty();
-        assert password != null && !password.isEmpty();
-        assert permission != null;
-
-        User u = new User(name, username, password, permission);
-
-        storage.addUser(u);
-
-        return u;
-    }
-
-    public void updateUserPassword(User user, String password) {
-        assert user != null;
-        assert password != null && !password.isEmpty();
-
-        user.setPassword(password);
-    }
-
-    public void deleteUser(User user) {
-        assert user != null;
-
-        user.setDeleted();
     }
 
 	public Pricelist getSelectedPricelist() {
@@ -759,4 +716,8 @@ public class Service {
     public static Service getInstance() {
         return instance;
     }
+
+	public void removeProductFromPricelist(Product product, Pricelist p) {
+		p.removeProduct(product);
+	}
 }
