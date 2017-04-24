@@ -37,10 +37,9 @@ public class Sale extends GridPane {
             return String.format(Locale.GERMAN, "%.2f kr.", po.price());
         }
         catch (Exception e) {
-            e.printStackTrace();
             return e.getMessage();
         }
-        
+
     });
     private final Label lTotal = new Label();
     private final Label lblCustomer = new Label();
@@ -186,17 +185,12 @@ public class Sale extends GridPane {
         }
 
         public void addCustomer() {
-            try {
-                AddCustomerDialog ad = new AddCustomerDialog(owner, order);
-                ad.showAndWait();
-                if (order.getCustomer() != null){
-                    lblCustomer.setText(order.getCustomer().getName());
-                }
-                validate("", productTable.isValid());
+            AddCustomerDialog ad = new AddCustomerDialog(owner, order);
+            ad.showAndWait();
+            if (order.getCustomer() != null){
+                lblCustomer.setText(order.getCustomer().getName());
             }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            validate("", productTable.isValid());
         }
 
         public void showPayDialog() {
@@ -217,22 +211,17 @@ public class Sale extends GridPane {
                     }
                 }
             }
-            try {
-                PayDialog pd =
-                    new PayDialog(owner, order, order.totalPrice(), order.totalDeposit());
+            PayDialog pd =
+                new PayDialog(owner, order, order.totalPrice(), order.totalDeposit());
 
-                pd.showAndWait();
+            pd.showAndWait();
 
-                PaymentStatus status = order.paymentStatus();
+            PaymentStatus status = order.paymentStatus();
 
-                boolean depositOrPriceIsPaid =
-                    status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
-                if (depositOrPriceIsPaid) {
-                    orderPaidHanlder.exec(null);
-                }
-            }
-            catch (DiscountParseException e) {
-                e.printStackTrace();
+            boolean depositOrPriceIsPaid =
+                status == PaymentStatus.ORDERPAID || status == PaymentStatus.DEPOSITPAID;
+            if (depositOrPriceIsPaid) {
+                orderPaidHanlder.exec(null);
             }
         }
 

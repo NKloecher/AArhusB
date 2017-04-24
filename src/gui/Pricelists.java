@@ -163,20 +163,15 @@ public class Pricelists extends GridPane {
         }
 
         public void createPriceList() {
-            try {
-                TextInputDialog id = new TextInputDialog();
-                id.setTitle("Ny Prisliste");
-                id.setHeaderText("Skriv navnet på den nye prisliste\n"
-                    + "For at tilføje produkter vælg da prislisten i den øverste menu, og tilføj produkter");
+            TextInputDialog id = new TextInputDialog();
+            id.setTitle("Ny Prisliste");
+            id.setHeaderText("Skriv navnet på den nye prisliste\n"
+                + "For at tilføje produkter vælg da prislisten i den øverste menu, og tilføj produkter");
 
-                Optional<String> result = id.showAndWait();
-                if (result.isPresent()) {
-                    String name = result.get();
-                    service.createPricelist(name);
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+            Optional<String> result = id.showAndWait();
+            if (result.isPresent()) {
+                String name = result.get();
+                service.createPricelist(name);
             }
         }
 

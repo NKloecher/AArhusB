@@ -87,19 +87,14 @@ public class Customers extends GridPane {
         }
 
         public void viewCustomerAction() {
-            try {
-                if (lvCustomers.getSelectionModel().getSelectedItem() != null) {
-                    Customer c = lvCustomers.getSelectionModel().getSelectedItem();
-                    ViewCustomerDialog vc = new ViewCustomerDialog(c);
-                    vc.showAndWait();
-                    
-                    lvCustomers.getItems().clear();
-                    lvCustomers.getItems().setAll(storage.getCustomers());
-                    lvCustomers.getItems().sort(null);
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+            if (lvCustomers.getSelectionModel().getSelectedItem() != null) {
+                Customer c = lvCustomers.getSelectionModel().getSelectedItem();
+                ViewCustomerDialog vc = new ViewCustomerDialog(c);
+                vc.showAndWait();
+
+                lvCustomers.getItems().clear();
+                lvCustomers.getItems().setAll(storage.getCustomers());
+                lvCustomers.getItems().sort(null);
             }
         }
 
@@ -116,14 +111,9 @@ public class Customers extends GridPane {
         }
 
         public void createCustomerDialogAction() {
-            try {
-                CreateCustomerDialog cd = new CreateCustomerDialog(owner);
-                cd.showAndWait();
-                updateCustomers(cd.getNewCustomer());
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            CreateCustomerDialog cd = new CreateCustomerDialog(owner);
+            cd.showAndWait();
+            updateCustomers(cd.getNewCustomer());
         }
 
         public void updateCustomers(Customer c) {
