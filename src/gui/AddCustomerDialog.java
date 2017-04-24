@@ -47,30 +47,20 @@ public class AddCustomerDialog extends Stage {
 
     private class Controller {
         public void newCustomer() {
-            try {
-                CreateCustomerDialog cc = new CreateCustomerDialog(getOwner());
-                cc.showAndWait();
-                if (cc.getNewCustomer() != null) {
-                    order.setCustomer(cc.getNewCustomer());
-                    close();
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+            CreateCustomerDialog cc = new CreateCustomerDialog(getOwner());
+            cc.showAndWait();
+            if (cc.getNewCustomer() != null) {
+                order.setCustomer(cc.getNewCustomer());
+                close();
             }
         }
 
         public void oldCustomer() {
-            try {
-                ExistingCustomers ec = new ExistingCustomers(getOwner());
-                ec.showAndWait();
-                if (ec.getCustomer() != null) {
-                    order.setCustomer(ec.getCustomer());
-                    close();
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+            ExistingCustomers ec = new ExistingCustomers(getOwner());
+            ec.showAndWait();
+            if (ec.getCustomer() != null) {
+                order.setCustomer(ec.getCustomer());
+                close();
             }
         }
     }

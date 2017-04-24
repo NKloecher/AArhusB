@@ -111,60 +111,47 @@ public class Products extends GridPane {
         }
 
         public void deleteProduct(Product product) {
-            try {
-                boolean valid = true;
-                for (Order o : storage.getOrders()) {
-                    for (ProductOrder po : o.getAllProducts()) {
-                        if (po.getProduct().equals(product)) {
-                            valid = false;
-                        }
+            boolean valid = true;
+            for (Order o : storage.getOrders()) {
+                for (ProductOrder po : o.getAllProducts()) {
+                    if (po.getProduct().equals(product)) {
+                        valid = false;
                     }
-
-                }
-                if (valid) {
-                    Alert alert = new Alert(AlertType.CONFIRMATION);
-                    alert.setTitle("Sletning af produkt");
-                    alert.setHeaderText("Du er i gang med at slette " + product);
-                    alert.setContentText(
-                        "Tryk OK for at slette, vær opmærksom på at slettede produkter ikke kan genoprettes");
-
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == ButtonType.OK) {
-                        table.removeItem(product);
-                        service.removeProduct(product);
-                        for (Pricelist p : storage.getPricelists()) {
-                            if (p.getProducts().contains(product)) {
-                                service.removeProductFromPricelist(product, p);
-                            }
-                        }
-                    }
-                }
-                else {
-                    Alert newalert = new Alert(AlertType.ERROR);
-                    newalert.setTitle("Ugyldig handling");
-                    newalert.setContentText("Produkt er brugt på ordrer og kan ikke slettes");
-                    newalert.showAndWait();
                 }
 
             }
-            catch (
+            if (valid) {
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Sletning af produkt");
+                alert.setHeaderText("Du er i gang med at slette " + product);
+                alert.setContentText(
+                    "Tryk OK for at slette, vær opmærksom på at slettede produkter ikke kan genoprettes");
 
-            Exception e) {
-                e.printStackTrace();
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    table.removeItem(product);
+                    service.removeProduct(product);
+                    for (Pricelist p : storage.getPricelists()) {
+                        if (p.getProducts().contains(product)) {
+                            service.removeProductFromPricelist(product, p);
+                        }
+                    }
+                }
+            }
+            else {
+                Alert newalert = new Alert(AlertType.ERROR);
+                newalert.setTitle("Ugyldig handling");
+                newalert.setContentText("Produkt er brugt på ordrer og kan ikke slettes");
+                newalert.showAndWait();
             }
         }
 
         public void createProduct() {
-            try {
-                String name = txfProduct.getText().trim();
-                if (!name.isEmpty()) {
-                    service.createProduct(name, null, null, null);
-                    table.setItems(storage.getProducts());
-                    txfProduct.clear();
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+            String name = txfProduct.getText().trim();
+            if (!name.isEmpty()) {
+                service.createProduct(name, null, null, null);
+                table.setItems(storage.getProducts());
+                txfProduct.clear();
             }
         }
 
