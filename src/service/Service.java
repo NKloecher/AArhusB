@@ -39,9 +39,9 @@ public class Service {
     }
 
     public void updateOrderDiscount(Order order, String discount) {
-    	order.setDiscount(discount);
+        order.setDiscount(discount);
     }
-    
+
     public void updateProductCategory(Product product, String category) {
         assert product != null;
         assert category != null && !category.isEmpty();
@@ -130,222 +130,223 @@ public class Service {
         pricelist.setPrice(product, price);
     }
 
-	public Pricelist getSelectedPricelist() {
-		return selectedPricelist;
-	}
+    public Pricelist getSelectedPricelist() {
+        return selectedPricelist;
+    }
 
-	public void setPricelistPrice(Pricelist pricelist, Product product, double price) {
-		assert pricelist != null;
-		assert product != null;
+    public void setPricelistPrice(Pricelist pricelist, Product product, double price) {
+        assert pricelist != null;
+        assert product != null;
 
-		pricelist.setPrice(product, price);
-	}
+        pricelist.setPrice(product, price);
+    }
 
-	/**
-	 * is null if no user is logged in
-	 */
-	public User getActiveUser() {
-		return activeUser;
-	}
+    /**
+     * is null if no user is logged in
+     */
+    public User getActiveUser() {
+        return activeUser;
+    }
 
-	public void addCategory(String category) {
-		assert category != null && !category.isEmpty();
+    public void addCategory(String category) {
+        assert category != null && !category.isEmpty();
 
-		storage.addCategory(category);
-	}
+        storage.addCategory(category);
+    }
 
-	public User createUser(String name, String username, String password, Permission permission) {
-		assert name != null && !name.isEmpty();
-		assert username != null && !username.isEmpty();
-		assert password != null && !password.isEmpty();
-		assert permission != null;
+    public User createUser(String name, String username, String password, Permission permission) {
+        assert name != null && !name.isEmpty();
+        assert username != null && !username.isEmpty();
+        assert password != null && !password.isEmpty();
+        assert permission != null;
 
-		User u = new User(name, username, password, permission);
+        User u = new User(name, username, password, permission);
 
-		storage.addUser(u);
+        storage.addUser(u);
 
-		return u;
-	}
+        return u;
+    }
 
-	public void updateUserPassword(User user, String password) {
-		assert user != null;
-		assert password != null && !password.isEmpty();
+    public void updateUserPassword(User user, String password) {
+        assert user != null;
+        assert password != null && !password.isEmpty();
 
-		user.setPassword(password);
-	}
+        user.setPassword(password);
+    }
 
-	public void deleteUser(User user) {
-		assert user != null;
+    public void deleteUser(User user) {
+        assert user != null;
 
-		user.setDeleted();
-	}
+        user.setDeleted();
+    }
 
-	public void updateUserName(User user, String name) {
-		assert user != null;
-		assert name != null && !name.isEmpty();
+    public void updateUserName(User user, String name) {
+        assert user != null;
+        assert name != null && !name.isEmpty();
 
-		user.setName(name);
-	}
+        user.setName(name);
+    }
 
-	public void updateUserUsername(User user, String username) {
-		assert user != null;
-		assert username != null && !username.isEmpty();
+    public void updateUserUsername(User user, String username) {
+        assert user != null;
+        assert username != null && !username.isEmpty();
 
-		user.setUsername(username);
-	}
+        user.setUsername(username);
+    }
 
-	public void updateUserPermission(User user, Permission permission) {
-		assert user != null;
-		assert permission != null;
+    public void updateUserPermission(User user, Permission permission) {
+        assert user != null;
+        assert permission != null;
 
-		user.setPermission(permission);
-	}
+        user.setPermission(permission);
+    }
 
-	public boolean usernameIsUnique(String username, User user) {
-		assert user != null;
-		assert username != null && !username.isEmpty();
+    public boolean usernameIsUnique(String username, User user) {
+        assert user != null;
+        assert username != null && !username.isEmpty();
 
-		for (User u : storage.getUsers()) {
-			if (!u.equals(user) && u.getUsername().equals(username)) {
-				return false;
-			}
-		}
+        for (User u : storage.getUsers()) {
+            if (!u.equals(user) && u.getUsername().equals(username)) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public Tour createTour(int persons, LocalDateTime date, double price, Duration duration) {
-		assert date != null;
-		assert duration != null;
+    public Tour createTour(int persons, LocalDateTime date, double price, Duration duration) {
+        assert date != null;
+        assert duration != null;
 
-		Tour tour = new Tour(persons, date, price, duration, activeUser);
-		storage.addTour(tour);
-		return tour;
-	}
+        Tour tour = new Tour(persons, date, price, duration, activeUser);
+        storage.addTour(tour);
+        return tour;
+    }
 
-	public List<Tour> getTours() {
-		return storage.getTours();
-	}
+    public List<Tour> getTours() {
+        return storage.getTours();
+    }
 
-	public List<Tour> getTours(LocalDate date) {
-		assert date != null;
+    public List<Tour> getTours(LocalDate date) {
+        assert date != null;
 
-		List<Tour> tours = new ArrayList<>();
-		for (Tour tour : getTours()) {
-			if (tour.getDate().toLocalDate().equals(date)) {
-				tours.add(tour);
-			}
-		}
-		return tours;
-	}
+        List<Tour> tours = new ArrayList<>();
+        for (Tour tour : getTours()) {
+            if (tour.getDate().toLocalDate().equals(date)) {
+                tours.add(tour);
+            }
+        }
+        return tours;
+    }
 
-	public Set<LocalDate> getTourDates() {
-		Set<LocalDate> dates = new HashSet<>();
-		for (Tour tour : getTours()) {
-			dates.add(tour.getDate().toLocalDate());
-		}
-		return dates;
-	}
+    public Set<LocalDate> getTourDates() {
+        Set<LocalDate> dates = new HashSet<>();
+        for (Tour tour : getTours()) {
+            dates.add(tour.getDate().toLocalDate());
+        }
+        return dates;
+    }
 
-	public void updateTourPersons(Tour tour, int persons) {
-		assert tour != null;
+    public void updateTourPersons(Tour tour, int persons) {
+        assert tour != null;
 
-		tour.setPersons(persons);
-	}
+        tour.setPersons(persons);
+    }
 
-	public void updateTourDate(Tour tour, LocalDateTime date) {
-		assert tour != null;
-		assert date != null;
+    public void updateTourDate(Tour tour, LocalDateTime date) {
+        assert tour != null;
+        assert date != null;
 
-		tour.setDate(date);
-	}
+        tour.setDate(date);
+    }
 
-	public void updateTourPrice(Tour tour, double price) {
-		assert tour != null;
+    public void updateTourPrice(Tour tour, double price) {
+        assert tour != null;
 
-		tour.setPrice(price);
-	}
+        tour.setPrice(price);
+    }
 
-	public void updateTourDuration(Tour tour, Duration duration) {
-		assert tour != null;
-		assert duration != null;
+    public void updateTourDuration(Tour tour, Duration duration) {
+        assert tour != null;
+        assert duration != null;
 
-		tour.setDuration(duration);
-	}
+        tour.setDuration(duration);
+    }
 
-	public void updateProductOrderAmount(ProductOrder productOrder, int amount) {
-		assert productOrder != null;
+    public void updateProductOrderAmount(ProductOrder productOrder, int amount) {
+        assert productOrder != null;
 
-		productOrder.setAmount(amount);
-	}
+        productOrder.setAmount(amount);
+    }
 
-	public void updateProductOrderReturned(RentalProductOrder po, int returned) {
-		po.setReturned(returned);
-	}
+    public void updateProductOrderReturned(RentalProductOrder po, int returned) {
+        po.setReturned(returned);
+    }
 
-	public void updateProductOrderUnused(RentalProductOrder po, int unused) {
-		po.setUnused(unused);
-	}
+    public void updateProductOrderUnused(RentalProductOrder po, int unused) {
+        po.setUnused(unused);
+    }
 
-	public void updateOrderCutsomer(Order order, Customer customer) {
-		assert order != null;
-		assert customer != null;
+    public void updateOrderCutsomer(Order order, Customer customer) {
+        assert order != null;
+        assert customer != null;
 
-		order.setCustomer(customer);
-	}
+        order.setCustomer(customer);
+    }
 
-	public void removeProduct(Product p) {
-		assert p != null;
+    public void removeProduct(Product p) {
+        assert p != null;
 
-		storage.removeProduct(p);
-	}
+        storage.removeProduct(p);
+    }
 
-	public Product createProduct(String name, Integer clips, String category, String image) {
-		assert name != null;
+    public Product createProduct(String name, Integer clips, String category, String image) {
+        assert name != null;
 
-		Product product = new Product(name, clips, category, image);
-		storage.addProduct(product);
+        Product product = new Product(name, clips, category, image);
+        storage.addProduct(product);
 
-		return product;
-	}
+        return product;
+    }
 
-	public DepositProduct createDepositProduct(String name, Integer clips, String category, String image,
-			double deposit) {
-		assert name != null;
+    public DepositProduct createDepositProduct(String name, Integer clips, String category,
+        String image,
+        double deposit) {
+        assert name != null;
 
-		DepositProduct depositProduct = new DepositProduct(name, clips, category, image, deposit);
-		storage.addProduct(depositProduct);
-		return depositProduct;
-	}
+        DepositProduct depositProduct = new DepositProduct(name, clips, category, image, deposit);
+        storage.addProduct(depositProduct);
+        return depositProduct;
+    }
 
-	public List<Pricelist> getPricelists() {
-		return storage.getPricelists();
-	}
+    public List<Pricelist> getPricelists() {
+        return storage.getPricelists();
+    }
 
-	public void removePricelist(Pricelist pricelist) {
-		assert pricelist != null;
+    public void removePricelist(Pricelist pricelist) {
+        assert pricelist != null;
 
-		storage.removePricelist(pricelist);
-		setSelectedPricelist(storage.getPricelists().get(0));
-	}
+        storage.removePricelist(pricelist);
+        setSelectedPricelist(storage.getPricelists().get(0));
+    }
 
-	public Pricelist createPricelist(String name) {
-		assert name != null && !name.isEmpty();
+    public Pricelist createPricelist(String name) {
+        assert name != null && !name.isEmpty();
 
-		Pricelist pricelist = new Pricelist(name);
-		storage.addPricelist(pricelist);
-		return pricelist;
-	}
+        Pricelist pricelist = new Pricelist(name);
+        storage.addPricelist(pricelist);
+        return pricelist;
+    }
 
-	public Payment createPayment(Payable payable, double amount, PaymentType paymentType) {
-		assert payable != null;
-		assert paymentType != null;
+    public Payment createPayment(Payable payable, double amount, PaymentType paymentType) {
+        assert payable != null;
+        assert paymentType != null;
 
-		Payment payment = new Payment(paymentType, amount);
+        Payment payment = new Payment(paymentType, amount);
 
-		payable.pay(payment);
-		storage.addPayment(payment);
-		return payment;
+        payable.pay(payment);
+        storage.addPayment(payment);
+        return payment;
     }
 
     public List<Product> getProducts() {
@@ -407,19 +408,21 @@ public class Service {
         Storage.saveStorage();
     }
 
-    public void initStorage() throws DiscountParseException {
-        try {
-            storage = loadStorage();
-            System.out.println("Loaded data from storage");
-            setSelectedPricelist(storage.getPricelists().get(0));
-            return;
-        }
-        catch (IOException | ClassNotFoundException e) {
-            System.out.println("Could not load storage, generating data from initStorage");
-        }
+    public void initStorage() throws DiscountParseException, AuthenticationException {
+//        try {
+//            storage = loadStorage();
+//            System.out.println("Loaded data from storage");
+//            setSelectedPricelist(storage.getPricelists().get(0));
+//            return;
+//        }
+//        catch (IOException | ClassNotFoundException e) {
+//            System.out.println("Could not load storage, generating data from initStorage");
+//        }
 
         User user = createUser("John", "test", "test", Permission.ADMIN);
         User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
+
+        login("test", "test");
 
         Pricelist pl1 = createPricelist("Fredagsbar");
         setSelectedPricelist(pl1);
@@ -717,7 +720,7 @@ public class Service {
         return instance;
     }
 
-	public void removeProductFromPricelist(Product product, Pricelist p) {
-		p.removeProduct(product);
-	}
+    public void removeProductFromPricelist(Product product, Pricelist p) {
+        p.removeProduct(product);
+    }
 }

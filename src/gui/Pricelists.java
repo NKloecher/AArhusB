@@ -39,8 +39,10 @@ public class Pricelists extends GridPane {
     private final Table<PricelistElement> table =
         new Table<>((error, isValid) -> lError.setText(error));
     private final TextField txfCategory = new TextField();
+    private MainApp.Controller mainController;
 
-    public Pricelists() {
+    public Pricelists(MainApp.Controller mainAppController) {
+        this.mainController = mainAppController;
         setHgap(10);
         setVgap(10);
         setAlignment(Pos.TOP_CENTER);
@@ -152,6 +154,7 @@ public class Pricelists extends GridPane {
                 }
                 else {
                     service.removePricelist(service.getSelectedPricelist());
+                    mainController.comboBoxFix();
                 }
             }
             else {

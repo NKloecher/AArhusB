@@ -24,9 +24,9 @@ public class Discount implements Serializable {
     }
 
     public void setDiscount(double discountAmount, DiscountType discountType) {
-    	assert discountAmount >= 0;
-    	assert discountType != null;
-    	
+        assert discountAmount >= 0;
+        assert discountType != null;
+
         this.discountType = discountType;
         this.discountAmount = discountAmount;
     }
@@ -36,9 +36,9 @@ public class Discount implements Serializable {
      * @param discount must be a number and can end with a procent sign
      */
     public void setDiscount(String discount) throws DiscountParseException {
-    	assert discount.matches("(-?\\d+)|(\\d+%?)") && !discount.isEmpty();
-    	
-        if (discount == null || discount.isEmpty()) {
+        assert discount != null && discount.matches("(-?\\d+)|(\\d+%?)");
+
+        if (discount.isEmpty()) {
             setDiscount(0, null);
         }
         else if (discount.startsWith("-")) {
@@ -64,8 +64,8 @@ public class Discount implements Serializable {
      * Returns the price after applying the appropriate discount
      */
     public double getPrice(double total) throws DiscountParseException {
-    	assert total >= 0;
-    	
+        assert total >= 0;
+
         if (discountType == null) {
             return total;
         }

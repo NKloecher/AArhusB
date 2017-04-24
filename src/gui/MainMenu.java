@@ -14,7 +14,7 @@ public class MainMenu extends GridPane {
     private final Stage owner;
     private final Controller controller = new Controller();
 
-    public MainMenu(Stage owner) {
+    public MainMenu(Stage owner, gui.MainApp.Controller mainAppController) {
         this.owner = owner;
 
         setHgap(10);
@@ -43,7 +43,7 @@ public class MainMenu extends GridPane {
 
         Button pricelists = getBigButton("Prislister");
         add(pricelists, 0, 5);
-        pricelists.setOnAction(e -> controller.select(new Pricelists()));
+        pricelists.setOnAction(e -> controller.select(new Pricelists(mainAppController)));
 
         Button users = getBigButton("Brugere");
         users.setOnAction(e -> controller.select(new Users()));
@@ -52,12 +52,12 @@ public class MainMenu extends GridPane {
         Button customers = getBigButton("Kunder");
         add(customers, 0, 7);
         customers.setOnAction(e -> controller.select(new Customers(owner)));
-        
+
         if (service.getActiveUser().getPermission() != Permission.ADMIN) {
-        	products.setDisable(true);
-        	pricelists.setDisable(true);
-        	users.setDisable(true);
-        	customers.setDisable(true);
+            products.setDisable(true);
+            pricelists.setDisable(true);
+            users.setDisable(true);
+            customers.setDisable(true);
         }
     }
 

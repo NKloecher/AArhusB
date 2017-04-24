@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.security.sasl.AuthenticationException;
+
 import exceptions.DiscountParseException;
 import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
@@ -40,7 +42,7 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws DiscountParseException {
+    public void start(Stage stage) throws DiscountParseException, AuthenticationException {
         this.owner = stage;
         Service.getInstance().initStorage();
 
@@ -86,7 +88,7 @@ public class MainApp extends Application {
         cbPricelist.getSelectionModel().select(0);
 
         Login l = new Login(x -> {
-            MainMenu m = new MainMenu(owner);
+            MainMenu m = new MainMenu(owner, controller);
             home.setOnAction(e -> controller.setScreen(m));
             m.setOnSelect(controller::setScreen);
             controller.setScreen(m);
@@ -127,6 +129,10 @@ public class MainApp extends Application {
         controller.setScreen(l);
     }
 
+    public Controller getController() {
+        return controller;
+    }
+
     @Override
     public void stop() {
         try {
@@ -141,7 +147,7 @@ public class MainApp extends Application {
         }
     }
 
-    private class Controller {
+    protected class Controller {
 
         public void spinThatShit() {
             Random ran = new Random();
@@ -170,8 +176,13 @@ public class MainApp extends Application {
             }
 
             if (MainApp.this.pane.getCenter() instanceof Pricelists) {
-                setScreen(new Pricelists());
+                setScreen(new Pricelists(getController()));
             }
+        }
+
+        public void comboBoxFix() {
+            //Out of bounds Fix for removal of a pricelist
+            cbPricelist.getSelectionModel().select(0);
         }
 
         public void setScreen(Pane pane) {
