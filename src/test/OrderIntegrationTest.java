@@ -6,12 +6,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class OrderIntegrationTest {
-	Pricelist pl;
-	Product product100kr4clip;
-	Product product100kr3clip;
-	Product product50kr0clip;
-	DepositProduct depositProduct500kr100rent;
-	User user;
+	final Pricelist pl;
+	final Product product100kr4clip;
+	final Product product100kr3clip;
+	final Product product50kr0clip;
+	final DepositProduct depositProduct500kr100rent;
+	final User user;
 
 	public OrderIntegrationTest() {
 		user = new User("test", "test", "test", Permission.NORMAL);

@@ -23,7 +23,6 @@ public class Tours extends GridPane {
 	private final Service service = Service.getInstance();
 	private final Controller controller = new Controller();
 	private final DatePicker dp = new DatePicker(LocalDate.now());
-	private final DatePickerSkin datePickerSkin = new DatePickerSkin(dp);
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 	private final Label lError = new Label();
 	private final Table<Tour> table = new Table<>((error, isValid) -> lError.setText(error));
@@ -32,7 +31,6 @@ public class Tours extends GridPane {
 	private final TextField tfNewStart = new TextField();
 	private final TextField tfNewEnd = new TextField();
 	private final TextField tfNewPrice = new TextField();
-	private final Button btnNew = new Button("Opret");
 	private Set<LocalDate> tourDates;
 	private final Stage owner;
 
@@ -86,6 +84,7 @@ public class Tours extends GridPane {
 		};
 
 		dp.setDayCellFactory(dayCellFactory);
+		DatePickerSkin datePickerSkin = new DatePickerSkin(dp);
 		add(datePickerSkin.getPopupContent(), 0, 0);
 
 
@@ -113,6 +112,7 @@ public class Tours extends GridPane {
 		tfNewPrice.setPromptText("Pris");
 		tfNewPrice.setPrefWidth(120.);
 		hbAdd.getChildren().add(tfNewPrice);
+		Button btnNew = new Button("Opret");
 		hbAdd.getChildren().add(btnNew);
 		btnNew.setOnAction(x -> controller.createTour());
 		add(hbAdd, 0, 3);

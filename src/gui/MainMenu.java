@@ -10,7 +10,6 @@ import service.Service;
 
 public class MainMenu extends GridPane {
     private Handler<Pane> selectHandler;
-    private final Service service = Service.getInstance();
     private final Stage owner;
     private final Controller controller = new Controller();
 
@@ -53,6 +52,7 @@ public class MainMenu extends GridPane {
         add(customers, 0, 7);
         customers.setOnAction(e -> controller.select(new Customers(owner)));
 
+        Service service = Service.getInstance();
         if (service.getActiveUser().getPermission() != Permission.ADMIN) {
             products.setDisable(true);
             pricelists.setDisable(true);

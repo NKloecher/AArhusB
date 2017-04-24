@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import model.Order;
 
 public class AddCustomerDialog extends Stage {
-    private Order order;
+    private final Order order;
 
     public AddCustomerDialog(Stage owner, Order order) {
         this.order = order;

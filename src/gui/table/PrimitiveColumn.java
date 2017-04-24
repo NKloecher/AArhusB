@@ -10,7 +10,7 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 	private final Getter<A, B> getter;
 	private final Setter<A, B> setter;
 	private final Validator<A> validator;
-	private List<Boolean> validity = new ArrayList<>();
+	private final List<Boolean> validity = new ArrayList<>();
 	
 	/**
 	 * @param type
@@ -97,10 +97,10 @@ public class PrimitiveColumn<A, B> extends Column<A> {
 	
 	@FunctionalInterface
 	public interface Type<C> {
-		static Type<String> String = text -> text;
-		static Type<Integer> Integer = text -> java.lang.Integer.parseInt(text);
-		static Type<Double> Double = text -> java.lang.Double.parseDouble(text);
+		Type<String> String = text -> text;
+		Type<Integer> Integer = java.lang.Integer::parseInt;
+		Type<Double> Double = java.lang.Double::parseDouble;
 		
-		public C parse(java.lang.String text);
+		C parse(java.lang.String text);
 	}
 }

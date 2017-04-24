@@ -38,8 +38,7 @@ public class Pricelists extends GridPane {
     private final Label lError = new Label();
     private final Table<PricelistElement> table =
         new Table<>((error, isValid) -> lError.setText(error));
-    private final TextField txfCategory = new TextField();
-    private MainApp.Controller mainController;
+    private final MainApp.Controller mainController;
 
     public Pricelists(MainApp.Controller mainAppController) {
         this.mainController = mainAppController;
@@ -101,6 +100,7 @@ public class Pricelists extends GridPane {
         gp2.add(productList, 1, 1, 2, 1);
 
         tfNewPrice.setPromptText("Pris på valgte produkter");
+        TextField txfCategory = new TextField();
         txfCategory.setPromptText("Kategori");
 
         Button addProduct = new Button("Tilføj produkt");
@@ -217,8 +217,8 @@ public class Pricelists extends GridPane {
     }
 
     class PricelistElement {
-        public Product product;
-        public double price;
+        public final Product product;
+        public final double price;
 
         public PricelistElement(Product product, double price) {
             this.product = product;

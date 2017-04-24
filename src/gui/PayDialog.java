@@ -31,11 +31,10 @@ public class PayDialog extends Stage {
     private final TextField tfAmount = new TextField();
     private final Label lTotal = new Label();
     private final Label lError = new Label();
-    private final GridPane pane = new GridPane();
     private final HBox hbTop = new HBox();
     private PaymentType paymentType = null;
-    private double total;
-    private Double deposit;
+    private final double total;
+    private final Double deposit;
     private final Payable payable;
     private BorderPane cash;
     private BorderPane card;
@@ -52,6 +51,7 @@ public class PayDialog extends Stage {
         setResizable(false);
 
         setTitle("Betal");
+        GridPane pane = new GridPane();
         initContent(pane);
 
         Scene scene = new Scene(pane);
@@ -223,7 +223,6 @@ public class PayDialog extends Stage {
             double paymentRemaning = total - payable.totalPayment();
 
             if (deposit != null) {
-                paymentRemaning += deposit;
             }
 
             if (paymentType == PaymentType.CLIP_CARD) {
@@ -251,7 +250,7 @@ public class PayDialog extends Stage {
                 }
 
                 if (!endButtonIsAdded) {
-                    PaymentStatus status = PaymentStatus.UNPAID;
+                    PaymentStatus status;
                     status = payable.paymentStatus();
                     if (paymentType != PaymentType.CLIP_CARD) {
                         overpaidAmount += paymentRemaning - amount;

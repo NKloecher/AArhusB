@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Order implements Payable, Serializable {
-    private List<ProductOrder> products = new ArrayList<>();
-    private List<RentalProductOrder> productsRental = new ArrayList<>();
-    private List<Payment> payments = new ArrayList<>();
+    private final List<ProductOrder> products = new ArrayList<>();
+    private final List<RentalProductOrder> productsRental = new ArrayList<>();
+    private final List<Payment> payments = new ArrayList<>();
     private User user;
     private Pricelist pricelist;
     private Discount discount;
     private Customer customer;
-    private LocalDate date = LocalDate.now();
+    private final LocalDate date = LocalDate.now();
 
     public Order(User user, Pricelist pricelist) {
     	assert user != null;

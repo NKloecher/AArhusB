@@ -23,7 +23,7 @@ import model.ProductOrder;
 import service.Service;
 
 public class GiftBasketDialog extends Stage {
-    private Order order;
+    private final Order order;
 
     public GiftBasketDialog(Window owner, Order order) {
         this.order = order;
@@ -113,10 +113,6 @@ public class GiftBasketDialog extends Stage {
         pane.add(btnOK, 1, 1);
         btnOK.setDefaultButton(true);
 
-    }
-
-    public ArrayList<ProductOrder> getGiftProducts() {
-        return new ArrayList<ProductOrder>(newProducts);
     }
 
     class Controller {

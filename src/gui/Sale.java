@@ -43,7 +43,6 @@ public class Sale extends GridPane {
         
     });
     private final Label lTotal = new Label();
-    private final Button btnCustomer = new Button("Tilføj Kunde");
     private final Label lblCustomer = new Label();
     private final Handler<?> orderPaidHanlder;
     private final Table<ProductOrder> productTable = new Table<>(controller::validate);
@@ -88,7 +87,7 @@ public class Sale extends GridPane {
         });
 
         ButtonColumn<ProductOrder> btnGiftProductsColumn =
-            new ButtonColumn<ProductOrder>("Gave", e -> controller.addGifts(e)) {
+            new ButtonColumn<ProductOrder>("Gave", controller::addGifts) {
         		@Override
         		public Node getNode(ProductOrder po) {
         			Node node = super.getNode(po);
@@ -148,6 +147,7 @@ public class Sale extends GridPane {
         discount.setOnAction(e -> controller.updateOrderDiscount());
         
         HBox buttons = new HBox();
+        Button btnCustomer = new Button("Tilføj Kunde");
         buttons.getChildren().addAll(lTotal, btnCustomer, lblCustomer, discount);
         buttons.setSpacing(20);
         add(buttons, 1, 1);
@@ -189,7 +189,9 @@ public class Sale extends GridPane {
             try {
                 AddCustomerDialog ad = new AddCustomerDialog(owner, order);
                 ad.showAndWait();
-                lblCustomer.setText(order.getCustomer().getName());
+                if (order.getCustomer() != null){
+                    lblCustomer.setText(order.getCustomer().getName());
+                }
                 validate("", productTable.isValid());
             }
             catch (Exception e) {
@@ -207,7 +209,6 @@ public class Sale extends GridPane {
             if (gift) {
                 for (ProductOrder po : order.getAllProducts()) {
                     if (po.getGift()) {
-                        gift = true;
                         lError.setText("");
                         break;
                     }

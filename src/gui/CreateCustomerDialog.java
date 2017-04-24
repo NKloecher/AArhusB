@@ -71,7 +71,7 @@ public class CreateCustomerDialog extends Stage {
 
     private class Controller {
         Customer c = null;
-        CustomerEvaluator ce = new CustomerEvaluator();
+        final CustomerEvaluator ce = new CustomerEvaluator();
 
         public void createCustomerAction() {
             String name = txfName.getText().trim();

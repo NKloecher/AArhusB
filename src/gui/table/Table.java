@@ -9,7 +9,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
 public class Table<A> {
-    private GridPane pane = new GridPane();
+    private final GridPane pane = new GridPane();
     private List<A> items = new ArrayList<>();
     private final List<Column<A>> columns = new ArrayList<>();
     private final ValidationHandler validationHanlder;
@@ -28,7 +28,7 @@ public class Table<A> {
         assert items != null;
 
         pane.getChildren().removeAll();
-        this.items = new ArrayList<A>();
+        this.items = new ArrayList<>();
 
         for (A item : items) {
             addItem(item);
@@ -118,7 +118,7 @@ public class Table<A> {
 
     public boolean isValid() {
         for (Column<A> c : columns) {
-            if (c.isValid() == false) {
+            if (!c.isValid()) {
                 return false;
             }
         }

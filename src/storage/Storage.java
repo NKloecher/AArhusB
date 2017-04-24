@@ -84,10 +84,6 @@ public class Storage implements Serializable {
         users.add(u);
     }
 
-    public void deleteUser(User u) {
-        users.remove(u);
-    }
-
     public List<Product> getProducts() {
         return new ArrayList<>(products);
     }

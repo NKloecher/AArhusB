@@ -25,8 +25,7 @@ import storage.Storage;
 
 public class ProductList extends BorderPane {
     private final Service service = Service.getInstance();
-    private final Storage storage = Storage.getInstance();
-    private final Controller controller = new Controller();
+	private final Controller controller = new Controller();
     private final TextField tfSearch = new TextField();
     private final ComboBox<String> cbCategories = new ComboBox<>();
     private final List<Product> selectedProducts = new ArrayList<>();
@@ -48,7 +47,8 @@ public class ProductList extends BorderPane {
         tfSearch.setPrefWidth(540);
         hbQuery.getChildren().add(tfSearch);
 
-        final List<String> categories = storage.getCategories();
+		Storage storage = Storage.getInstance();
+		final List<String> categories = storage.getCategories();
         categories.add(0, "All");
         cbCategories.getItems().setAll(categories);
         cbCategories.valueProperty().addListener(e -> controller.findProducts());

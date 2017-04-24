@@ -13,8 +13,7 @@ public class CustomerEvaluator {
      * @return
      */
     public boolean isValid(String name, String phone, String email) {
-        return nameIsValid(name) && phoneIsValid(phone) && emailIsValid(email)
-            && addresssValid();
+        return nameIsValid(name) && phoneIsValid(phone) && emailIsValid(email);
     }
 
     public boolean nameIsValid(String s) {
@@ -30,10 +29,6 @@ public class CustomerEvaluator {
             return true;
         }
         return Pattern.matches("^\\w+(\\.\\w+)?@\\w+(\\.\\w+)?$", s);
-    }
-
-    public boolean addresssValid() {
-        return true; //Kan ikke lige validere en adresse
     }
 
 }

@@ -7,8 +7,8 @@ import javafx.scene.control.DatePicker;
 import java.time.LocalDate;
 
 public class DateColumn<A> extends Column<A> {
-	private Getter<A, LocalDate> getter;
-	private Setter<A, LocalDate> setter;
+	private final Getter<A, LocalDate> getter;
+	private final Setter<A, LocalDate> setter;
 
 	/**
 	 * @param getter

@@ -59,7 +59,7 @@ public class MainApp {
     }
 
     private static void createCategory() throws SQLException {
-        String category = "";
+        String category;
         System.out.println("Skriv navnet på den nye kategori");
         try (Scanner scanner = new Scanner(System.in)) {
             category = scanner.next();
@@ -80,7 +80,7 @@ public class MainApp {
     }
 
     private static void dailySalesByCategory() throws SQLException {
-        String dateString = "";
+        String dateString;
         LocalDate date = null;
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Indtast dato for salg (yy-mm-dd)");
@@ -107,7 +107,7 @@ public class MainApp {
     }
 
     public static void createProduct() throws SQLException {
-        String name = "";
+        String name;
         Integer clips = null;
         String category = null;
         
@@ -165,7 +165,7 @@ public class MainApp {
     }
 
     public static void dailySales() throws SQLException {
-        String dateString = "";
+        String dateString;
         LocalDate date = null;
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Indtast dato for salg (yy-mm-dd)");

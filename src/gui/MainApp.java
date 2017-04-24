@@ -244,9 +244,7 @@ public class MainApp extends Application {
 
                 MainApp.this.pane.setCenter(tempPane);
                 tt.play();
-                tt.setOnFinished(e -> {
-                    MainApp.this.pane.setCenter(pane);
-                });
+                tt.setOnFinished(e -> MainApp.this.pane.setCenter(pane));
             }
             else {
                 MainApp.this.pane.setCenter(pane);

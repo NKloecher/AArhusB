@@ -20,7 +20,6 @@ import model.User;
 import model.Permission;
 
 public class Users extends GridPane {
-	private final Storage storage = Storage.getInstance();
 	private final Service service = Service.getInstance();
 	private final Controller controller = new Controller();
 	private final Label lError = new Label();
@@ -60,7 +59,8 @@ public class Users extends GridPane {
 		table.addColumn(deleteColumn);
 		
 		List<User> notDeletedUsers = new ArrayList<>();
-		
+
+		Storage storage = Storage.getInstance();
 		for (User u : storage.getUsers()) {
 			if (!u.isDeleted()) notDeletedUsers.add(u); 
 		}

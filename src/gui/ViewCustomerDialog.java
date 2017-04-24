@@ -19,7 +19,7 @@ import model.Customer;
 import service.Service;
 
 public class ViewCustomerDialog extends Stage {
-    private Customer c;
+    private final Customer c;
 
     public ViewCustomerDialog(Customer c) {
         this.c = c;
@@ -44,7 +44,7 @@ public class ViewCustomerDialog extends Stage {
     private final Button btnRemove = new Button("Fjern Kunde");
     private final Controller controller = new Controller();
     private final Label lblError = new Label();
-    private Service service = Service.getInstance();
+    private final Service service = Service.getInstance();
 
     private void initContent(GridPane pane) {
         pane.setVgap(10);
@@ -74,12 +74,8 @@ public class ViewCustomerDialog extends Stage {
 
     }
 
-    public Customer getCustomer() {
-        return c;
-    }
-
     private class Controller {
-        CustomerEvaluator ce = new CustomerEvaluator();
+        final CustomerEvaluator ce = new CustomerEvaluator();
 
         public void okAction() {
             String name = txfName.getText().trim();

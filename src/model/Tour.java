@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tour implements Payable, Serializable {
-    private List<Payment> payments = new ArrayList<>();
+    private final List<Payment> payments = new ArrayList<>();
     private int persons;
     private LocalDateTime date;
     private double price;

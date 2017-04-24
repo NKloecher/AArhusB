@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Pricelist implements Serializable {
     private String name;
-    private Map<Product, Double> products = new HashMap<>();
+    private final Map<Product, Double> products = new HashMap<>();
 
     public Pricelist(String name) {
         assert name != null && !name.isEmpty();

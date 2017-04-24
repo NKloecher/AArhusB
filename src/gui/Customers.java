@@ -24,10 +24,7 @@ public class Customers extends GridPane {
     private final Storage storage = Storage.getInstance();
     private final ListView<Customer> lvCustomers = new ListView<>();
     private final ListView<Order> lvOrders = new ListView<>();
-    private final Button btnAddCustomer = new Button("Tilføj Kunde");
-    private final Button btnViewCustomer = new Button("Vis Kundeinformation");
-    private final Button btnViewOrder = new Button("Vis Ordre");
-    private Stage owner;
+    private final Stage owner;
 
     public Customers(Stage owner) {
         this.owner = owner;
@@ -59,11 +56,14 @@ public class Customers extends GridPane {
 
         add(lvOrders, 1, 1);
 
+        Button btnViewOrder = new Button("Vis Ordre");
         add(btnViewOrder, 1, 2);
         btnViewOrder.setOnAction(e -> controller.loadProductOrdersAction());
 
         HBox hbox = new HBox();
         hbox.setSpacing(10);
+        Button btnViewCustomer = new Button("Vis Kundeinformation");
+        Button btnAddCustomer = new Button("Tilføj Kunde");
         hbox.getChildren().addAll(btnAddCustomer, btnViewCustomer);
         add(hbox, 0, 2);
         btnAddCustomer.setOnAction(e -> controller.createCustomerDialogAction());

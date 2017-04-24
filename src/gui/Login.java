@@ -25,7 +25,7 @@ public class Login extends GridPane {
     private final Label lError = new Label();
     private final Handler<?> loginHandler;
     private final ImageView img =
-        new ImageView(new Image(new File("images/logo.png").toURI().toString()));;
+        new ImageView(new Image(new File("images/logo.png").toURI().toString()));
     private final RotateTransition rt = new RotateTransition(Duration.millis(1000), img);
 
     public Login(Handler<?> loginHandler) {

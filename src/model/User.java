@@ -12,7 +12,7 @@ import java.util.Random;
 public class User extends Person implements Serializable {
     private String username;
     private byte[] passwordHash;
-    private byte[] salt = new byte[16];
+    private final byte[] salt = new byte[16];
     private Permission permission;
     private boolean isDeleted = false;
 

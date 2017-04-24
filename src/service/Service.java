@@ -134,13 +134,6 @@ public class Service {
         return selectedPricelist;
     }
 
-    public void setPricelistPrice(Pricelist pricelist, Product product, double price) {
-        assert pricelist != null;
-        assert product != null;
-
-        pricelist.setPrice(product, price);
-    }
-
     /**
      * is null if no user is logged in
      */
@@ -287,13 +280,6 @@ public class Service {
         po.setUnused(unused);
     }
 
-    public void updateOrderCutsomer(Order order, Customer customer) {
-        assert order != null;
-        assert customer != null;
-
-        order.setCustomer(customer);
-    }
-
     public void removeProduct(Product p) {
         assert p != null;
 
@@ -409,15 +395,15 @@ public class Service {
     }
 
     public void initStorage() throws DiscountParseException, AuthenticationException {
-//        try {
-//            storage = loadStorage();
-//            System.out.println("Loaded data from storage");
-//            setSelectedPricelist(storage.getPricelists().get(0));
-//            return;
-//        }
-//        catch (IOException | ClassNotFoundException e) {
-//            System.out.println("Could not load storage, generating data from initStorage");
-//        }
+        try {
+            storage = loadStorage();
+            System.out.println("Loaded data from storage");
+            setSelectedPricelist(storage.getPricelists().get(0));
+            return;
+        }
+        catch (IOException | ClassNotFoundException e) {
+            System.out.println("Could not load storage, generating data from initStorage");
+        }
 
         User user = createUser("John", "test", "test", Permission.ADMIN);
         User user1 = createUser("John Johnson", "test1", "test", Permission.NORMAL);
@@ -689,7 +675,7 @@ public class Service {
     }
 
     public List<Order> getOrdersInPeriod(TimePeriod timePeriod) {
-        List<Order> selected = new ArrayList<Order>();
+        List<Order> selected = new ArrayList<>();
         LocalDate fromDate = LocalDate.now();
 
         switch (timePeriod) {
@@ -700,6 +686,7 @@ public class Service {
         case MONTH:
             fromDate = fromDate.minus(1, ChronoUnit.MONTHS);
         case YEAR:
+            //noinspection UnusedAssignment
             fromDate = fromDate.minus(1, ChronoUnit.YEARS);
         case FOREVER:
             fromDate = LocalDate.ofYearDay(1970, 1);

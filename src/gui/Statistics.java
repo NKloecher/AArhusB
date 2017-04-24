@@ -24,7 +24,7 @@ import model.User;
 
 @FunctionalInterface
 interface DataGetter<Entry extends Map.Entry<?, ?>> {
-    public PieChart.Data get(Entry e);
+    PieChart.Data get(Entry e);
 }
 
 public class Statistics extends GridPane {
@@ -104,7 +104,7 @@ public class Statistics extends GridPane {
         add(total, 0, 5);
 
         caption.setStyle(
-            "-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-style: solid; -fx-border-raduis: 3");
+            "-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-style: solid; -fx-border-raduis: 3px");
         caption.setPadding(new Insets(5));
         caption.setTranslateX(-100);
         caption.setTranslateY(50);
@@ -140,23 +140,20 @@ public class Statistics extends GridPane {
             setPieChartData(pricelistPieChart, statictics.getSalesPrPricelist().entrySet(),
                 entry -> {
                     double amount = entry.getValue();
-                    PieChart.Data d = new PieChart.Data(entry.getKey().getName(), amount);
 
-                    return d;
+                    return new PieChart.Data(entry.getKey().getName(), amount);
                 });
 
             setPieChartData(beerPieChart, statictics.getSalesPrBeer().entrySet(), entry -> {
                 final double amount = entry.getValue();
-                final PieChart.Data d = new PieChart.Data(entry.getKey(), amount);
 
-                return d;
+                return new PieChart.Data(entry.getKey(), amount);
             });
 
             setPieChartData(categoryPieChart, statictics.getSalesPrCategory().entrySet(), entry -> {
                 final double amount = entry.getValue();
-                final PieChart.Data d = new PieChart.Data(entry.getKey(), amount);
 
-                return d;
+                return new PieChart.Data(entry.getKey(), amount);
             });
 
             setBarChartData();
@@ -208,7 +205,7 @@ public class Statistics extends GridPane {
                     d.getNode().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                         caption.setTranslateX(e.getSceneX() - 100);
                         caption.setTranslateY(e.getSceneY() - 100);
-                        caption.setText(String.format(Locale.GERMAN, "%.2f kr.", d.getXValue()));
+                        caption.setText(String.format(Locale.GERMAN, "%.2f kr.", d.getXValue().doubleValue()));
                     });
                 }
             }

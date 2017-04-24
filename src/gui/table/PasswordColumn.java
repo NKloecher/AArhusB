@@ -6,8 +6,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.HBox;
 
 public class PasswordColumn<A> extends Column<A> {
-    private String name;
-    private Setter<A, String> setter;
+    private final String name;
+    private final Setter<A, String> setter;
 
     public PasswordColumn(String name, Setter<A, String> setter) {
         super(name);

@@ -18,13 +18,13 @@ import model.RentalProductOrder;
 import model.User;
 
 public class OrderTest {
-    User user;
-    Pricelist pricelist;
-    Product simpleProduct;
-    DepositProduct simpleDepositProduct;
-    Product simpleBeer;
-    Product simpleSoda;
-    Product simpleGift;
+    final User user;
+    final Pricelist pricelist;
+    final Product simpleProduct;
+    final DepositProduct simpleDepositProduct;
+    final Product simpleBeer;
+    final Product simpleSoda;
+    final Product simpleGift;
 
     public OrderTest() {
         user = new User("test", "test", "test", Permission.NORMAL);
@@ -45,10 +45,6 @@ public class OrderTest {
         simpleGift = new Product("Simple Gift", null, "sampakninger", null);
         pricelist.setPrice(simpleGift, 100);
 
-    }
-
-    @Before
-    public void before() {
     }
 
     @Test

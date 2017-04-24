@@ -62,7 +62,7 @@ public class Products extends GridPane {
                 service::updateProductClips));
         if (service.getActiveUser().getPermission() == Permission.ADMIN) {
             Column<Product> delete =
-                new ButtonColumn<>("Delete", x -> controller.deleteProduct(x));
+                new ButtonColumn<>("Delete", controller::deleteProduct);
             table.addColumn(delete);
         }
 
