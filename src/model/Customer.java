@@ -4,49 +4,49 @@ import java.io.Serializable;
 
 public class Customer extends Person implements Comparable<Customer>, Serializable {
 	private String address;
-    private String phone;
-    private String email;
+	private String phone;
+	private String email;
 
-    public Customer(String name, String address, String phone, String email) {
-    	super(name);
-        
-        this.address = address;
-        this.phone = phone;
-        this.email = email;
-    }
+	public Customer(String name, String address, String phone, String email) {
+		super(name);
 
-    @Override
-    public String toString() {
-        return name;
-    }
+		this.address = address;
+		this.phone = phone;
+		this.email = email;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	@Override
+	public String toString() {
+		return name;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public String getPhone() {
+		return phone;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    @Override
-    public int compareTo(Customer o) {
-        return name.compareToIgnoreCase(o.getName());
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Override
+	public int compareTo(Customer o) {
+		return name.compareToIgnoreCase(o.getName());
+	}
 
 }

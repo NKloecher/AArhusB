@@ -11,110 +11,111 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tour implements Payable, Serializable {
-    private final List<Payment> payments = new ArrayList<>();
-    private int persons;
-    private LocalDateTime date;
-    private double price;
-    private Duration duration;
-    //private User user; //Bliver ikke brugt, da vi ikke nåede den del af statistikken
+	private final List<Payment> payments = new ArrayList<>();
+	private int persons;
+	private LocalDateTime date;
+	private double price;
+	private Duration duration;
+	// private User user; //Bliver ikke brugt, da vi ikke nåede den del af
+	// statistikken
 
-    public Tour(int persons, LocalDateTime date, double price, Duration duration, User user) {
-    	assert persons > 0;
-    	assert date != null;
-    	assert price >= 0;
-    	assert duration != null;
-    	assert user != null;
-    	
-        this.persons = persons;
-        this.date = date;
-        this.price = price;
-        this.duration = duration;
-//        this.user = user;
-    }
+	public Tour(int persons, LocalDateTime date, double price, Duration duration,
+			User user) {
+		assert persons > 0;
+		assert date != null;
+		assert price >= 0;
+		assert duration != null;
+		assert user != null;
 
-    /**
-     * Calculates the current payment status
-     */
-    @Override
-    public PaymentStatus paymentStatus() throws DiscountParseException {
-        if (totalPayment() >= price) {
-            return PaymentStatus.ORDERPAID;
-        }
-        return PaymentStatus.UNPAID;
-    }
+		this.persons = persons;
+		this.date = date;
+		this.price = price;
+		this.duration = duration;
+		// this.user = user;
+	}
 
-    public int getPersons() {
-        return persons;
-    }
+	/**
+	 * Calculates the current payment status
+	 */
+	@Override
+	public PaymentStatus paymentStatus() throws DiscountParseException {
+		if (totalPayment() >= price) {
+			return PaymentStatus.ORDERPAID;
+		}
+		return PaymentStatus.UNPAID;
+	}
 
-    public void setPersons(int persons) {
-    	assert persons > 0;
-    	
-        this.persons = persons;
-    }
+	public int getPersons() {
+		return persons;
+	}
 
-    public LocalDateTime getDate() {
-        return date;
-    }
+	public void setPersons(int persons) {
+		assert persons > 0;
 
-    public void setDate(LocalDateTime date) {
-    	assert date != null;
-    	
-        this.date = date;
-    }
+		this.persons = persons;
+	}
 
-    public double totalPrice() {
-        return price;
-    }
+	public LocalDateTime getDate() {
+		return date;
+	}
 
-    public void setPrice(double price) {
-    	assert price >= 0;
-    	
-        this.price = price;
-    }
+	public void setDate(LocalDateTime date) {
+		assert date != null;
 
-    public Duration getDuration() {
-        return duration;
-    }
+		this.date = date;
+	}
 
-    public void setDuration(Duration duration) {
-    	assert duration != null;
-    	
-        this.duration = duration;
-    }
+	public double totalPrice() {
+		return price;
+	}
 
-    /**
-     * Calculate the total payment
-     */
-    @Override
-    public double totalPayment() {
-        double sum = 0;
-        for (Payment payment : payments) {
-            sum += payment.getAmount();
-        }
-        return sum;
-    }
+	public void setPrice(double price) {
+		assert price >= 0;
 
-    @Override
-    public double getPrice() {
-        return 0;
-    }
+		this.price = price;
+	}
 
-    @Override
-    public Pair<Integer, Double> totalClipCardPrice() {
-        return null;
-    }
+	public Duration getDuration() {
+		return duration;
+	}
 
-    @Override
-    public void pay(Payment payment) {
-    	assert payment != null;
-    	
-        payments.add(payment);
-        try {
-            paymentStatus();
-        }
-        catch (InvalidPaymentAmount e) {
-            payments.remove(payment);
-        }
-    }
+	public void setDuration(Duration duration) {
+		assert duration != null;
+
+		this.duration = duration;
+	}
+
+	/**
+	 * Calculate the total payment
+	 */
+	@Override
+	public double totalPayment() {
+		double sum = 0;
+		for (Payment payment : payments) {
+			sum += payment.getAmount();
+		}
+		return sum;
+	}
+
+	@Override
+	public double getPrice() {
+		return 0;
+	}
+
+	@Override
+	public Pair<Integer, Double> totalClipCardPrice() {
+		return null;
+	}
+
+	@Override
+	public void pay(Payment payment) {
+		assert payment != null;
+
+		payments.add(payment);
+		try {
+			paymentStatus();
+		} catch (InvalidPaymentAmount e) {
+			payments.remove(payment);
+		}
+	}
 }

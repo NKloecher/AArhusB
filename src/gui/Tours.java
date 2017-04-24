@@ -25,7 +25,8 @@ public class Tours extends GridPane {
 	private final DatePicker dp = new DatePicker(LocalDate.now());
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 	private final Label lError = new Label();
-	private final Table<Tour> table = new Table<>((error, isValid) -> lError.setText(error));
+	private final Table<Tour> table = new Table<>(
+			(error, isValid) -> lError.setText(error));
 	private final TextField tfNewPersons = new TextField();
 	private final DatePicker dpNewDate = new DatePicker();
 	private final TextField tfNewStart = new TextField();
@@ -41,56 +42,69 @@ public class Tours extends GridPane {
 		setVgap(10);
 		setAlignment(Pos.TOP_CENTER);
 
-		final Column<Tour> personsColumn = new PrimitiveColumn<>("Antal", PrimitiveColumn.Type.Integer, Tour::getPersons, service::updateTourPersons, (t, v) -> {
-			if (Pattern.matches("^\\d+$", v)) return null;
-			return "Antal skal være et posetivt tal";
-		});
+		final Column<Tour> personsColumn = new PrimitiveColumn<>("Antal",
+				PrimitiveColumn.Type.Integer, Tour::getPersons,
+				service::updateTourPersons, (t, v) -> {
+					if (Pattern.matches("^\\d+$", v))
+						return null;
+					return "Antal skal være et posetivt tal";
+				});
 		personsColumn.setPrefWidth(60.0);
 		table.addColumn(personsColumn);
 
-		final DateColumn<Tour> dateColumn = new DateColumn<>("Dato", controller::getDate, controller::updateDate);
+		final DateColumn<Tour> dateColumn = new DateColumn<>("Dato", controller::getDate,
+				controller::updateDate);
 		dateColumn.setPrefWidth(110.);
 		table.addColumn(dateColumn);
 
-		final Column<Tour> startColumn = new PrimitiveColumn<>("Start", PrimitiveColumn.Type.String, controller::getTimeStart, controller::updateStartTime);
+		final Column<Tour> startColumn = new PrimitiveColumn<>("Start",
+				PrimitiveColumn.Type.String, controller::getTimeStart,
+				controller::updateStartTime);
 		startColumn.setPrefWidth(70.);
 		table.addColumn(startColumn);
 
-		final Column<Tour> endColumn = new PrimitiveColumn<>("Slut", PrimitiveColumn.Type.String, controller::getTimeEnd, controller::updateEndTime);
+		final Column<Tour> endColumn = new PrimitiveColumn<>("Slut",
+				PrimitiveColumn.Type.String, controller::getTimeEnd,
+				controller::updateEndTime);
 		endColumn.setPrefWidth(70.);
 		table.addColumn(endColumn);
 
-		final Column<Tour> priceColumn = new PrimitiveColumn<>("Pris", PrimitiveColumn.Type.Double, Tour::totalPrice, service::updateTourPrice, (t,v) -> {
-			if (Pattern.matches("^\\d+$", v)) return null;
-			return "Pris skal være et posetivt tal";
-		});
+		final Column<Tour> priceColumn = new PrimitiveColumn<>("Pris",
+				PrimitiveColumn.Type.Double, Tour::totalPrice, service::updateTourPrice,
+				(t, v) -> {
+					if (Pattern.matches("^\\d+$", v))
+						return null;
+					return "Pris skal være et posetivt tal";
+				});
 		priceColumn.setPrefWidth(120.);
 		table.addColumn(priceColumn);
 
-		final ButtonColumn<Tour> buttonColumn = new ButtonColumn<>("Betal", controller::getPayments, controller::pay);
+		final ButtonColumn<Tour> buttonColumn = new ButtonColumn<>("Betal",
+				controller::getPayments, controller::pay);
 		table.addColumn(buttonColumn);
 
 		tourDates = service.getTourDates();
 
-		// Styling for the datepicker widget so that days with active events are bold and underlined
-		Callback<DatePicker, DateCell> dayCellFactory = (DatePicker datePicker) -> new DateCell() {
-			@Override
-			public void updateItem(LocalDate item, boolean empty) {
-				super.updateItem(item, empty);
-				if (tourDates.contains(item)){
-					setStyle("-fx-underline: true; -fx-font-weight: bolder");
-				}
-			}
-		};
+		// Styling for the datepicker widget so that days with active events are
+		// bold and underlined
+		Callback<DatePicker, DateCell> dayCellFactory = (
+				DatePicker datePicker) -> new DateCell() {
+					@Override
+					public void updateItem(LocalDate item, boolean empty) {
+						super.updateItem(item, empty);
+						if (tourDates.contains(item)) {
+							setStyle("-fx-underline: true; -fx-font-weight: bolder");
+						}
+					}
+				};
 
 		dp.setDayCellFactory(dayCellFactory);
 		DatePickerSkin datePickerSkin = new DatePickerSkin(dp);
 		add(datePickerSkin.getPopupContent(), 0, 0);
 
-
 		controller.openDate(LocalDate.now());
 
-		add(table.getPane(), 0,1);
+		add(table.getPane(), 0, 1);
 
 		dp.valueProperty().addListener((x, y, value) -> controller.openDate(value));
 
@@ -122,37 +136,39 @@ public class Tours extends GridPane {
 	}
 
 	private class Controller {
-		public void openDate(LocalDate date){
+		public void openDate(LocalDate date) {
 			List<Tour> tours = service.getTours(date);
 			table.getPane().setVisible(tours.size() != 0);
 			table.setItems(tours);
-			tourDates = service.getTourDates(); // Reload the calendar widget style
+			tourDates = service.getTourDates(); // Reload the calendar widget
+												// style
 			dpNewDate.setValue(dp.getValue());
 		}
 
-		public LocalDate getDate(Tour tour){
+		public LocalDate getDate(Tour tour) {
 			return tour.getDate().toLocalDate();
 		}
 
-		public String getTimeStart(Tour tour){
+		public String getTimeStart(Tour tour) {
 			return tour.getDate().toLocalTime().format(timeFormatter);
 		}
 
-		public String getTimeEnd(Tour tour){
-			return tour.getDate().toLocalTime().plus(tour.getDuration()).format(timeFormatter);
+		public String getTimeEnd(Tour tour) {
+			return tour.getDate().toLocalTime().plus(tour.getDuration())
+					.format(timeFormatter);
 		}
 
-		public void createTour(){
+		public void createTour() {
 			Integer persons;
 			try {
 				int amount = Integer.parseInt(tfNewPersons.getText());
-				if (amount > 0){
+				if (amount > 0) {
 					persons = amount;
 				} else {
 					lError.setText("Antallet af personer skal være størrer en 0");
 					return;
 				}
-			} catch (NumberFormatException ex){
+			} catch (NumberFormatException ex) {
 				lError.setText("Antal personer er formateret forkert");
 				return;
 			}
@@ -160,36 +176,37 @@ public class Tours extends GridPane {
 			LocalDateTime startDateTime;
 			Duration duration;
 			try {
-				LocalTime newStartTime = LocalTime.parse(tfNewStart.getText(), timeFormatter);
+				LocalTime newStartTime = LocalTime.parse(tfNewStart.getText(),
+						timeFormatter);
 				LocalTime newEndTime = LocalTime.parse(tfNewEnd.getText(), timeFormatter);
 				startDateTime = LocalDateTime.of(dpNewDate.getValue(), newStartTime);
 				duration = Duration.between(newStartTime, newEndTime);
-				if (duration.isNegative()){
+				if (duration.isNegative()) {
 					lError.setText("Starttidspunktet skal være før sluttidspunktet");
 					return;
 				}
-			} catch (DateTimeParseException e){
-				lError.setText("Starttiden eller Sluttiden er formateret forkert (HH:MM)");
+			} catch (DateTimeParseException e) {
+				lError.setText(
+						"Starttiden eller Sluttiden er formateret forkert (HH:MM)");
 				return;
 			}
 
 			Double price;
 			try {
 				double amount = Double.parseDouble(tfNewPrice.getText());
-				if (amount >= 0){
+				if (amount >= 0) {
 					price = amount;
 				} else {
 					lError.setText("Prisen skal mindst værre 0");
 					return;
 				}
-			} catch (NumberFormatException ex){
+			} catch (NumberFormatException ex) {
 				lError.setText("Prisen er formateret forkert");
 				return;
 			}
 
-
 			service.createTour(persons, startDateTime, price, duration);
-			//update ui
+			// update ui
 			openDate(dp.getValue());
 			tfNewEnd.clear();
 			tfNewPersons.clear();
@@ -199,46 +216,50 @@ public class Tours extends GridPane {
 			lError.setText("");
 		}
 
-		public void updateDate(Tour tour, LocalDate date){
-			service.updateTourDate(tour, LocalDateTime.of(date, tour.getDate().toLocalTime()));
+		public void updateDate(Tour tour, LocalDate date) {
+			service.updateTourDate(tour,
+					LocalDateTime.of(date, tour.getDate().toLocalTime()));
 		}
 
-		public void updateStartTime(Tour tour, String time){
+		public void updateStartTime(Tour tour, String time) {
 			try {
 				LocalTime newStartTime = LocalTime.parse(time, timeFormatter);
 				LocalTime endTime = tour.getDate().toLocalTime().plus(tour.getDuration());
 
 				if (newStartTime.isBefore(endTime)) {
-					service.updateTourDate(tour, LocalDateTime.of(tour.getDate().toLocalDate(), newStartTime));
+					service.updateTourDate(tour,
+							LocalDateTime.of(tour.getDate().toLocalDate(), newStartTime));
 					lError.setText("");
 				} else {
 					lError.setText("Starttidspunktet skal være før sluttidspunktet");
 				}
-			} catch (DateTimeParseException e){
+			} catch (DateTimeParseException e) {
 				lError.setText("Starttiden er formateret forkert (HH:MM)");
 			}
 		}
 
-		public void updateEndTime(Tour tour, String time){
+		public void updateEndTime(Tour tour, String time) {
 			try {
 				LocalTime startTime = tour.getDate().toLocalTime();
 				LocalTime newEndTime = LocalTime.parse(time, timeFormatter);
 
-				if (newEndTime.isAfter(startTime)){
-					LocalDateTime newEndDateTime = LocalDateTime.of(tour.getDate().toLocalDate(), newEndTime);
-					service.updateTourDuration(tour, Duration.between(tour.getDate(), newEndDateTime));
+				if (newEndTime.isAfter(startTime)) {
+					LocalDateTime newEndDateTime = LocalDateTime
+							.of(tour.getDate().toLocalDate(), newEndTime);
+					service.updateTourDuration(tour,
+							Duration.between(tour.getDate(), newEndDateTime));
 					lError.setText("");
 				} else {
 					lError.setText("Sluttidspunktet skal være efter starttidspunktet");
 				}
-			} catch (DateTimeParseException e){
+			} catch (DateTimeParseException e) {
 				lError.setText("Sluttiden er formateret forkert (HH:MM)");
 			}
 		}
 
 		public Button getPayments(Tour tour) {
 			Button btn = new Button();
-			if (tour.paymentStatus() == PaymentStatus.ORDERPAID){
+			if (tour.paymentStatus() == PaymentStatus.ORDERPAID) {
 				btn.setText("Betalt");
 				btn.setDisable(true);
 			} else {
@@ -252,7 +273,7 @@ public class Tours extends GridPane {
 
 			pd.showAndWait();
 
-			if (tour.paymentStatus() == PaymentStatus.ORDERPAID){
+			if (tour.paymentStatus() == PaymentStatus.ORDERPAID) {
 				// Update the ui
 				openDate(dp.getValue());
 			}

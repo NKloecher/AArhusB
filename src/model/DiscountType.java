@@ -1,7 +1,5 @@
 package model;
 
 public enum DiscountType {
-	PERCENT,
-	SUBTRACT,
-	NEW
+	PERCENT, SUBTRACT, NEW
 }

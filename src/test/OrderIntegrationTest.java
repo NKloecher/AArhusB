@@ -22,28 +22,28 @@ public class OrderIntegrationTest {
 		pl.setPrice(product100kr3clip, 100);
 		product50kr0clip = new Product("50kr, 0clip", null, "test", null);
 		pl.setPrice(product50kr0clip, 50);
-		depositProduct500kr100rent = new DepositProduct("500kr, 100rent", null, "test", null, 100);
+		depositProduct500kr100rent = new DepositProduct("500kr, 100rent", null, "test",
+				null, 100);
 		pl.setPrice(depositProduct500kr100rent, 500);
 	}
 
 	@Test
-	public void orderTotalPriceOneProduct() throws Exception{
+	public void orderTotalPriceOneProduct() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		assertEquals(100, order.totalPrice(), 0.1);
 	}
 
 	@Test
-	public void orderTotalPriceTwoProduct() throws Exception{
+	public void orderTotalPriceTwoProduct() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.createProductOrder(product100kr3clip);
 		assertEquals(200, order.totalPrice(), 0.1);
 	}
 
-
 	@Test
-	public void orderTotalPriceOneProductTwoItems() throws Exception{
+	public void orderTotalPriceOneProductTwoItems() throws Exception {
 		Order order = new Order(user, pl);
 		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
 		productOrder.setAmount(2);
@@ -51,30 +51,30 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneDepositProduct() throws Exception{
+	public void orderTotalPriceOneDepositProduct() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(depositProduct500kr100rent);
 		assertEquals(500, order.totalPrice(), 0.1);
 	}
 
 	@Test
-	public void orderTotalDepositOneProduct(){
+	public void orderTotalDepositOneProduct() {
 		Order order = new Order(user, pl);
 		order.createRentalProductOrder(depositProduct500kr100rent);
 		assertEquals(100, order.totalDeposit(), 0.1);
 	}
 
-
 	@Test
-	public void orderTotalDepositOneProductTwoItems(){
+	public void orderTotalDepositOneProductTwoItems() {
 		Order order = new Order(user, pl);
-		RentalProductOrder rentalProductOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		RentalProductOrder rentalProductOrder = order
+				.createRentalProductOrder(depositProduct500kr100rent);
 		rentalProductOrder.setAmount(2);
 		assertEquals(200, order.totalDeposit(), 0.1);
 	}
 
 	@Test
-	public void orderTotalPriceOneProductDiscount50pct() throws Exception{
+	public void orderTotalPriceOneProductDiscount50pct() throws Exception {
 		Order order = new Order(user, pl);
 		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
 		productOrder.setDiscount("50%");
@@ -82,7 +82,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneProductDiscount10kr() throws Exception{
+	public void orderTotalPriceOneProductDiscount10kr() throws Exception {
 		Order order = new Order(user, pl);
 		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
 		productOrder.setDiscount("10");
@@ -90,7 +90,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneProductDiscountMinus10kr() throws Exception{
+	public void orderTotalPriceOneProductDiscountMinus10kr() throws Exception {
 		Order order = new Order(user, pl);
 		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
 		productOrder.setDiscount("-10");
@@ -98,7 +98,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneProductOrderDiscount() throws Exception{
+	public void orderTotalPriceOneProductOrderDiscount() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.setDiscount("50%");
@@ -106,7 +106,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceTwoProductOrderDiscount() throws Exception{
+	public void orderTotalPriceTwoProductOrderDiscount() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.createProductOrder(product100kr3clip);
@@ -115,7 +115,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneProductTwoItemsOrderDiscount() throws Exception{
+	public void orderTotalPriceOneProductTwoItemsOrderDiscount() throws Exception {
 		Order order = new Order(user, pl);
 		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
 		productOrder.setAmount(2);
@@ -124,7 +124,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneDepositProductOrderDiscount() throws Exception{
+	public void orderTotalPriceOneDepositProductOrderDiscount() throws Exception {
 		Order order = new Order(user, pl);
 		order.createRentalProductOrder(depositProduct500kr100rent);
 		order.setDiscount("50%");
@@ -132,7 +132,8 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderTotalPriceOneDepositProductOrderDiscountDontEffectDeposit() throws Exception{
+	public void orderTotalPriceOneDepositProductOrderDiscountDontEffectDeposit()
+			throws Exception {
 		Order order = new Order(user, pl);
 		order.createRentalProductOrder(depositProduct500kr100rent);
 		order.setDiscount("50%");
@@ -140,14 +141,14 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusNoProduct() throws Exception{
+	public void orderPaymentStatusNoProduct() throws Exception {
 		Order order = new Order(user, pl);
 		PaymentStatus paymentStatus = order.paymentStatus();
 		assertEquals(paymentStatus, PaymentStatus.UNPAID);
 	}
 
 	@Test
-	public void orderPaymentStatusOneProductUnpaid() throws Exception{
+	public void orderPaymentStatusOneProductUnpaid() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		PaymentStatus paymentStatus = order.paymentStatus();
@@ -155,7 +156,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneProductOneCorrectPayment() throws Exception{
+	public void orderPaymentStatusOneProductOneCorrectPayment() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.pay(new Payment(PaymentType.CASH, 100));
@@ -164,7 +165,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneProductManyCorrectPayment() throws Exception{
+	public void orderPaymentStatusOneProductManyCorrectPayment() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		for (int i = 0; i < 100; i++) {
@@ -175,7 +176,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusTwoProductOneCorrectPayment() throws Exception{
+	public void orderPaymentStatusTwoProductOneCorrectPayment() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.createProductOrder(product50kr0clip);
@@ -185,7 +186,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneProductTwoCorrectPayment() throws Exception{
+	public void orderPaymentStatusOneProductTwoCorrectPayment() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.pay(new Payment(PaymentType.CASH, 50));
@@ -195,7 +196,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneDepositProductUnpaid() throws Exception{
+	public void orderPaymentStatusOneDepositProductUnpaid() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(depositProduct500kr100rent);
 		PaymentStatus paymentStatus = order.paymentStatus();
@@ -203,7 +204,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneDepositProductDepositPayed() throws Exception{
+	public void orderPaymentStatusOneDepositProductDepositPayed() throws Exception {
 		Order order = new Order(user, pl);
 		order.createRentalProductOrder(depositProduct500kr100rent);
 		order.pay(new Payment(PaymentType.CASH, 100));
@@ -212,9 +213,10 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneDepositProductReturnedOrderPayed() throws Exception{
+	public void orderPaymentStatusOneDepositProductReturnedOrderPayed() throws Exception {
 		Order order = new Order(user, pl);
-		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		RentalProductOrder productOrder = order
+				.createRentalProductOrder(depositProduct500kr100rent);
 		productOrder.setReturned(1);
 		order.pay(new Payment(PaymentType.CASH, 500));
 
@@ -223,9 +225,11 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneDepositProductNotReturnedOrderPayed() throws Exception{
+	public void orderPaymentStatusOneDepositProductNotReturnedOrderPayed()
+			throws Exception {
 		Order order = new Order(user, pl);
-		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		RentalProductOrder productOrder = order
+				.createRentalProductOrder(depositProduct500kr100rent);
 		productOrder.setNotReturned(1);
 		order.pay(new Payment(PaymentType.CASH, 600));
 
@@ -234,9 +238,10 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneDepositProductUnopenedOrderPayed() throws Exception{
+	public void orderPaymentStatusOneDepositProductUnopenedOrderPayed() throws Exception {
 		Order order = new Order(user, pl);
-		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		RentalProductOrder productOrder = order
+				.createRentalProductOrder(depositProduct500kr100rent);
 		productOrder.setUnused(1);
 		order.pay(new Payment(PaymentType.CASH, 0));
 
@@ -245,9 +250,10 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusThreeDepositProductOneOfEachPayed() throws Exception{
+	public void orderPaymentStatusThreeDepositProductOneOfEachPayed() throws Exception {
 		Order order = new Order(user, pl);
-		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		RentalProductOrder productOrder = order
+				.createRentalProductOrder(depositProduct500kr100rent);
 		productOrder.setAmount(3);
 		productOrder.setUnused(1);
 		productOrder.setReturned(1);
@@ -259,9 +265,11 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentStatusOneDepositProductDepositNotPayedBackPayed() throws Exception{
+	public void orderPaymentStatusOneDepositProductDepositNotPayedBackPayed()
+			throws Exception {
 		Order order = new Order(user, pl);
-		RentalProductOrder productOrder = order.createRentalProductOrder(depositProduct500kr100rent);
+		RentalProductOrder productOrder = order
+				.createRentalProductOrder(depositProduct500kr100rent);
 		order.pay(new Payment(PaymentType.CASH, 600));
 		productOrder.setReturned(1);
 		PaymentStatus paymentStatus = order.paymentStatus();
@@ -269,7 +277,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentClipCardOneProductPayed() throws Exception{
+	public void orderPaymentClipCardOneProductPayed() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.pay(new Payment(PaymentType.CLIP_CARD, 4));
@@ -280,7 +288,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentClipCardTwoProductPayed() throws Exception{
+	public void orderPaymentClipCardTwoProductPayed() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.createProductOrder(product100kr3clip);
@@ -292,7 +300,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentClipCardTwoProductOnePayed() throws Exception{
+	public void orderPaymentClipCardTwoProductOnePayed() throws Exception {
 		Order order = new Order(user, pl);
 		order.createProductOrder(product100kr4clip);
 		order.createProductOrder(product100kr3clip);
@@ -304,7 +312,7 @@ public class OrderIntegrationTest {
 	}
 
 	@Test
-	public void orderPaymentClipCardOneProductTwoItemsPayed() throws Exception{
+	public void orderPaymentClipCardOneProductTwoItemsPayed() throws Exception {
 		Order order = new Order(user, pl);
 		ProductOrder productOrder = order.createProductOrder(product100kr4clip);
 		productOrder.setAmount(2);

@@ -24,167 +24,170 @@ import service.Service;
 import storage.Storage;
 
 public class ProductList extends BorderPane {
-    private final Service service = Service.getInstance();
+	private final Service service = Service.getInstance();
 	private final Controller controller = new Controller();
-    private final TextField tfSearch = new TextField();
-    private final ComboBox<String> cbCategories = new ComboBox<>();
-    private final List<Product> selectedProducts = new ArrayList<>();
-    private final List<Product> allProducts;
-    private GridPane pane = new GridPane();
-    private Handler<Product> selectHandler;
-    private Handler<Product> deselectHandler;
+	private final TextField tfSearch = new TextField();
+	private final ComboBox<String> cbCategories = new ComboBox<>();
+	private final List<Product> selectedProducts = new ArrayList<>();
+	private final List<Product> allProducts;
+	private GridPane pane = new GridPane();
+	private Handler<Product> selectHandler;
+	private Handler<Product> deselectHandler;
 
-    public ProductList(List<Product> products) {
-        allProducts = products;
+	public ProductList(List<Product> products) {
+		allProducts = products;
 
-        setMinWidth(650);
-        setMaxWidth(650);
+		setMinWidth(650);
+		setMaxWidth(650);
 
-        final HBox hbQuery = new HBox();
-        hbQuery.setStyle("-fx-padding: 0 0 16px 0;");
+		final HBox hbQuery = new HBox();
+		hbQuery.setStyle("-fx-padding: 0 0 16px 0;");
 
-        tfSearch.setOnKeyTyped(e -> controller.findProducts());
-        tfSearch.setPrefWidth(540);
-        hbQuery.getChildren().add(tfSearch);
+		tfSearch.setOnKeyTyped(e -> controller.findProducts());
+		tfSearch.setPrefWidth(540);
+		hbQuery.getChildren().add(tfSearch);
 
 		Storage storage = Storage.getInstance();
 		final List<String> categories = storage.getCategories();
-        categories.add(0, "All");
-        cbCategories.getItems().setAll(categories);
-        cbCategories.valueProperty().addListener(e -> controller.findProducts());
-        cbCategories.getSelectionModel().select(0);
-        cbCategories.setPrefWidth(100);
-        hbQuery.getChildren().add(cbCategories);
+		categories.add(0, "All");
+		cbCategories.getItems().setAll(categories);
+		cbCategories.valueProperty().addListener(e -> controller.findProducts());
+		cbCategories.getSelectionModel().select(0);
+		cbCategories.setPrefWidth(100);
+		hbQuery.getChildren().add(cbCategories);
 
-        controller.showProducts(products);
+		controller.showProducts(products);
 
-        setTop(hbQuery);
-    }
+		setTop(hbQuery);
+	}
 
-    public void setSelectHandler(Handler<Product> handler) {
-        selectHandler = handler;
-    }
+	public void setSelectHandler(Handler<Product> handler) {
+		selectHandler = handler;
+	}
 
-    public void setDeselectHandler(Handler<Product> handler) {
-        deselectHandler = handler;
-    }
+	public void setDeselectHandler(Handler<Product> handler) {
+		deselectHandler = handler;
+	}
 
-    public List<Product> getSelectedProducts() {
-        return new ArrayList<>(selectedProducts);
-    }
-    
-    public void select(Product p) {
-    	controller.select(p);
-    }
-    
-    public void deselect(Product p) {
-    	controller.deselect(p);
-    }
-    
-    class Controller {
-        public void findProducts() {
-            final String selectedCategory = cbCategories.getSelectionModel().getSelectedItem();
-            final String query = tfSearch.getText();
-            final List<Product> matchingProducts = service.getMatchingProducts(query, selectedCategory, allProducts);
-            
-            showProducts(matchingProducts);
-        }
+	public List<Product> getSelectedProducts() {
+		return new ArrayList<>(selectedProducts);
+	}
 
-        public void showProducts(List<Product> products) {
-            pane = new GridPane();
-        	
-            final int productSize = 150;
+	public void select(Product p) {
+		controller.select(p);
+	}
 
-            pane.setHgap(10);
-            pane.setVgap(10);
-            pane.setAlignment(Pos.TOP_CENTER);
+	public void deselect(Product p) {
+		controller.deselect(p);
+	}
 
-            products.sort(null);
+	class Controller {
+		public void findProducts() {
+			final String selectedCategory = cbCategories.getSelectionModel()
+					.getSelectedItem();
+			final String query = tfSearch.getText();
+			final List<Product> matchingProducts = service.getMatchingProducts(query,
+					selectedCategory, allProducts);
 
-            for (int i = 0; i < products.size(); i++) {
-                final Product p = products.get(i);
-                Node node;
+			showProducts(matchingProducts);
+		}
 
-                if (p.getImage() != null) {
-                    File file = new File("product_images/" + p.getImage());
-                    Image image = new Image(file.toURI().toString(), productSize - 20,
-                        productSize - 20, true, true);
-                    ImageView imageView = new ImageView(image);
-                    BorderPane bp = new BorderPane(imageView);
+		public void showProducts(List<Product> products) {
+			pane = new GridPane();
 
-                    bp.setPadding(new Insets(10));
+			final int productSize = 150;
 
-                    node = bp;
-                }
-                else {
-                    Label label = new Label(p.getName());
+			pane.setHgap(10);
+			pane.setVgap(10);
+			pane.setAlignment(Pos.TOP_CENTER);
 
-                    label.setMinWidth(productSize);
-                    label.setMaxWidth(productSize);
-                    label.setMinHeight(productSize);
-                    label.setMaxHeight(productSize);
-                    label.setWrapText(true);
-                    label.setTextAlignment(TextAlignment.CENTER);
+			products.sort(null);
 
-                    node = label;
-                }
+			for (int i = 0; i < products.size(); i++) {
+				final Product p = products.get(i);
+				Node node;
 
-                node.setUserData(p);
-                node.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
-                GridPane.setHalignment(node, HPos.CENTER);
-                
-                node.setOnMouseClicked(e -> {
-                    if (selectedProducts.contains(p)) {
-                        deselect(p);
-                    }
-                    else {
-                        select(p);
-                    }
-                });
+				if (p.getImage() != null) {
+					File file = new File("product_images/" + p.getImage());
+					Image image = new Image(file.toURI().toString(), productSize - 20,
+							productSize - 20, true, true);
+					ImageView imageView = new ImageView(image);
+					BorderPane bp = new BorderPane(imageView);
 
-                pane.add(node, i % 4, i / 4);
-            }
-            ScrollPane sp = new ScrollPane();
-            sp.setHbarPolicy(ScrollBarPolicy.NEVER);
-            sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-            sp.setContent(pane);
-            GridPane.setMargin(pane, new Insets(20));
+					bp.setPadding(new Insets(10));
 
-            setCenter(sp);
-        }
-        
-        public Node findNode(Product p) {
-        	for (Node node : pane.getChildren()) {
-        		if (node.getUserData().equals(p)) {
-        			return node;
-        		}
-        	}
-        	
-        	throw new RuntimeException("the product was not found in the list");
-        }
-        
-        public void select(Product p) {
-        	Node node = findNode(p);
-        	
-        	selectedProducts.add(p);
+					node = bp;
+				} else {
+					Label label = new Label(p.getName());
 
-            if (selectHandler != null) {
-                selectHandler.exec(p);
-            }
+					label.setMinWidth(productSize);
+					label.setMaxWidth(productSize);
+					label.setMinHeight(productSize);
+					label.setMaxHeight(productSize);
+					label.setWrapText(true);
+					label.setTextAlignment(TextAlignment.CENTER);
 
-            node.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
-        }
-        
-        public void deselect(Product p) {
-        	Node node = findNode(p);
-        	
-        	selectedProducts.remove(p);
+					node = label;
+				}
 
-            if (deselectHandler != null) {
-                deselectHandler.exec(p);
-            }
+				node.setUserData(p);
+				node.setStyle(
+						"-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+				GridPane.setHalignment(node, HPos.CENTER);
 
-            node.setStyle("-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
-        }
-    }
+				node.setOnMouseClicked(e -> {
+					if (selectedProducts.contains(p)) {
+						deselect(p);
+					} else {
+						select(p);
+					}
+				});
+
+				pane.add(node, i % 4, i / 4);
+			}
+			ScrollPane sp = new ScrollPane();
+			sp.setHbarPolicy(ScrollBarPolicy.NEVER);
+			sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+			sp.setContent(pane);
+			GridPane.setMargin(pane, new Insets(20));
+
+			setCenter(sp);
+		}
+
+		public Node findNode(Product p) {
+			for (Node node : pane.getChildren()) {
+				if (node.getUserData().equals(p)) {
+					return node;
+				}
+			}
+
+			throw new RuntimeException("the product was not found in the list");
+		}
+
+		public void select(Product p) {
+			Node node = findNode(p);
+
+			selectedProducts.add(p);
+
+			if (selectHandler != null) {
+				selectHandler.exec(p);
+			}
+
+			node.setStyle(
+					"-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 2px;");
+		}
+
+		public void deselect(Product p) {
+			Node node = findNode(p);
+
+			selectedProducts.remove(p);
+
+			if (deselectHandler != null) {
+				deselectHandler.exec(p);
+			}
+
+			node.setStyle(
+					"-fx-border-color: black; -fx-border-style: solid; -fx-border-width: 1px;");
+		}
+	}
 }

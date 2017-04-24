@@ -23,101 +23,100 @@ import model.ProductOrder;
 import service.Service;
 
 public class GiftBasketDialog extends Stage {
-    private final Order order;
+	private final Order order;
 
-    public GiftBasketDialog(Window owner, Order order) {
-        this.order = order;
-//        setMaximized(true);
-        initModality(Modality.APPLICATION_MODAL);
-        setResizable(false);
-        initOwner(owner);
-        setTitle("Tilføj produkter");
-        GridPane pane = new GridPane();
-        initContent(pane);
+	public GiftBasketDialog(Window owner, Order order) {
+		this.order = order;
+		// setMaximized(true);
+		initModality(Modality.APPLICATION_MODAL);
+		setResizable(false);
+		initOwner(owner);
+		setTitle("Tilføj produkter");
+		GridPane pane = new GridPane();
+		initContent(pane);
 
-        Scene scene = new Scene(pane);
-        setScene(scene);
-    }
+		Scene scene = new Scene(pane);
+		setScene(scene);
+	}
 
-    private final Service service = Service.getInstance();
-    private final Controller controller = new Controller();
-    private final Table<ProductOrder> productTable = new Table<>(null);
-    private final List<ProductOrder> newProducts = new ArrayList<>();
+	private final Service service = Service.getInstance();
+	private final Controller controller = new Controller();
+	private final Table<ProductOrder> productTable = new Table<>(null);
+	private final List<ProductOrder> newProducts = new ArrayList<>();
 
-    private void initContent(GridPane pane) {
-        pane.setVgap(10);
-        pane.setHgap(10);
-        pane.setAlignment(Pos.TOP_CENTER);
+	private void initContent(GridPane pane) {
+		pane.setVgap(10);
+		pane.setHgap(10);
+		pane.setAlignment(Pos.TOP_CENTER);
 
-        LabelColumn<ProductOrder> nameColumn =
-            new LabelColumn<>("Navn",
-                po -> po.getProduct().getName() + ", " + po.getProduct().getCategory());
-        nameColumn.setPrefWidth(getOwner().getWidth() / 2);
+		LabelColumn<ProductOrder> nameColumn = new LabelColumn<>("Navn",
+				po -> po.getProduct().getName() + ", " + po.getProduct().getCategory());
+		nameColumn.setPrefWidth(getOwner().getWidth() / 2);
 
-        Column<ProductOrder> amountColumn =
-            new PrimitiveColumn<>("Antal", PrimitiveColumn.Type.Integer,
-                ProductOrder::getAmount, controller::updateAmount, (po, v) -> {
-                    if (Pattern.matches("^\\d+$", v)) {
-                        return null;
-                    }
-                    return "Antal skal være et positivt tal";
-                });
-        amountColumn.setMinWidth(20.0);
+		Column<ProductOrder> amountColumn = new PrimitiveColumn<>("Antal",
+				PrimitiveColumn.Type.Integer, ProductOrder::getAmount,
+				controller::updateAmount, (po, v) -> {
+					if (Pattern.matches("^\\d+$", v)) {
+						return null;
+					}
+					return "Antal skal være et positivt tal";
+				});
+		amountColumn.setMinWidth(20.0);
 
-        productTable.addColumn(nameColumn);
-        productTable.addColumn(amountColumn);
+		productTable.addColumn(nameColumn);
+		productTable.addColumn(amountColumn);
 
-        for (ProductOrder po : order.getAllProducts()) {
-            if (po.getGift()) {
-                newProducts.add(po);
-            }
-        }
-        productTable.setItems(newProducts);
+		for (ProductOrder po : order.getAllProducts()) {
+			if (po.getGift()) {
+				newProducts.add(po);
+			}
+		}
+		productTable.setItems(newProducts);
 
-        List<Product> products = new ArrayList<>();
-        for (Product p : service.getSelectedPricelist().getProducts()) {
-            if (p.getCategory().equals("flaske")) {
-                products.add(p);
-            }
-        }
-        ProductList pl = new ProductList(products);
-        
-        for (ProductOrder po : newProducts) {
-        	pl.select(po.getProduct());
-        }
-        
-        pl.setSelectHandler(p -> {
-            ProductOrder po = order.addProduct(p);
-            po.setGiftStatus();
-            productTable.addItem(po);
-        });
+		List<Product> products = new ArrayList<>();
+		for (Product p : service.getSelectedPricelist().getProducts()) {
+			if (p.getCategory().equals("flaske")) {
+				products.add(p);
+			}
+		}
+		ProductList pl = new ProductList(products);
 
-        pl.setDeselectHandler(p -> {
-            ProductOrder po = order.removeProduct(p);
-            po.setGiftStatus();
-            productTable.removeItem(po);
+		for (ProductOrder po : newProducts) {
+			pl.select(po.getProduct());
+		}
 
-        });
+		pl.setSelectHandler(p -> {
+			ProductOrder po = order.addProduct(p);
+			po.setGiftStatus();
+			productTable.addItem(po);
+		});
 
-        ScrollPane sp = new ScrollPane();
-        sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        sp.setHbarPolicy(ScrollBarPolicy.NEVER);
-        sp.setMinWidth(650); //650
-        sp.setContent(pl);
+		pl.setDeselectHandler(p -> {
+			ProductOrder po = order.removeProduct(p);
+			po.setGiftStatus();
+			productTable.removeItem(po);
 
-        pane.add(pl, 0, 0);
-        pane.add(productTable.getPane(), 1, 0, 2, 1);
+		});
 
-        Button btnOK = new Button("OK");
-        btnOK.setOnAction(e -> close());
-        pane.add(btnOK, 1, 1);
-        btnOK.setDefaultButton(true);
+		ScrollPane sp = new ScrollPane();
+		sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		sp.setHbarPolicy(ScrollBarPolicy.NEVER);
+		sp.setMinWidth(650); // 650
+		sp.setContent(pl);
 
-    }
+		pane.add(pl, 0, 0);
+		pane.add(productTable.getPane(), 1, 0, 2, 1);
 
-    class Controller {
-        public void updateAmount(ProductOrder po, int amount) {
-            service.updateProductOrderAmount(po, amount);
-        }
-    }
+		Button btnOK = new Button("OK");
+		btnOK.setOnAction(e -> close());
+		pane.add(btnOK, 1, 1);
+		btnOK.setDefaultButton(true);
+
+	}
+
+	class Controller {
+		public void updateAmount(ProductOrder po, int amount) {
+			service.updateProductOrderAmount(po, amount);
+		}
+	}
 }

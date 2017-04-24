@@ -1,6 +1,5 @@
 package gui.table;
 
-
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 
@@ -14,7 +13,8 @@ public class ButtonColumn<A> extends Column<A> {
 		this.actionHandler = actionHandler;
 	}
 
-	public ButtonColumn(String name, Getter<A, Button> getter, ActionHandler<A> actionHandler){
+	public ButtonColumn(String name, Getter<A, Button> getter,
+			ActionHandler<A> actionHandler) {
 		this(name, actionHandler);
 
 		this.getter = getter;
@@ -24,14 +24,14 @@ public class ButtonColumn<A> extends Column<A> {
 	public Node getNode(A item) {
 		final Button b;
 
-		if (getter == null){
+		if (getter == null) {
 			b = new Button(getName());
 		} else {
 			b = getter.get(item);
 		}
 
 		b.setOnAction(e -> actionHandler.exec(item));
-		
+
 		return b;
 	}
 

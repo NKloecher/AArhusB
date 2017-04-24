@@ -7,32 +7,36 @@ import java.time.format.FormatStyle;
 import java.util.Locale;
 
 public class Payment implements Serializable {
-    private PaymentType paymentType;
-    private double amount;
-    private LocalDateTime date;
+	private PaymentType paymentType;
+	private double amount;
+	private LocalDateTime date;
 
-    public Payment(PaymentType paymentType, double amount) {
-    	assert paymentType != null;
-    	
-        this.paymentType = paymentType;
-        this.amount = amount;
-        this.date = LocalDateTime.now();
-    }
+	public Payment(PaymentType paymentType, double amount) {
+		assert paymentType != null;
 
-    public double getAmount() {
-        return amount;
-    }
+		this.paymentType = paymentType;
+		this.amount = amount;
+		this.date = LocalDateTime.now();
+	}
 
-    public PaymentType getPaymentType() {
-        return paymentType;
-    }
+	public double getAmount() {
+		return amount;
+	}
 
-    public LocalDateTime getDate() {
-        return date;
-    }
+	public PaymentType getPaymentType() {
+		return paymentType;
+	}
 
-    @Override
-    public String toString() { 
-    	return date.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)) + " " + paymentType + " " + String.format(Locale.GERMAN, "%.2fkr.", amount);
-    }
+	public LocalDateTime getDate() {
+		return date;
+	}
+
+	@Override
+	public String toString() {
+		return date
+				.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM,
+						FormatStyle.SHORT))
+				+ " " + paymentType + " "
+				+ String.format(Locale.GERMAN, "%.2fkr.", amount);
+	}
 }
