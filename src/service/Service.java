@@ -305,6 +305,10 @@ public class Service {
         return depositProduct;
     }
 
+    public void updateDeposit(DepositProduct product, double value) {
+        product.setDeposit(value);
+    }
+
     public List<Pricelist> getPricelists() {
         return storage.getPricelists();
     }

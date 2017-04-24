@@ -188,6 +188,28 @@ public class OrderTest {
     }
 
     @Test
+    public void orderTotalDepositAfterReturn() {
+        Order order = new Order(user, pricelist);
+        RentalProductOrder rp = (RentalProductOrder) order.addProduct(simpleDepositProduct);
+        rp.setAmount(5);
+        rp.setUnused(1);
+        assertEquals(-100, order.totalDepositAfterReturn(), 0.01);
+    }
+
+    @Test
+    public void orderTotalDepositAfterReturn2() {
+        Order order = new Order(user, pricelist);
+        RentalProductOrder rp = (RentalProductOrder) order.addProduct(simpleDepositProduct);
+        RentalProductOrder rp2 = (RentalProductOrder) order.addProduct(simpleDepositProduct);
+        rp.setAmount(5);
+        rp.setNotReturned(1);
+        rp.setUnused(1);
+        rp2.setAmount(4);
+        rp2.setUnused(4);
+        assertEquals(-490, order.totalDepositAfterReturn(), 0.01);
+    }
+
+    @Test
     public void orderTotalPayment50Cash() {
         Order order = new Order(user, pricelist);
         ProductOrder po = order.addProduct(simpleBeer);

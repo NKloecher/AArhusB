@@ -10,6 +10,7 @@ import gui.table.ListColumn;
 import gui.table.PrimitiveColumn;
 import gui.table.Table;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -20,6 +21,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import model.DepositProduct;
 import model.Order;
 import model.Permission;
 import model.Pricelist;
@@ -60,6 +62,24 @@ public class Products extends GridPane {
         table.addColumn(
             new PrimitiveColumn<>("Klip", PrimitiveColumn.Type.Integer, Product::getClips,
                 service::updateProductClips));
+
+        Column<Product> depositColumn =
+            new PrimitiveColumn<Product, Double>("Pant", PrimitiveColumn.Type.Double,
+                e -> ((DepositProduct) e).getDeposit(),
+                (x, y) -> service.updateDeposit((DepositProduct) x, y)) {
+                @Override
+                public Node getNode(Product po) {
+                    if (po instanceof DepositProduct) {
+                        return super.getNode(po);
+                    }
+                    else {
+                        return null;
+                    }
+                }
+            };
+        depositColumn.setMaxWidth(70.0);
+        table.addColumn(depositColumn);
+
         if (service.getActiveUser().getPermission() == Permission.ADMIN) {
             Column<Product> delete =
                 new ButtonColumn<>("Delete", controller::deleteProduct);
@@ -89,11 +109,29 @@ public class Products extends GridPane {
         add(btnCreateProduct, 1, 2);
         btnCreateProduct.setOnAction(e -> controller.createProduct());
 
+        Button btnCreateDepositProduct = new Button("Lav pantprodukt");
+        btnCreateDepositProduct.setOnAction(e -> controller.createDepositProduct());
+        add(btnCreateDepositProduct, 2, 2);
+
         add(lblError, 0, 3);
 
     }
 
     private class Controller {
+
+        public void createDepositProduct() {
+            try {
+                String name = txfProduct.getText().trim();
+                if (!name.isEmpty()) {
+                    service.createDepositProduct(name, null, null, null, 0);
+                    table.setItems(storage.getProducts());
+                    txfProduct.clear();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         public void removeCategory() {
             String category = cbxCategory.getSelectionModel().getSelectedItem();

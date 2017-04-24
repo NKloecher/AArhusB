@@ -17,4 +17,8 @@ public class DepositProduct extends Product implements Serializable {
     public double getDeposit() {
         return deposit;
     }
+
+    public void setDeposit(double deposit) {
+        this.deposit = deposit;
+    }
 }
