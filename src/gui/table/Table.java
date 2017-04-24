@@ -27,9 +27,8 @@ public class Table<A> {
     public void setItems(List<A> items) {
         assert items != null;
 
-        for (int i = this.items.size() - 1; i >= 0; i--) {
-            removeItem(this.items.get(i));
-        }
+        pane.getChildren().removeAll();
+        this.items = new ArrayList<A>();
 
         for (A item : items) {
             addItem(item);
